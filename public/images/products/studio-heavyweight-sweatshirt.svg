@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+  <rect width="600" height="800" fill="#F1F1F1"/>
+  <g fill="none" stroke="#131316" stroke-width="3" opacity="0.9">
+    <path d="M230 310 h140 v190 h-140 z"/>
+    <path d="M230 340 l-55 45 35 28 20 -16z"/>
+    <path d="M370 340 l55 45 -35 28 -20 -16z"/>
+    <path d="M270 310 c0 -22 60 -22 60 0"/>
+  </g>
+  <text x="300" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#131316">Studio Heavyweight</text>
+  <text x="300" y="592" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#131316">Sweatshirt</text>
+  <text x="300" y="640" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="6" fill="#131316" opacity="0.6">UNIQUE STUDIOS</text>
+</svg>

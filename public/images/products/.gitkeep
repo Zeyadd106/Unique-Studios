@@ -1,0 +1,28 @@
+# Product Images Placeholder
+
+This directory is for product images. 
+
+## Image Naming Convention
+
+Product images should be named according to the product slug:
+- essential-oversized-t-shirt.jpg
+- heavyweight-oversized-t-shirt.jpg
+- signature-wide-leg-sweatpants.jpg
+- essential-hoodie.jpg
+- studio-heavyweight-sweatshirt.jpg
+
+## Adding Images
+
+1. Place your product images in this directory
+2. Name them according to the product slug
+3. Update the seed script or database to reference the correct image URLs
+
+## Future Integration
+
+This structure is designed to easily integrate with:
+- Cloudinary
+- AWS S3
+- Supabase Storage
+- Or any other image hosting service
+
+Simply update the image URLs in the database to point to your chosen service.

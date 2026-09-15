@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+/* Van-Graph-inspired theme tokens (EasyOrders "default" theme):
+   monochrome brand — primary black, white surfaces, hairline borders. */
+:root {
+  --background: #ffffff;
+  --foreground: #131316;
+  --color-primary: 0, 0, 0;
+  --color-a11y: 255, 255, 255;
+  --border-soft: #e2e2e2;
+  --surface-muted: #f7f7f7;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ink: #131316;
+  --color-line: var(--border-soft);
+  --color-muted-surface: var(--surface-muted);
+  --font-sans: var(--font-cairo);
+  --font-arabic: var(--font-cairo);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-cairo), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* Safety net: never allow accidental horizontal scroll on small screens
+     (`clip` preserves position: sticky, unlike `hidden`). */
+  overflow-x: clip;
+}
+
+/* Brand font everywhere, like Van-Graph (Cairo for latin + arabic) */
+span,
+strong,
+a,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+li,
+button,
+label,
+input,
+textarea,
+dd,
+dt {
+  font-family: "Cairo", var(--font-cairo), Arial, sans-serif;
+}
+
+/* Skeleton shimmer for product grids */
+@keyframes vg-shimmer {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.vg-skeleton {
+  animation: vg-shimmer 1.6s ease-in-out infinite;
+  background: #f3f3f3;
+}
+
+/* Minimal product card hover */
+.vg-card-image {
+  transition: transform 0.35s ease;
+}
+.group:hover .vg-card-image {
+  transform: scale(1.03);
+}
+
+/* Sticky white header shadow */
+.vg-header-shadow {
+  box-shadow: 0 2px 4px 0 rgb(102 127 168 / 8%);
+}
+
+/* WhatsApp float: soft expanding rings */
+@keyframes vg-wa-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+.vg-wa-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: #25d366;
+  animation: vg-wa-ring 2.4s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  pointer-events: none;
+}
+
+.vg-wa-ring-delay {
+  animation-delay: 1.2s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vg-wa-ring,
+  .vg-skeleton {
+    animation: none;
+  }
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+/* RTL-specific adjustments */
+[dir="rtl"] .space-x-2 > * + * {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+[dir="rtl"] .space-x-4 > * + * {
+  margin-left: 0;
+  margin-right: 1rem;
+}
+
+[dir="rtl"] .ml-2 {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+[dir="rtl"] .mr-2 {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+[dir="rtl"] .ml-4 {
+  margin-left: 0;
+  margin-right: 1rem;
+}
+
+[dir="rtl"] .mr-4 {
+  margin-right: 0;
+  margin-left: 1rem;
+}
