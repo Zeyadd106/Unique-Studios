@@ -58,7 +58,7 @@ export default function AdminLoginPage() {
           <div className="flex justify-end">
             <button
               onClick={() => setLocale(locale === 'en' ? 'ar' : 'en')}
-              className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-black"
+              className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-[#051948]"
             >
               <Globe className="h-3.5 w-3.5" />
               {locale === 'en' ? 'العربية' : 'English'}

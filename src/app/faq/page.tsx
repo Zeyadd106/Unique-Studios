@@ -32,7 +32,7 @@ export default function FaqPage() {
       <main className="flex-1">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 md:py-14">
           <h1 className="text-2xl md:text-3xl font-extrabold text-center">{t('faq.title')}</h1>
-          <p className="mt-3 text-sm md:text-base text-center text-[#131316]/70">
+          <p className="mt-3 text-sm md:text-base text-center text-[#0A1A33]/70">
             {t('faq.subtitle')}
           </p>
 
@@ -53,7 +53,7 @@ export default function FaqPage() {
                     />
                   </button>
                   {open && (
-                    <p className="pb-5 text-sm text-[#131316]/70 leading-relaxed">
+                    <p className="pb-5 text-sm text-[#0A1A33]/70 leading-relaxed">
                       {answers[i] ?? ''}
                     </p>
                   )}

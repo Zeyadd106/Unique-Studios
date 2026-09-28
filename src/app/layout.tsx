@@ -15,6 +15,17 @@ export const metadata: Metadata = {
   title: "UNIQUE STUDIOS - Premium Streetwear",
   description:
     "Premium oversized streetwear for those who dare to stand out. Built Different. Worn Unique.",
+  icons: {
+    icon: "/logo-cropped.png",
+    shortcut: "/logo-cropped.png",
+    apple: "/logo-cropped.png",
+  },
+  openGraph: {
+    title: "UNIQUE STUDIOS - Premium Streetwear",
+    description:
+      "Premium oversized streetwear for those who dare to stand out. Built Different. Worn Unique.",
+    images: ["/logo-cropped.png"],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

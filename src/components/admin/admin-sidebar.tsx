@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
@@ -55,15 +56,23 @@ export function AdminSidebar({ currentAdmin, locale, setLocale, t }: AdminSideba
       {/* Sidebar — anchored to the inline-start side so it flips in RTL */}
       <aside
         className={`
-        fixed start-0 top-0 h-full w-64 bg-black text-white p-6 z-40 flex flex-col
+        fixed start-0 top-0 h-full w-64 bg-[#030F2E] text-white p-6 z-40 flex flex-col
         transform transition-transform duration-300 ease-in-out
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full rtl:translate-x-full'}
         lg:translate-x-0 rtl:lg:translate-x-0
       `}
       >
         <div className="mb-8">
-          <h1 className="text-2xl font-bold">{t('common.brandName')}</h1>
-          <p className="text-sm text-gray-400 mt-1">{t('admin.adminPanel')}</p>
+          <Link href="/" aria-label="Unique Studios - Home" className="inline-block rounded-lg bg-white p-2">
+            <Image
+              src="/logo-cropped.png"
+              alt={t('common.brandName')}
+              width={240}
+              height={116}
+              className="h-14 w-auto object-contain"
+            />
+          </Link>
+          <p className="text-sm text-gray-400 mt-2">{t('admin.adminPanel')}</p>
         </div>
 
         <nav className="space-y-2 flex-1">
@@ -77,7 +86,7 @@ export function AdminSidebar({ currentAdmin, locale, setLocale, t }: AdminSideba
                 onClick={() => setIsMobileOpen(false)}
                 className={`
                   flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
-                  ${isActive ? 'bg-white text-black' : 'hover:bg-gray-800'}
+                  ${isActive ? 'bg-white text-[#051948]' : 'hover:bg-white/10'}
                 `}
               >
                 <Icon className="h-5 w-5" />
@@ -90,20 +99,20 @@ export function AdminSidebar({ currentAdmin, locale, setLocale, t }: AdminSideba
         {/* Language switcher */}
         <button
           onClick={() => setLocale(locale === 'en' ? 'ar' : 'en')}
-          className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 w-full transition-colors text-sm font-semibold"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 w-full transition-colors text-sm font-semibold"
         >
           <Globe className="h-5 w-5" />
           <span>{locale === 'en' ? 'العربية' : 'English'}</span>
         </button>
 
-        <div className="border-t border-gray-800 pt-6 mt-4">
+        <div className="border-t border-white/10 pt-6 mt-4">
           <div className="mb-4">
             <p className="text-sm font-medium">{currentAdmin.name}</p>
             <p className="text-xs text-gray-400">{currentAdmin.email}</p>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 w-full transition-colors"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 w-full transition-colors"
           >
             <LogOut className="h-5 w-5" />
             <span>{t('admin.logout')}</span>
@@ -114,7 +123,7 @@ export function AdminSidebar({ currentAdmin, locale, setLocale, t }: AdminSideba
       {/* Mobile overlay */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          className="fixed inset-0 bg-[#030F2E] bg-opacity-50 z-30 lg:hidden"
           onClick={() => setIsMobileOpen(false)}
         />
       )}

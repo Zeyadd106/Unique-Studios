@@ -29,40 +29,30 @@ const now = () => new Date()
 
 export const CATEGORIES: Category[] = [
   {
-    id: 'cat-1',
-    name: 'Oversized T-Shirts',
-    slug: 'oversized-t-shirts',
-    description: 'Premium oversized t-shirts for a modern streetwear look',
+    id: 'cat-off-shoulder',
+    name: 'Off Shoulder',
+    slug: 'off-shoulder',
+    description: 'Off-shoulder tops with a relaxed feminine fit',
     image: null,
     active: true,
     createdAt: now(),
     updatedAt: now(),
   },
   {
-    id: 'cat-2',
-    name: 'Wide-Leg Sweatpants',
-    slug: 'wide-leg-sweatpants',
-    description: 'Comfortable wide-leg sweatpants with premium fit',
+    id: 'cat-sweatpants',
+    name: 'Sweatpants',
+    slug: 'sweatpants',
+    description: 'Comfortable sweatpants with premium fit',
     image: null,
     active: true,
     createdAt: now(),
     updatedAt: now(),
   },
   {
-    id: 'cat-3',
-    name: 'Hoodies',
-    slug: 'hoodies',
-    description: 'Premium hoodies for cold weather and street style',
-    image: null,
-    active: true,
-    createdAt: now(),
-    updatedAt: now(),
-  },
-  {
-    id: 'cat-4',
-    name: 'Sweatshirts',
-    slug: 'sweatshirts',
-    description: 'Heavyweight sweatshirts for everyday wear',
+    id: 'cat-round-neck',
+    name: 'Round Neck',
+    slug: 'round-neck',
+    description: 'Classic round-neck sweatshirts for everyday wear',
     image: null,
     active: true,
     createdAt: now(),
@@ -74,8 +64,10 @@ export const CATEGORIES: Category[] = [
 // Products
 // ---------------------------------------------------------------------------
 
-const SIZES = ['S', 'M', 'L', 'XL', 'XXL']
 const COLORS = ['Black', 'White', 'Gray', 'Navy']
+
+// Sizes come from the official size charts (see size-guide page):
+// Off Shoulder → S/M/L, Sweatpants → M/L/XL, Round Neck → M/L/XL.
 
 function weightRangeForSize(size: string): { weightMin: number; weightMax: number } {
   switch (size) {
@@ -94,9 +86,9 @@ function weightRangeForSize(size: string): { weightMin: number; weightMax: numbe
   }
 }
 
-function buildVariants(productId: string, seed: number): ProductVariant[] {
+function buildVariants(productId: string, seed: number, sizes: string[]): ProductVariant[] {
   const variants: ProductVariant[] = []
-  SIZES.forEach((size, sizeIdx) => {
+  sizes.forEach((size, sizeIdx) => {
     COLORS.forEach((color, colorIdx) => {
       // Deterministic stock between 8–22 so the catalog is stable across restarts.
       const stock = 8 + ((sizeIdx * 7 + colorIdx * 3 + seed) % 15)
@@ -131,85 +123,64 @@ interface ProductSeed {
   featured: boolean
   bestSeller: boolean
   newArrival: boolean
+  sizes: string[]
+  image: string
 }
 
 const PRODUCT_SEEDS: ProductSeed[] = [
   {
-    id: 'prod-1',
-    name: 'Essential Oversized T-Shirt',
-    slug: 'essential-oversized-t-shirt',
+    id: 'prod-off-shoulder',
+    name: 'Off Shoulder',
+    slug: 'off-shoulder',
     description:
-      'Our signature oversized t-shirt made from premium cotton. Perfect for a modern streetwear aesthetic.',
-    price: 450,
-    salePrice: null,
-    categoryId: 'cat-1',
-    material: '100% Cotton',
-    fit: 'Oversized',
-    careInstructions: 'Machine wash cold, tumble dry low',
-    featured: true,
-    bestSeller: true,
-    newArrival: false,
-  },
-  {
-    id: 'prod-2',
-    name: 'Heavyweight Oversized T-Shirt',
-    slug: 'heavyweight-oversized-t-shirt',
-    description:
-      'Heavyweight cotton t-shirt with a structured oversized fit. Premium quality for everyday wear.',
-    price: 550,
-    salePrice: 450,
-    categoryId: 'cat-1',
-    material: '100% Heavyweight Cotton',
-    fit: 'Relaxed Oversized',
-    careInstructions: 'Machine wash cold, hang dry',
-    featured: true,
-    bestSeller: false,
-    newArrival: true,
-  },
-  {
-    id: 'prod-3',
-    name: 'Signature Wide-Leg Sweatpants',
-    slug: 'signature-wide-leg-sweatpants',
-    description: 'Our signature wide-leg sweatpants with premium comfort and modern street style.',
-    price: 650,
-    salePrice: null,
-    categoryId: 'cat-2',
-    material: '80% Cotton, 20% Polyester',
-    fit: 'Wide-Leg',
-    careInstructions: 'Machine wash cold, tumble dry low',
-    featured: true,
-    bestSeller: true,
-    newArrival: false,
-  },
-  {
-    id: 'prod-4',
-    name: 'Essential Hoodie',
-    slug: 'essential-hoodie',
-    description: 'Premium hoodie with comfortable fit and modern design. Perfect for layering.',
+      'Relaxed off-shoulder top with ribbed cuffs and hem. Size chart (length × width): S 56 × 58 cm, M 58 × 60 cm, L 60 × 62 cm.',
     price: 850,
     salePrice: null,
-    categoryId: 'cat-3',
+    categoryId: 'cat-off-shoulder',
     material: '80% Cotton, 20% Polyester',
-    fit: 'Regular',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: true,
+    bestSeller: true,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    image: '/images/products/off-shoulder.svg',
+  },
+  {
+    id: 'prod-sweatpants',
+    name: 'Sweatpants',
+    slug: 'sweatpants',
+    description:
+      'Comfortable sweatpants with drawstring waist and cuffed ankles. Size chart (hip × length): M 53 × 107 cm, L 56 × 110 cm, XL 60 × 113 cm.',
+    price: 650,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
     careInstructions: 'Machine wash cold, tumble dry low',
     featured: true,
     bestSeller: true,
     newArrival: false,
+    sizes: ['M', 'L', 'XL'],
+    image: '/images/products/sweatpants.svg',
   },
   {
-    id: 'prod-5',
-    name: 'Studio Heavyweight Sweatshirt',
-    slug: 'studio-heavyweight-sweatshirt',
-    description: 'Heavyweight sweatshirt with premium quality cotton and modern streetwear aesthetic.',
+    id: 'prod-round-neck',
+    name: 'Round Neck',
+    slug: 'round-neck',
+    description:
+      'Classic round-neck sweatshirt with ribbed cuffs and hem. Size chart (length × width): M 67 × 63 cm, L 70 × 66 cm, XL 73 × 69 cm.',
     price: 750,
     salePrice: 600,
-    categoryId: 'cat-4',
+    categoryId: 'cat-round-neck',
     material: '100% Heavyweight Cotton',
     fit: 'Relaxed',
     careInstructions: 'Machine wash cold, hang dry',
-    featured: false,
+    featured: true,
     bestSeller: false,
     newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    image: '/images/products/round-neck.svg',
   },
 ]
 
@@ -223,13 +194,13 @@ function buildProduct(seed: ProductSeed, index: number): Product {
       {
         id: `${seed.id}-img-1`,
         productId: seed.id,
-        url: `/images/products/${seed.slug}.svg`,
+        url: seed.image,
         alt: seed.name,
         sortOrder: 0,
         createdAt: now(),
       },
     ],
-    variants: buildVariants(seed.id, index * 5 + 3),
+    variants: buildVariants(seed.id, index * 5 + 3, seed.sizes),
     createdAt: now(),
     updatedAt: now(),
   }
@@ -658,73 +629,45 @@ interface ReviewSeed {
 
 const REVIEW_SEEDS: ReviewSeed[] = [
   {
-    productId: 'prod-1',
-    author: 'Ahmed M.',
+    productId: 'prod-off-shoulder',
+    author: 'Mariam S.',
     rating: 5,
-    comment: 'Perfect oversized fit, heavy cotton and clean stitching. Size L fits exactly like the weight guide says.',
-    photos: ['/images/products/essential-oversized-t-shirt.svg'],
+    comment: 'Perfect off-shoulder fit, soft fabric and clean stitching. Size M fits exactly like the size chart says.',
+    photos: ['/images/products/off-shoulder.svg'],
     daysAgo: 2,
   },
   {
-    productId: 'prod-1',
-    author: 'Youssef',
+    productId: 'prod-off-shoulder',
+    author: 'Salma',
     rating: 5,
-    comment: 'الخامة تقيلة والشكل أحلى من الصور. المقاس مظبوط.',
+    comment: 'الخامة ناعمة والشكل أحلى من الصور. المقاس مظبوط.',
     daysAgo: 6,
   },
   {
-    productId: 'prod-1',
-    author: 'Mariam S.',
-    rating: 4,
-    comment: 'Great quality for the price, only wish there were more colors.',
-    daysAgo: 11,
-  },
-  {
-    productId: 'prod-2',
-    author: 'Omar K.',
-    rating: 5,
-    comment: 'The heavyweight fabric feels premium. Boxy fit is on point.',
-    photos: ['/images/products/heavyweight-oversized-t-shirt.svg'],
-    daysAgo: 3,
-  },
-  {
-    productId: 'prod-2',
-    author: 'Salma',
-    rating: 4,
-    comment: 'خامة ممتازة بس المقاس واسع شوية، خدوا بالكم من جدول المقاسات.',
-    daysAgo: 9,
-  },
-  {
-    productId: 'prod-3',
+    productId: 'prod-sweatpants',
     author: 'Karim A.',
     rating: 5,
-    comment: 'Most comfortable sweatpants I own. Wide leg looks great with sneakers.',
+    comment: 'Most comfortable sweatpants I own. Size L length is perfect.',
+    photos: ['/images/products/sweatpants.svg'],
     daysAgo: 4,
   },
   {
-    productId: 'prod-3',
+    productId: 'prod-sweatpants',
     author: 'Nour',
     rating: 5,
     comment: 'مريح جداً والخامة ناعمة من جوه. طلبت قطعة تانية.',
     daysAgo: 8,
   },
   {
-    productId: 'prod-4',
-    author: 'Mostafa R.',
+    productId: 'prod-round-neck',
+    author: 'Omar K.',
     rating: 5,
-    comment: 'Warm, thick hoodie. Delivery to Giza took 3 days, COD as promised.',
-    photos: ['/images/products/essential-hoodie.svg'],
-    daysAgo: 5,
+    comment: 'The heavyweight fabric feels premium. Size XL fits true to the chart.',
+    photos: ['/images/products/round-neck.svg'],
+    daysAgo: 3,
   },
   {
-    productId: 'prod-4',
-    author: 'Hana',
-    rating: 4,
-    comment: 'Nice hoodie, slightly long sleeves but I like the baggy look.',
-    daysAgo: 13,
-  },
-  {
-    productId: 'prod-5',
+    productId: 'prod-round-neck',
     author: 'Adham',
     rating: 5,
     comment: 'Premium feel, zero shrinkage after first wash. Highly recommended.',

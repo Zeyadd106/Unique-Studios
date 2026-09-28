@@ -36,7 +36,7 @@ function Stars({ value, className = 'h-4 w-4' }: { value: number; className?: st
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
           key={i}
-          className={`${className} ${i <= Math.round(value) ? 'fill-black text-black' : 'text-gray-300'}`}
+          className={`${className} ${i <= Math.round(value) ? 'fill-[#051948] text-[#051948]' : 'text-gray-300'}`}
         />
       ))}
     </span>
@@ -151,7 +151,7 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
               <span className="text-3xl font-extrabold">{summary.average}</span>
               <div>
                 <Stars value={summary.average} />
-                <p className="text-xs text-[#131316]/60">
+                <p className="text-xs text-[#0A1A33]/60">
                   {summary.count} {t('reviews.basedOn')}
                 </p>
               </div>
@@ -168,7 +168,7 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
             </div>
           </>
         ) : (
-          <p className="text-sm text-[#131316]/60">{t('reviews.noReviews')}</p>
+          <p className="text-sm text-[#0A1A33]/60">{t('reviews.noReviews')}</p>
         )}
         <Button
           variant={formOpen ? 'ghost' : 'outline'}
@@ -215,7 +215,7 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
                         className="p-0.5"
                       >
                         <Star
-                          className={`h-7 w-7 ${s <= rating ? 'fill-black text-black' : 'text-gray-300'}`}
+                          className={`h-7 w-7 ${s <= rating ? 'fill-[#051948] text-[#051948]' : 'text-gray-300'}`}
                         />
                       </button>
                     ))}
@@ -264,7 +264,7 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
                         type="button"
                         aria-label={t('common.remove')}
                         onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
-                        className="absolute -top-2 -end-2 rounded-full bg-black p-0.5 text-white"
+                        className="absolute -top-2 -end-2 rounded-full bg-[#051948] p-0.5 text-white"
                       >
                         <X className="h-3.5 w-3.5" />
                       </button>
@@ -291,12 +291,12 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
           <article key={review.id} className="rounded-md border border-[#E2E2E2] p-4 md:p-5">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-black text-xs font-bold text-white">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#051948] text-xs font-bold text-white">
                   {review.author.charAt(0).toUpperCase()}
                 </span>
                 <div>
                   <p className="text-sm font-bold">{review.author}</p>
-                  <p className="text-[11px] text-[#131316]/50">
+                  <p className="text-[11px] text-[#0A1A33]/50">
                     {new Date(review.createdAt).toLocaleDateString()}
                     {review.verified && ` · ${t('reviews.verified')}`}
                   </p>

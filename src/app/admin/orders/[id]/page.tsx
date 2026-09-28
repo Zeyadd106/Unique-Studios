@@ -138,7 +138,7 @@ export default function AdminOrderDetailPage() {
       <main className="flex-1 lg:ms-64 p-4 md:p-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <Link href="/admin/orders" className="text-sm text-gray-600 hover:text-black mb-2 block">
+            <Link href="/admin/orders" className="text-sm text-gray-600 hover:text-[#051948] mb-2 block">
               ← {t('admin.backToOrders')}
             </Link>
             <h1 className="text-2xl md:text-3xl font-bold">{order.orderNumber}</h1>

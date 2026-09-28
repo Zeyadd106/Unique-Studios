@@ -115,7 +115,7 @@ export default function SearchPage() {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {results.map((product) => (
-                  <div key={product.id} className="bg-white rounded-lg border-2 border-gray-200 overflow-hidden hover:border-black transition-colors group">
+                  <div key={product.id} className="bg-white rounded-lg border-2 border-gray-200 overflow-hidden hover:border-[#051948] transition-colors group">
                     <div className="relative aspect-square bg-gray-100">
                       {product.images[0] ? (
                         <img

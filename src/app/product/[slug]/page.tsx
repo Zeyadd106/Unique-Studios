@@ -192,7 +192,7 @@ export default function ProductPage() {
                       key={image.id}
                       onClick={() => setSelectedImage(index)}
                       className={`aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 ${
-                        selectedImage === index ? 'border-black' : 'border-transparent'
+                        selectedImage === index ? 'border-[#051948]' : 'border-transparent'
                       }`}
                     >
                       <img
@@ -262,8 +262,8 @@ export default function ProductPage() {
                       disabled={!product.variants.some(v => v.size === size && v.stock > 0)}
                       className={`px-4 py-2 rounded-lg border-2 font-medium ${
                         selectedSize === size
-                          ? 'border-black bg-black text-white'
-                          : 'border-gray-300 hover:border-black'
+                          ? 'border-[#051948] bg-[#051948] text-white'
+                          : 'border-gray-300 hover:border-[#051948]'
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                       {size}
@@ -288,8 +288,8 @@ export default function ProductPage() {
                       disabled={!product.variants.some(v => v.color === color && v.stock > 0)}
                       className={`px-4 py-2 rounded-lg border-2 font-medium ${
                         selectedColor === color
-                          ? 'border-black bg-black text-white'
-                          : 'border-gray-300 hover:border-black'
+                          ? 'border-[#051948] bg-[#051948] text-white'
+                          : 'border-gray-300 hover:border-[#051948]'
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                       {color}

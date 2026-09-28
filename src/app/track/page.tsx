@@ -118,9 +118,9 @@ function TrackContent() {
       <main className="flex-1">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10 md:py-14">
           <div className="text-center mb-8">
-            <PackageSearch className="h-12 w-12 mx-auto mb-4 text-black" />
+            <PackageSearch className="h-12 w-12 mx-auto mb-4 text-[#051948]" />
             <h1 className="text-2xl md:text-3xl font-extrabold">{t('track.title')}</h1>
-            <p className="mt-2 text-sm text-[#131316]/70">{t('track.subtitle')}</p>
+            <p className="mt-2 text-sm text-[#0A1A33]/70">{t('track.subtitle')}</p>
           </div>
 
           <Card>
@@ -165,7 +165,7 @@ function TrackContent() {
                   <span>{order.orderNumber}</span>
                   <span className="text-sm font-bold">{statusLabel(order.status)}</span>
                 </CardTitle>
-                <p className="text-xs text-[#131316]/60">
+                <p className="text-xs text-[#0A1A33]/60">
                   {t('track.orderDate')}: {new Date(order.createdAt).toLocaleString()}
                 </p>
               </CardHeader>
@@ -183,20 +183,20 @@ function TrackContent() {
                         <li key={step} className="flex-1">
                           <div
                             className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${
-                              done ? 'bg-black text-white' : 'bg-[#F1F1F1] text-[#131316]/40'
+                              done ? 'bg-[#051948] text-white' : 'bg-[#F1F1F1] text-[#0A1A33]/40'
                             }`}
                           >
                             {done ? <Check className="h-4 w-4" /> : i + 1}
                           </div>
                           <p
                             className={`mt-1 text-[10px] md:text-[11px] font-semibold leading-tight ${
-                              done ? '' : 'text-[#131316]/40'
+                              done ? '' : 'text-[#0A1A33]/40'
                             }`}
                           >
                             {statusLabel(step)}
                           </p>
                           {i < TIMELINE.length - 1 && (
-                            <div className={`mt-1 h-0.5 ${i < currentStep ? 'bg-black' : 'bg-[#E2E2E2]'}`} />
+                            <div className={`mt-1 h-0.5 ${i < currentStep ? 'bg-[#051948]' : 'bg-[#E2E2E2]'}`} />
                           )}
                         </li>
                       )

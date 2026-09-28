@@ -13,12 +13,37 @@ export default function SizeGuidePage() {
   const { cartCount } = useCart()
   const { wishlistCount } = useWishlist()
 
-  const sizeData = [
-    { size: 'S', weight: '45-60 kg', chest: '92-96 cm', length: '68-70 cm', waist: '76-80 cm' },
-    { size: 'M', weight: '55-70 kg', chest: '96-100 cm', length: '70-72 cm', waist: '80-84 cm' },
-    { size: 'L', weight: '70-85 kg', chest: '100-104 cm', length: '72-74 cm', waist: '84-88 cm' },
-    { size: 'XL', weight: '85-100 kg', chest: '104-108 cm', length: '74-76 cm', waist: '88-92 cm' },
-    { size: 'XXL', weight: '100-120 kg', chest: '108-112 cm', length: '76-78 cm', waist: '92-96 cm' },
+  const charts = [
+    {
+      name: 'Off Shoulder',
+      note: 'Measured flat: length × width',
+      headers: ['Size', 'Length (cm)', 'Width (cm)'],
+      rows: [
+        ['S', '56 cm', '58 cm'],
+        ['M', '58 cm', '60 cm'],
+        ['L', '60 cm', '62 cm'],
+      ],
+    },
+    {
+      name: 'Sweatpants',
+      note: 'Measured flat: hip × length',
+      headers: ['Size', 'Hip (cm)', 'Length (cm)'],
+      rows: [
+        ['M', '53 cm', '107 cm'],
+        ['L', '56 cm', '110 cm'],
+        ['XL', '60 cm', '113 cm'],
+      ],
+    },
+    {
+      name: 'Round Neck',
+      note: 'Measured flat: length × width',
+      headers: ['Size', 'Length (cm)', 'Width (cm)'],
+      rows: [
+        ['M', '67 cm', '63 cm'],
+        ['L', '70 cm', '66 cm'],
+        ['XL', '73 cm', '69 cm'],
+      ],
+    },
   ]
 
   return (
@@ -34,33 +59,38 @@ export default function SizeGuidePage() {
       <main className="flex-1 py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-8 text-center">{t('sizeGuide.title')}</h1>
-            
-            <div className="bg-white rounded-lg border-2 border-gray-200 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-4 text-left font-semibold">{t('sizeGuide.size')}</th>
-                      <th className="px-6 py-4 text-left font-semibold">{t('sizeGuide.weight')}</th>
-                      <th className="px-6 py-4 text-left font-semibold">{t('sizeGuide.chest')}</th>
-                      <th className="px-6 py-4 text-left font-semibold">{t('sizeGuide.length')}</th>
-                      <th className="px-6 py-4 text-left font-semibold">{t('sizeGuide.waist')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sizeData.map((row) => (
-                      <tr key={row.size} className="border-t border-gray-200">
-                        <td className="px-6 py-4 font-semibold">{row.size}</td>
-                        <td className="px-6 py-4">{row.weight}</td>
-                        <td className="px-6 py-4">{row.chest}</td>
-                        <td className="px-6 py-4">{row.length}</td>
-                        <td className="px-6 py-4">{row.waist}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center text-[#051948]">{t('sizeGuide.title')}</h1>
+            <p className="text-center text-sm text-[#0A1A33]/60 mb-8">Off Shoulder · Sweatpants · Round Neck — all measurements in cm, measured flat</p>
+
+            <div className="space-y-8">
+              {charts.map((chart) => (
+                <div key={chart.name} className="bg-white rounded-lg border-2 border-[#DCE3F0] overflow-hidden">
+                  <div className="px-6 py-4 border-b border-[#DCE3F0] bg-[#EEF2F9]">
+                    <h2 className="text-xl font-bold text-[#051948]">{chart.name}</h2>
+                    <p className="text-xs text-[#0A1A33]/60 mt-0.5">{chart.note}</p>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          {chart.headers.map((h) => (
+                            <th key={h} className="px-6 py-4 text-left font-semibold">{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {chart.rows.map((row) => (
+                          <tr key={row[0]} className="border-t border-gray-200">
+                            {row.map((cell, i) => (
+                              <td key={i} className={`px-6 py-4 ${i === 0 ? 'font-semibold' : ''}`}>{cell}</td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ))}
             </div>
 
             <div className="mt-8 p-6 bg-yellow-50 border border-yellow-200 rounded-lg">

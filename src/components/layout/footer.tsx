@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { ChevronDown, Mail } from 'lucide-react'
 import { FacebookIcon, InstagramIcon, TikTokIcon } from '@/components/icons'
@@ -14,7 +15,7 @@ interface FooterProps {
 function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="border-t border-[#E2E2E2]">
+    <div className="border-t border-[#DCE3F0]">
       <button
         type="button"
         aria-expanded={open}
@@ -97,7 +98,7 @@ export function Footer({ locale, t }: FooterProps) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={label}
-            className={`p-2 rounded-full hover:opacity-70 ${bordered ? 'border border-[#E2E2E2] p-2.5' : ''}`}
+            className={`p-2 rounded-full hover:opacity-70 ${bordered ? 'border border-[#DCE3F0] p-2.5' : ''}`}
           >
             <Icon className="h-5 w-5" />
           </a>
@@ -106,7 +107,7 @@ export function Footer({ locale, t }: FooterProps) {
             key={label}
             href={href}
             aria-label={label}
-            className={`p-2 rounded-full hover:opacity-70 ${bordered ? 'border border-[#E2E2E2] p-2.5' : ''}`}
+            className={`p-2 rounded-full hover:opacity-70 ${bordered ? 'border border-[#DCE3F0] p-2.5' : ''}`}
           >
             <Icon className="h-5 w-5" />
           </Link>
@@ -116,13 +117,22 @@ export function Footer({ locale, t }: FooterProps) {
   )
 
   return (
-    <footer className="bg-white text-[#131316] border-t border-[#E2E2E2]">
+    <footer className="bg-white text-[#0A1A33] border-t border-[#DCE3F0]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Desktop grid */}
         <div className="hidden lg:grid lg:grid-cols-4 lg:gap-8">
           <div className="space-y-4">
-            <h3 className="text-xl font-extrabold">{t('common.brandName')}</h3>
-            <p className="text-sm text-[#131316]/70">{t('hero.subtitle')}</p>
+            <Link href="/" aria-label="Unique Studios - Home" className="inline-block">
+              <Image
+                src="/logo-cropped.png"
+                alt={t('common.brandName')}
+                width={280}
+                height={136}
+                loading="lazy"
+                className="h-16 md:h-20 w-auto object-contain"
+              />
+            </Link>
+            <p className="text-sm text-[#0A1A33]/70">{t('hero.subtitle')}</p>
             {socialButtons(false)}
           </div>
           <div className="flex flex-col gap-3 text-sm">
@@ -136,7 +146,7 @@ export function Footer({ locale, t }: FooterProps) {
           <div className="flex flex-col gap-3 text-sm">
             <h3 className="font-bold text-base">{t('footer.help')}</h3>
             {helpLinks}
-            <p className="text-[#131316]/60 text-xs mt-2">
+            <p className="text-[#0A1A33]/60 text-xs mt-2">
               {t('checkout.cashOnDelivery')} — {t('checkout.cashOnDeliveryNote')}
             </p>
           </div>
@@ -145,8 +155,17 @@ export function Footer({ locale, t }: FooterProps) {
         {/* Mobile accordions */}
         <div className="lg:hidden">
           <div className="pb-6">
-            <h3 className="text-lg font-extrabold mb-1">{t('common.brandName')}</h3>
-            <p className="text-sm text-[#131316]/70">{t('hero.subtitle')}</p>
+            <Link href="/" aria-label="Unique Studios - Home" className="inline-block">
+              <Image
+                src="/logo-cropped.png"
+                alt={t('common.brandName')}
+                width={240}
+                height={116}
+                loading="lazy"
+                className="h-14 w-auto object-contain"
+              />
+            </Link>
+            <p className="text-sm text-[#0A1A33]/70 mt-2">{t('hero.subtitle')}</p>
           </div>
           <Accordion title={t('nav.shop')}>{shopLinks}</Accordion>
           <Accordion title={t('footer.about')}>{pagesLinks}</Accordion>
@@ -154,7 +173,7 @@ export function Footer({ locale, t }: FooterProps) {
           <div className="mt-6">{socialButtons(true)}</div>
         </div>
 
-        <div className="border-t border-[#E2E2E2] mt-8 pt-6 text-center text-xs text-[#131316]/60">
+        <div className="border-t border-[#DCE3F0] mt-8 pt-6 text-center text-xs text-[#0A1A33]/60">
           <p>
             © {year} {t('common.brandName')}. {t('footer.copyright')}
           </p>
