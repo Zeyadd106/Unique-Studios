@@ -17,6 +17,7 @@ export async function POST(request: Request) {
     }
 
     // Create order in the in-memory store (also decrements variant stock).
+    // The voucher is re-validated inside createOrder — client totals are ignored.
     const order = createOrder({
       customerName: customerData.customerName,
       phone: customerData.phone,
@@ -26,6 +27,7 @@ export async function POST(request: Request) {
       city: customerData.city,
       apartment: customerData.apartment,
       notes: customerData.notes,
+      voucherCode: customerData.voucherCode,
       items: items.map((item) => ({
         productId: item.productId,
         productName: item.productName,
@@ -41,6 +43,9 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error creating order:', error)
 
+    if (error instanceof Error && error.message.startsWith('Invalid voucher')) {
+      return NextResponse.json({ error: 'Invalid voucher code' }, { status: 400 })
+    }
     if (error instanceof ZodError) {
       return NextResponse.json(
         { error: 'Validation error', details: error.issues },

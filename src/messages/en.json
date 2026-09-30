@@ -109,6 +109,15 @@
     "orderSummary": "Order Summary",
     "backToCart": "Back to Cart"
   },
+  "voucher": {
+    "title": "Voucher",
+    "placeholder": "Voucher code (optional)",
+    "apply": "Apply",
+    "remove": "Remove",
+    "discount": "Voucher discount",
+    "invalid": "Invalid or expired voucher code",
+    "minSubtotal": "This voucher needs a minimum order of"
+  },
   "order": {
     "title": "Order",
     "orderNumber": "Order Number",
@@ -161,6 +170,7 @@
     "products": "Products",
     "categories": "Categories",
     "inventory": "Inventory",
+    "vouchers": "Vouchers",
     "customers": "Customers",
     "settings": "Settings",
     "newOrder": "New Order",
@@ -238,7 +248,18 @@
     "signIn": "Sign In",
     "signingIn": "Signing in...",
     "demoCredentials": "Demo credentials:",
-    "loginFailed": "Login failed"
+    "loginFailed": "Login failed",
+    "vouchersTitle": "Vouchers",
+    "manageVouchers": "Create discount codes customers apply at checkout",
+    "noVouchers": "No vouchers yet",
+    "addVoucher": "Add Voucher",
+    "voucherCode": "Code",
+    "voucherType": "Type",
+    "percent": "Percent %",
+    "fixedAmount": "Fixed (EGP)",
+    "voucherValue": "Value",
+    "minSubtotal": "Min. order (EGP, optional)",
+    "deleteVoucherConfirm": "Delete this voucher?"
   },
   "about": {
     "title": "About UNIQUE STUDIOS",

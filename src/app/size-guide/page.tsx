@@ -35,7 +35,7 @@ export default function SizeGuidePage() {
       ],
     },
     {
-      name: 'Round Neck',
+      name: 'Crewneck',
       note: 'Measured flat: length × width',
       headers: ['Size', 'Length (cm)', 'Width (cm)'],
       rows: [
@@ -60,7 +60,7 @@ export default function SizeGuidePage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center text-[#051948]">{t('sizeGuide.title')}</h1>
-            <p className="text-center text-sm text-[#0A1A33]/60 mb-8">Off Shoulder · Sweatpants · Round Neck — all measurements in cm, measured flat</p>
+            <p className="text-center text-sm text-[#0A1A33]/60 mb-8">Off Shoulder · Sweatpants · Crewneck — all measurements in cm, measured flat</p>
 
             <div className="space-y-8">
               {charts.map((chart) => (

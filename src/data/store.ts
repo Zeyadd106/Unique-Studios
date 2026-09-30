@@ -5,7 +5,7 @@
 // the server process). Edit the data below to change the catalog — no database
 // or migration needed.
 
-import type { Category, Order, OrderItem, Product, ProductVariant } from '@/types'
+import type { Category, Order, OrderItem, Product, ProductVariant, Voucher } from '@/types'
 import { generateOrderNumber } from '@/lib/utils'
 
 // ---------------------------------------------------------------------------
@@ -50,9 +50,19 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'cat-round-neck',
-    name: 'Round Neck',
+    name: 'Crewneck',
     slug: 'round-neck',
-    description: 'Classic round-neck sweatshirts for everyday wear',
+    description: 'Classic crewneck sweatshirts for everyday wear',
+    image: null,
+    active: true,
+    createdAt: now(),
+    updatedAt: now(),
+  },
+  {
+    id: 'cat-knitwear',
+    name: 'Knitwear',
+    slug: 'knitwear',
+    description: 'Premium knitwear with a soft, comfortable feel',
     image: null,
     active: true,
     createdAt: now(),
@@ -67,7 +77,7 @@ export const CATEGORIES: Category[] = [
 const COLORS = ['Black', 'White', 'Gray', 'Navy']
 
 // Sizes come from the official size charts (see size-guide page):
-// Off Shoulder → S/M/L, Sweatpants → M/L/XL, Round Neck → M/L/XL.
+// Off Shoulder → S/M/L, Sweatpants → M/L/XL, Crewneck → M/L/XL.
 
 function weightRangeForSize(size: string): { weightMin: number; weightMax: number } {
   switch (size) {
@@ -166,10 +176,10 @@ const PRODUCT_SEEDS: ProductSeed[] = [
   },
   {
     id: 'prod-round-neck',
-    name: 'Round Neck',
+    name: 'Crewneck',
     slug: 'round-neck',
     description:
-      'Classic round-neck sweatshirt with ribbed cuffs and hem. Size chart (length × width): M 67 × 63 cm, L 70 × 66 cm, XL 73 × 69 cm.',
+      'Classic crewneck sweatshirt with ribbed cuffs and hem. Size chart (length × width): M 67 × 63 cm, L 70 × 66 cm, XL 73 × 69 cm.',
     price: 750,
     salePrice: 600,
     categoryId: 'cat-round-neck',
@@ -181,6 +191,24 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     newArrival: true,
     sizes: ['M', 'L', 'XL'],
     image: '/images/products/round-neck.svg',
+  },
+  {
+    id: 'prod-knitwear',
+    name: 'Knitwear',
+    slug: 'knitwear',
+    description:
+      'Premium knitwear top with a soft feel and comfortable regular fit.',
+    price: 750,
+    salePrice: 600,
+    categoryId: 'cat-knitwear',
+    material: 'Soft Knit Fabric',
+    fit: 'Regular',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: true,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    image: '/images/products/knitwear.svg',
   },
 ]
 
@@ -210,6 +238,108 @@ function buildProduct(seed: ProductSeed, index: number): Product {
 export let PRODUCTS: Product[] = PRODUCT_SEEDS.map((seed, i) => buildProduct(seed, i))
 
 // ---------------------------------------------------------------------------
+// Vouchers (in-memory — discount codes customers apply at checkout.
+// Manage from Admin → Vouchers. Codes are case-insensitive.)
+// ---------------------------------------------------------------------------
+
+export let VOUCHERS: Voucher[] = [
+  {
+    id: 'voucher-welcome10',
+    code: 'WELCOME10',
+    type: 'percent',
+    value: 10,
+    minSubtotal: null,
+    active: true,
+    createdAt: now(),
+    updatedAt: now(),
+  },
+  {
+    id: 'voucher-unique50',
+    code: 'UNIQUE50',
+    type: 'fixed',
+    value: 50,
+    minSubtotal: 500,
+    active: true,
+    createdAt: now(),
+    updatedAt: now(),
+  },
+]
+
+export function normalizeVoucherCode(code: string): string {
+  return code.trim().toUpperCase()
+}
+
+export function getVoucherByCode(code: string): Voucher | undefined {
+  const normalized = normalizeVoucherCode(code)
+  if (!normalized) return undefined
+  return VOUCHERS.find((v) => v.code === normalized)
+}
+
+export interface VoucherValidation {
+  ok: boolean
+  voucher?: Voucher
+  discount?: number
+  error?: 'NOT_FOUND' | 'INACTIVE' | 'MIN_SUBTOTAL'
+  minSubtotal?: number
+}
+
+/** Validate a code against the current subtotal and compute the discount. */
+export function validateVoucher(code: string, subtotal: number): VoucherValidation {
+  const voucher = getVoucherByCode(code)
+  if (!voucher) return { ok: false, error: 'NOT_FOUND' }
+  if (!voucher.active) return { ok: false, error: 'INACTIVE' }
+  if (voucher.minSubtotal !== null && subtotal < voucher.minSubtotal) {
+    return { ok: false, error: 'MIN_SUBTOTAL', minSubtotal: voucher.minSubtotal }
+  }
+  const raw = voucher.type === 'percent' ? (subtotal * voucher.value) / 100 : voucher.value
+  // Discount can never exceed the subtotal (total floors at 0).
+  const discount = Math.min(Math.max(0, Math.floor(raw)), Math.max(0, subtotal))
+  return { ok: true, voucher, discount }
+}
+
+export interface AdminVoucherInput {
+  code: string
+  type: 'percent' | 'fixed'
+  value: number
+  minSubtotal?: number | null
+  active?: boolean
+}
+
+export function createVoucher(input: AdminVoucherInput): Voucher {
+  const voucher: Voucher = {
+    id: `voucher-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`,
+    code: normalizeVoucherCode(input.code),
+    type: input.type,
+    value: input.value,
+    minSubtotal: input.minSubtotal ?? null,
+    active: input.active ?? true,
+    createdAt: now(),
+    updatedAt: now(),
+  }
+  VOUCHERS.unshift(voucher)
+  return voucher
+}
+
+export function updateVoucher(id: string, data: Partial<AdminVoucherInput>): Voucher | undefined {
+  const voucher = VOUCHERS.find((v) => v.id === id)
+  if (!voucher) return undefined
+  if (data.code !== undefined) voucher.code = normalizeVoucherCode(data.code)
+  if (data.type !== undefined) voucher.type = data.type
+  if (data.value !== undefined) voucher.value = data.value
+  if (data.minSubtotal !== undefined) voucher.minSubtotal = data.minSubtotal
+  if (data.active !== undefined) voucher.active = data.active
+  voucher.updatedAt = new Date()
+  return voucher
+}
+
+export function deleteVoucher(id: string): boolean {
+  const index = VOUCHERS.findIndex((v) => v.id === id)
+  if (index === -1) return false
+  VOUCHERS.splice(index, 1)
+  return true
+}
+
+// ---------------------------------------------------------------------------
 // Orders (in-memory — created via checkout, visible in admin for this run)
 // ---------------------------------------------------------------------------
 
@@ -224,6 +354,7 @@ export interface CreateOrderInput {
   city: string
   apartment?: string
   notes?: string
+  voucherCode?: string
   items: {
     productId: string
     productName: string
@@ -237,6 +368,20 @@ export interface CreateOrderInput {
 
 export function createOrder(input: CreateOrderInput): Order {
   const subtotal = input.items.reduce((sum, item) => sum + item.totalPrice, 0)
+
+  // Voucher is re-validated server-side — the client total is never trusted.
+  let voucherCode: string | null = null
+  let discountAmount = 0
+  const rawCode = (input.voucherCode ?? '').trim()
+  if (rawCode) {
+    const validation = validateVoucher(rawCode, subtotal)
+    if (!validation.ok) {
+      throw new Error(`Invalid voucher: ${validation.error}`)
+    }
+    voucherCode = validation.voucher!.code
+    discountAmount = validation.discount ?? 0
+  }
+
   const createdAt = new Date()
   const orderId = `order-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`
 
@@ -267,7 +412,9 @@ export function createOrder(input: CreateOrderInput): Order {
     paymentMethod: 'CASH_ON_DELIVERY',
     status: 'NEW',
     subtotal,
-    total: subtotal,
+    voucherCode,
+    discountAmount,
+    total: subtotal - discountAmount,
     items,
     createdAt,
     updatedAt: createdAt,
@@ -306,6 +453,9 @@ export interface TrackingSnapshot {
   orderNumber: string
   status: string
   items: { productName: string; size: string; color: string; quantity: number }[]
+  subtotal: number
+  voucherCode: string | null
+  discountAmount: number
   total: number
   city: string
   paymentMethod: string
@@ -341,6 +491,9 @@ export function findOrderForTracking(orderNumber: string, phone: string): Tracki
       color: i.color,
       quantity: i.quantity,
     })),
+    subtotal: order.subtotal,
+    voucherCode: order.voucherCode,
+    discountAmount: order.discountAmount,
     total: order.total,
     city: order.city,
     paymentMethod: order.paymentMethod,
@@ -672,6 +825,21 @@ const REVIEW_SEEDS: ReviewSeed[] = [
     rating: 5,
     comment: 'Premium feel, zero shrinkage after first wash. Highly recommended.',
     daysAgo: 7,
+  },
+  {
+    productId: 'prod-knitwear',
+    author: 'Hana',
+    rating: 5,
+    comment: 'Soft knit and great fit. Size M is perfect.',
+    photos: ['/images/products/knitwear.svg'],
+    daysAgo: 1,
+  },
+  {
+    productId: 'prod-knitwear',
+    author: 'Youssef',
+    rating: 4,
+    comment: 'خامة ناعمة ودافية. المقاس مظبوط.',
+    daysAgo: 5,
   },
 ]
 

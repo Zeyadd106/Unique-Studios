@@ -9,6 +9,7 @@ import {
   Package,
   Tags,
   Box,
+  Ticket,
   Settings,
   LogOut,
   Menu,
@@ -35,6 +36,7 @@ export function AdminSidebar({ currentAdmin, locale, setLocale, t }: AdminSideba
     { href: '/admin/products', icon: Package, label: t('admin.products') },
     { href: '/admin/categories', icon: Tags, label: t('admin.categories') },
     { href: '/admin/inventory', icon: Box, label: t('admin.inventory') },
+    { href: '/admin/vouchers', icon: Ticket, label: t('admin.vouchers') },
     { href: '/admin/settings', icon: Settings, label: t('admin.settings') },
   ]
 

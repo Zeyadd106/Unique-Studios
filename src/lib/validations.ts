@@ -21,6 +21,7 @@ export const checkoutSchema = z.object({
   city: z.string().min(2, 'City must be at least 2 characters'),
   apartment: z.string().optional(),
   notes: z.string().optional(),
+  voucherCode: z.string().trim().max(32).optional(),
   items: z.array(orderItemSchema).optional(),
 })
 

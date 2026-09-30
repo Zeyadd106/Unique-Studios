@@ -52,6 +52,19 @@ export interface ProductVariant {
   updatedAt: Date
 }
 
+export interface Voucher {
+  id: string
+  code: string
+  type: 'percent' | 'fixed'
+  /** Percent (e.g. 10 = 10%) or fixed EGP amount. */
+  value: number
+  /** Minimum order subtotal (EGP) required. Null = no minimum. */
+  minSubtotal: number | null
+  active: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
 export interface Order {
   id: string
   orderNumber: string
@@ -63,17 +76,18 @@ export interface Order {
   city: string
   apartment: string | null
   notes: string | null
-  paymentMethod: string
-  status: string
-  subtotal: number
-  total: number
+    paymentMethod: string
+    status: string
+    subtotal: number
+    voucherCode: string | null
+    discountAmount: number
+    total: number
   items: OrderItem[]
   createdAt: Date
   updatedAt: Date
 }
 
-export interface OrderItem {
-  id: string
+export interface OrderItem {  id: string
   orderId: string
   productId: string
   productName: string

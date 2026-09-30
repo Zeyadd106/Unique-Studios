@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+  <rect width="600" height="800" fill="#EEF2F9"/>
+  <g fill="none" stroke="#051948" stroke-width="3" opacity="0.9">
+    <path d="M230 310 h140 v190 h-140 z"/>
+    <path d="M230 340 l-55 45 35 28 20 -16z"/>
+    <path d="M370 340 l55 45 -35 28 -20 -16z"/>
+    <path d="M270 310 c0 -22 60 -22 60 0"/>
+    <g stroke-width="1.5" opacity="0.7">
+      <path d="M245 470 v22 M260 470 v22 M275 470 v22 M290 470 v22 M305 470 v22 M320 470 v22 M335 470 v22 M350 470 v22"/>
+      <path d="M182 368 l10 8 M192 376 l10 8 M408 368 l-10 8 M398 376 l-10 8"/>
+    </g>
+  </g>
+  <text x="300" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#051948">Knitwear</text>
+  <text x="300" y="640" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="6" fill="#051948" opacity="0.6">UNIQUE STUDIOS</text>
+</svg>

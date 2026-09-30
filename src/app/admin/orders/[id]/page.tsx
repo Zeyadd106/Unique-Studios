@@ -24,6 +24,8 @@ interface Order {
   paymentMethod: string
   status: string
   subtotal: number
+  voucherCode: string | null
+  discountAmount: number
   total: number
   createdAt: string
   items: {
@@ -167,6 +169,15 @@ export default function AdminOrderDetailPage() {
                     <span className="text-gray-600">{t('cart.subtotal')}</span>
                     <span className="font-medium">EGP {order.subtotal.toLocaleString()}</span>
                   </div>
+                  {(order.discountAmount ?? 0) > 0 && (
+                    <div className="flex items-center justify-between text-green-700">
+                      <span>
+                        {t('voucher.discount')}
+                        {order.voucherCode ? ` (${order.voucherCode})` : ''}
+                      </span>
+                      <span className="font-medium">−EGP {(order.discountAmount ?? 0).toLocaleString()}</span>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">{t('cart.total')}</span>
                     <span className="font-bold text-lg">EGP {order.total.toLocaleString()}</span>

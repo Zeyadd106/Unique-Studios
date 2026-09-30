@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
@@ -25,6 +25,55 @@ export default function CheckoutPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [voucherInput, setVoucherInput] = useState('')
+  const [appliedVoucher, setAppliedVoucher] = useState<{ code: string; discount: number } | null>(null)
+  const [voucherError, setVoucherError] = useState('')
+  const [isApplyingVoucher, setIsApplyingVoucher] = useState(false)
+
+  // A voucher discount depends on the subtotal — clear it when the cart changes.
+  useEffect(() => {
+    setAppliedVoucher(null)
+    setVoucherError('')
+  }, [cartTotal])
+
+  const discount = appliedVoucher?.discount ?? 0
+  const orderTotal = Math.max(0, cartTotal - discount)
+
+  const formatEGP = (amount: number) =>
+    new Intl.NumberFormat(locale === 'ar' ? 'ar-EG' : 'en-EG', {
+      style: 'currency',
+      currency: 'EGP',
+    }).format(amount)
+
+  const applyVoucher = async () => {
+    const code = voucherInput.trim()
+    if (!code || cartTotal <= 0) return
+    setIsApplyingVoucher(true)
+    setVoucherError('')
+    try {
+      const response = await fetch(
+        `/api/vouchers?code=${encodeURIComponent(code)}&subtotal=${cartTotal}`
+      )
+      const data = await response.json()
+      if (!data.ok) {
+        if (data.error === 'MIN_SUBTOTAL') {
+          setVoucherError(
+            `${t('voucher.minSubtotal')}: ${formatEGP(data.minSubtotal ?? 0)}`
+          )
+        } else {
+          setVoucherError(t('voucher.invalid'))
+        }
+        setAppliedVoucher(null)
+        return
+      }
+      setAppliedVoucher({ code: data.code, discount: data.discount })
+      setVoucherInput('')
+    } catch {
+      setVoucherError(t('voucher.invalid'))
+    } finally {
+      setIsApplyingVoucher(false)
+    }
+  }
 
   const {
     register,
@@ -51,6 +100,7 @@ export default function CheckoutPage() {
         },
         body: JSON.stringify({
           ...data,
+          voucherCode: appliedVoucher?.code,
           items: cart,
         }),
       })
@@ -289,24 +339,60 @@ export default function CheckoutPage() {
                     ))}
                   </div>
 
+                  {/* Voucher */}
+                  <div className="border-t border-gray-200 pt-4">
+                    {appliedVoucher ? (
+                      <div className="flex items-center justify-between rounded-lg bg-green-50 border border-green-200 px-3 py-2">
+                        <span className="text-sm font-bold text-green-800">
+                          {appliedVoucher.code} — −{formatEGP(appliedVoucher.discount)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setAppliedVoucher(null)}
+                          className="text-xs font-semibold text-green-700 hover:opacity-70"
+                        >
+                          {t('voucher.remove')}
+                        </button>
+                      </div>
+                    ) : (
+                      <div>
+                        <div className="flex gap-2">
+                          <Input
+                            value={voucherInput}
+                            onChange={(e) => setVoucherInput(e.target.value)}
+                            placeholder={t('voucher.placeholder')}
+                            aria-label={t('voucher.title')}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={applyVoucher}
+                            disabled={isApplyingVoucher || !voucherInput.trim()}
+                          >
+                            {t('voucher.apply')}
+                          </Button>
+                        </div>
+                        {voucherError && (
+                          <p className="mt-1 text-xs font-semibold text-red-600">{voucherError}</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
                   <div className="border-t border-gray-200 pt-4 space-y-2">
                     <div className="flex justify-between">
                       <span className="text-gray-600">{t('cart.subtotal')}</span>
-                      <span className="font-semibold">
-                        {new Intl.NumberFormat(locale === 'ar' ? 'ar-EG' : 'en-EG', {
-                          style: 'currency',
-                          currency: 'EGP',
-                        }).format(cartTotal)}
-                      </span>
+                      <span className="font-semibold">{formatEGP(cartTotal)}</span>
                     </div>
+                    {appliedVoucher && (
+                      <div className="flex justify-between text-green-700">
+                        <span>{t('voucher.discount')}</span>
+                        <span className="font-semibold">−{formatEGP(discount)}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between text-lg">
                       <span className="font-semibold">{t('cart.total')}</span>
-                      <span className="font-bold">
-                        {new Intl.NumberFormat(locale === 'ar' ? 'ar-EG' : 'en-EG', {
-                          style: 'currency',
-                          currency: 'EGP',
-                        }).format(cartTotal)}
-                      </span>
+                      <span className="font-bold">{formatEGP(orderTotal)}</span>
                     </div>
                   </div>
 

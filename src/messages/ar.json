@@ -109,6 +109,15 @@
     "orderSummary": "ملخص الطلب",
     "backToCart": "العودة إلى السلة"
   },
+  "voucher": {
+    "title": "قسيمة",
+    "placeholder": "كود الخصم (اختياري)",
+    "apply": "تطبيق",
+    "remove": "إزالة",
+    "discount": "خصم القسيمة",
+    "invalid": "كود القسيمة غير صالح أو منتهي",
+    "minSubtotal": "هذه القسيمة تتطلب حد أدنى للطلب"
+  },
   "order": {
     "title": "الطلب",
     "orderNumber": "رقم الطلب",
@@ -161,6 +170,7 @@
     "products": "المنتجات",
     "categories": "الفئات",
     "inventory": "المخزون",
+    "vouchers": "القسائم",
     "customers": "العملاء",
     "settings": "الإعدادات",
     "newOrder": "طلب جديد",
@@ -238,7 +248,18 @@
     "signIn": "تسجيل الدخول",
     "signingIn": "جاري تسجيل الدخول...",
     "demoCredentials": "بيانات الدخول التجريبية:",
-    "loginFailed": "فشل تسجيل الدخول"
+    "loginFailed": "فشل تسجيل الدخول",
+    "vouchersTitle": "القسائم",
+    "manageVouchers": "أنشئ أكواد خصم يستخدمها العملاء عند إتمام الطلب",
+    "noVouchers": "لا توجد قسائم بعد",
+    "addVoucher": "إضافة قسيمة",
+    "voucherCode": "الكود",
+    "voucherType": "النوع",
+    "percent": "نسبة %",
+    "fixedAmount": "مبلغ ثابت (جنيه)",
+    "voucherValue": "القيمة",
+    "minSubtotal": "الحد الأدنى للطلب (جنيه، اختياري)",
+    "deleteVoucherConfirm": "حذف هذه القسيمة؟"
   },
   "about": {
     "title": "عن يونيك ستوديوز",

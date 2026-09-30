@@ -25,6 +25,9 @@ interface TrackedOrder {
   orderNumber: string
   status: string
   items: TrackedItem[]
+  subtotal: number
+  voucherCode: string | null
+  discountAmount: number
   total: number
   city: string
   paymentMethod: string
@@ -219,6 +222,12 @@ function TrackContent() {
                     <span className="font-bold">{t('track.total')}</span>
                     <span className="font-extrabold">EGP {order.total.toLocaleString()}</span>
                   </div>
+                  {order.discountAmount > 0 && (
+                    <p className="mt-1 text-xs font-semibold text-green-700">
+                      {t('voucher.discount')}: −EGP {order.discountAmount.toLocaleString()}
+                      {order.voucherCode ? ` (${order.voucherCode})` : ''}
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
