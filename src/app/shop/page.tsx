@@ -172,7 +172,7 @@ function ShopContent() {
                   <h3 className="font-semibold">{t('common.filter')}</h3>
                   <button
                     onClick={clearFilters}
-                    className="text-sm text-gray-600 hover:text-[#051948]"
+                    className="text-sm text-gray-600 hover:text-[#111111]"
                   >
                     Clear
                   </button>
@@ -219,8 +219,8 @@ function ShopContent() {
                         onClick={() => setSelectedSize(selectedSize === size ? '' : size)}
                         className={`px-3 py-1 rounded border-2 ${
                           selectedSize === size
-                            ? 'border-[#051948] bg-[#051948] text-white'
-                            : 'border-gray-300 hover:border-[#051948]'
+                            ? 'border-[#111111] bg-[#111111] text-white'
+                            : 'border-gray-300 hover:border-[#111111]'
                         }`}
                       >
                         {size}
@@ -239,8 +239,8 @@ function ShopContent() {
                         onClick={() => setSelectedColor(selectedColor === color ? '' : color)}
                         className={`px-3 py-1 rounded border-2 ${
                           selectedColor === color
-                            ? 'border-[#051948] bg-[#051948] text-white'
-                            : 'border-gray-300 hover:border-[#051948]'
+                            ? 'border-[#111111] bg-[#111111] text-white'
+                            : 'border-gray-300 hover:border-[#111111]'
                         }`}
                       >
                         {color}

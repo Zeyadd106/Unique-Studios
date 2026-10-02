@@ -15,7 +15,7 @@ interface FooterProps {
 function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="border-t border-[#DCE3F0]">
+    <div className="border-t border-[#E5E5E5]">
       <button
         type="button"
         aria-expanded={open}
@@ -98,7 +98,7 @@ export function Footer({ locale, t }: FooterProps) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={label}
-            className={`p-2 rounded-full hover:opacity-70 ${bordered ? 'border border-[#DCE3F0] p-2.5' : ''}`}
+            className={`p-2 rounded-full hover:opacity-70 ${bordered ? 'border border-[#E5E5E5] p-2.5' : ''}`}
           >
             <Icon className="h-5 w-5" />
           </a>
@@ -107,7 +107,7 @@ export function Footer({ locale, t }: FooterProps) {
             key={label}
             href={href}
             aria-label={label}
-            className={`p-2 rounded-full hover:opacity-70 ${bordered ? 'border border-[#DCE3F0] p-2.5' : ''}`}
+            className={`p-2 rounded-full hover:opacity-70 ${bordered ? 'border border-[#E5E5E5] p-2.5' : ''}`}
           >
             <Icon className="h-5 w-5" />
           </Link>
@@ -117,22 +117,22 @@ export function Footer({ locale, t }: FooterProps) {
   )
 
   return (
-    <footer className="bg-white text-[#0A1A33] border-t border-[#DCE3F0]">
+    <footer className="bg-white text-[#111111] border-t border-[#E5E5E5]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Desktop grid */}
         <div className="hidden lg:grid lg:grid-cols-4 lg:gap-8">
           <div className="space-y-4">
             <Link href="/" aria-label="Unique Studios - Home" className="inline-block">
               <Image
-                src="/logo-cropped.png"
+                src="/logo-light.png"
                 alt={t('common.brandName')}
-                width={280}
-                height={136}
+                width={290}
+                height={100}
                 loading="lazy"
                 className="h-16 md:h-20 w-auto object-contain"
               />
             </Link>
-            <p className="text-sm text-[#0A1A33]/70">{t('hero.subtitle')}</p>
+            <p className="text-sm text-[#111111]/70">{t('hero.subtitle')}</p>
             {socialButtons(false)}
           </div>
           <div className="flex flex-col gap-3 text-sm">
@@ -146,7 +146,7 @@ export function Footer({ locale, t }: FooterProps) {
           <div className="flex flex-col gap-3 text-sm">
             <h3 className="font-bold text-base">{t('footer.help')}</h3>
             {helpLinks}
-            <p className="text-[#0A1A33]/60 text-xs mt-2">
+            <p className="text-[#111111]/60 text-xs mt-2">
               {t('checkout.cashOnDelivery')} — {t('checkout.cashOnDeliveryNote')}
             </p>
           </div>
@@ -157,15 +157,15 @@ export function Footer({ locale, t }: FooterProps) {
           <div className="pb-6">
             <Link href="/" aria-label="Unique Studios - Home" className="inline-block">
               <Image
-                src="/logo-cropped.png"
+                src="/logo-light.png"
                 alt={t('common.brandName')}
-                width={240}
-                height={116}
+                width={250}
+                height={86}
                 loading="lazy"
                 className="h-14 w-auto object-contain"
               />
             </Link>
-            <p className="text-sm text-[#0A1A33]/70 mt-2">{t('hero.subtitle')}</p>
+            <p className="text-sm text-[#111111]/70 mt-2">{t('hero.subtitle')}</p>
           </div>
           <Accordion title={t('nav.shop')}>{shopLinks}</Accordion>
           <Accordion title={t('footer.about')}>{pagesLinks}</Accordion>
@@ -173,7 +173,7 @@ export function Footer({ locale, t }: FooterProps) {
           <div className="mt-6">{socialButtons(true)}</div>
         </div>
 
-        <div className="border-t border-[#DCE3F0] mt-8 pt-6 text-center text-xs text-[#0A1A33]/60">
+        <div className="border-t border-[#E5E5E5] mt-8 pt-6 text-center text-xs text-[#111111]/60">
           <p>
             © {year} {t('common.brandName')}. {t('footer.copyright')}
           </p>

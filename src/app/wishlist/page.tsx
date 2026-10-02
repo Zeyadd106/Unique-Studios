@@ -153,7 +153,7 @@ function WishlistItem({
   if (!product) return null
 
   return (
-    <div className="bg-white rounded-lg border-2 border-gray-200 overflow-hidden hover:border-[#051948] transition-colors">
+    <div className="bg-white rounded-lg border-2 border-gray-200 overflow-hidden hover:border-[#111111] transition-colors">
       <div className="relative aspect-square bg-gray-100">
         {product.images[0] ? (
           <img

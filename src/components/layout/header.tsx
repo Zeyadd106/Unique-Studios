@@ -31,11 +31,11 @@ export function Header({ locale, setLocale, cartCount, wishlistCount, t }: Heade
   return (
     <>
       {/* Announcement bar */}
-      <div className="bg-[#051948] text-white text-center text-[11px] md:text-xs font-semibold px-4 py-2">
+      <div className="bg-[#111111] text-white text-center text-[11px] md:text-xs font-semibold px-4 py-2">
         {t('common.announcement')}
       </div>
-      <div className="bg-white sticky top-0 w-full z-30 border-b border-[#DCE3F0] vg-header-shadow">
-      <header className="relative bg-white text-[#0A1A33] transition-all duration-300 py-2 md:py-3">
+      <div className="bg-white sticky top-0 w-full z-30 border-b border-[#E5E5E5] vg-header-shadow">
+      <header className="relative bg-white text-[#111111] transition-all duration-300 py-2 md:py-3">
         <nav aria-label="Top" className="bg-white w-full max-w-7xl mx-auto px-4 lg:px-8">
           <div className="flex items-center">
             {/* Start: mobile menu */}
@@ -63,10 +63,10 @@ export function Header({ locale, setLocale, cartCount, wishlistCount, t }: Heade
             <div className="flex flex-1 justify-center items-center">
               <Link href="/" aria-label="Unique Studios - Home" className="shrink-0">
                 <Image
-                  src="/logo-cropped.png"
+                  src="/logo-light.png"
                   alt={t('common.brandName')}
-                  width={320}
-                  height={155}
+                  width={420}
+                  height={145}
                   priority
                   className="h-16 md:h-20 lg:h-24 w-auto object-contain"
                 />
@@ -96,7 +96,7 @@ export function Header({ locale, setLocale, cartCount, wishlistCount, t }: Heade
               >
                 <Heart className="w-6 h-6" />
                 {wishlistCount > 0 && (
-                  <span className="absolute top-0 end-0 h-4 min-w-4 px-0.5 rounded-full bg-[#051948] text-white text-[10px] font-bold flex items-center justify-center">
+                  <span className="absolute top-0 end-0 h-4 min-w-4 px-0.5 rounded-full bg-[#111111] text-white text-[10px] font-bold flex items-center justify-center">
                     {wishlistCount}
                   </span>
                 )}
@@ -108,7 +108,7 @@ export function Header({ locale, setLocale, cartCount, wishlistCount, t }: Heade
               >
                 <ShoppingBag className="w-6 h-6" />
                 {cartCount > 0 && (
-                  <span className="absolute top-0 end-0 h-4 min-w-4 px-0.5 rounded-full bg-[#051948] text-white text-[10px] font-bold flex items-center justify-center">
+                  <span className="absolute top-0 end-0 h-4 min-w-4 px-0.5 rounded-full bg-[#111111] text-white text-[10px] font-bold flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
@@ -124,7 +124,7 @@ export function Header({ locale, setLocale, cartCount, wishlistCount, t }: Heade
                   key={item.href}
                   href={item.href}
                   className={`text-sm font-semibold transition-opacity hover:opacity-70 ${
-                    pathname === item.href ? 'text-[#051948] underline underline-offset-8' : 'text-[#0A1A33]'
+                    pathname === item.href ? 'text-[#111111] underline underline-offset-8' : 'text-[#111111]'
                   }`}
                 >
                   {item.label}
@@ -141,7 +141,7 @@ export function Header({ locale, setLocale, cartCount, wishlistCount, t }: Heade
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden border-t border-[#DCE3F0] bg-white overflow-hidden"
+              className="lg:hidden border-t border-[#E5E5E5] bg-white overflow-hidden"
             >
               <nav className="px-4 py-4">
                 <div className="flex flex-col">
@@ -151,7 +151,7 @@ export function Header({ locale, setLocale, cartCount, wishlistCount, t }: Heade
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
                       className={`text-sm font-semibold py-3 border-b border-[#F1F1F1] last:border-0 ${
-                        pathname === item.href ? 'text-[#051948]' : 'text-[#0A1A33]'
+                        pathname === item.href ? 'text-[#111111]' : 'text-[#111111]'
                       }`}
                     >
                       {item.label}

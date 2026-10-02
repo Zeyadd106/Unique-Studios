@@ -58,19 +58,19 @@ export function AdminSidebar({ currentAdmin, locale, setLocale, t }: AdminSideba
       {/* Sidebar — anchored to the inline-start side so it flips in RTL */}
       <aside
         className={`
-        fixed start-0 top-0 h-full w-64 bg-[#030F2E] text-white p-6 z-40 flex flex-col
+        fixed start-0 top-0 h-full w-64 bg-[#000000] text-white p-6 z-40 flex flex-col
         transform transition-transform duration-300 ease-in-out
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full rtl:translate-x-full'}
         lg:translate-x-0 rtl:lg:translate-x-0
       `}
       >
         <div className="mb-8">
-          <Link href="/" aria-label="Unique Studios - Home" className="inline-block rounded-lg bg-white p-2">
+          <Link href="/" aria-label="Unique Studios - Home" className="inline-block">
             <Image
-              src="/logo-cropped.png"
+              src="/logo-dark.png"
               alt={t('common.brandName')}
-              width={240}
-              height={116}
+              width={290}
+              height={100}
               className="h-14 w-auto object-contain"
             />
           </Link>
@@ -88,7 +88,7 @@ export function AdminSidebar({ currentAdmin, locale, setLocale, t }: AdminSideba
                 onClick={() => setIsMobileOpen(false)}
                 className={`
                   flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
-                  ${isActive ? 'bg-white text-[#051948]' : 'hover:bg-white/10'}
+                  ${isActive ? 'bg-white text-[#111111]' : 'hover:bg-white/10'}
                 `}
               >
                 <Icon className="h-5 w-5" />
@@ -125,7 +125,7 @@ export function AdminSidebar({ currentAdmin, locale, setLocale, t }: AdminSideba
       {/* Mobile overlay */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-[#030F2E] bg-opacity-50 z-30 lg:hidden"
+          className="fixed inset-0 bg-[#000000] bg-opacity-50 z-30 lg:hidden"
           onClick={() => setIsMobileOpen(false)}
         />
       )}

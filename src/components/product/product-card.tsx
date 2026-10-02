@@ -46,12 +46,12 @@ export function ProductCard({
 
         <div className="absolute top-2 start-2 flex flex-col gap-1.5">
           {product.newArrival && (
-            <span className="rounded-full bg-[#051948] px-2.5 py-1 text-[11px] font-bold text-white">
+            <span className="rounded-full bg-[#111111] px-2.5 py-1 text-[11px] font-bold text-white">
               {newLabel}
             </span>
           )}
           {product.salePrice && (
-            <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-[#051948] border border-[#DCE3F0]">
+            <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-[#111111] border border-[#E5E5E5]">
               {saleLabel}
             </span>
           )}
@@ -64,7 +64,7 @@ export function ProductCard({
             onClick={() => onToggleWishlist(product.id)}
             className="absolute bottom-2 end-2 p-2 rounded-full bg-white shadow-md transition-opacity md:opacity-0 md:group-hover:opacity-100 hover:opacity-80"
           >
-            <Heart className={`h-4 w-4 ${wished ? 'fill-[#051948] text-[#051948]' : ''}`} />
+            <Heart className={`h-4 w-4 ${wished ? 'fill-[#111111] text-[#111111]' : ''}`} />
           </button>
         )}
       </div>
@@ -73,12 +73,12 @@ export function ProductCard({
         <Link href={`/product/${product.slug}`} className="hover:opacity-70 transition-opacity">
           <h3 className="text-sm font-semibold leading-snug line-clamp-1">{product.name}</h3>
         </Link>
-        <p className="mt-0.5 text-xs text-[#0A1A33]/60 line-clamp-1">{product.category.name}</p>
+        <p className="mt-0.5 text-xs text-[#111111]/60 line-clamp-1">{product.category.name}</p>
         <div className="mt-1 flex items-center gap-2">
           {product.salePrice ? (
             <>
               <span className="text-sm font-bold">{formatPrice(product.salePrice, locale)}</span>
-              <span className="text-xs text-[#0A1A33]/50 line-through">
+              <span className="text-xs text-[#111111]/50 line-through">
                 {formatPrice(product.price, locale)}
               </span>
             </>

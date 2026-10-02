@@ -1,34 +1,34 @@
 @import "tailwindcss";
 
-/* Unique Studios brand — deep navy sampled from logo (#051948):
-   primary navy surfaces, white pages, mist-tinted sections. */
+/* Unique Studios brand — monochrome to match the black/white logo:
+   primary black surfaces, white pages, gray-tinted sections. */
 :root {
   --background: #ffffff;
-  --foreground: #0a1a33;
-  --color-primary: 5, 25, 72;
+  --foreground: #111111;
+  --color-primary: 0, 0, 0;
   --color-a11y: 255, 255, 255;
   --border-soft: #e2e2e2;
-  --surface-muted: #eef2f9;
-  --brand: #051948;
-  --brand-deep: #030f2e;
-  --brand-hover: #0a2a63;
-  --brand-ink: #0a1a33;
-  --brand-mist: #eef2f9;
-  --brand-line: #dce3f0;
+  --surface-muted: #f5f5f5;
+  --brand: #111111;
+  --brand-deep: #000000;
+  --brand-hover: #2b2b2b;
+  --brand-ink: #111111;
+  --brand-mist: #f5f5f5;
+  --brand-line: #e5e5e5;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-ink: #0a1a33;
+  --color-ink: #111111;
   --color-line: var(--border-soft);
   --color-muted-surface: var(--surface-muted);
-  --color-brand: #051948;
-  --color-brand-deep: #030f2e;
-  --color-brand-hover: #0a2a63;
-  --color-brand-ink: #0a1a33;
-  --color-brand-mist: #eef2f9;
-  --color-brand-line: #dce3f0;
+  --color-brand: #111111;
+  --color-brand-deep: #000000;
+  --color-brand-hover: #2b2b2b;
+  --color-brand-ink: #111111;
+  --color-brand-mist: #f5f5f5;
+  --color-brand-line: #e5e5e5;
   --font-sans: var(--font-cairo);
   --font-arabic: var(--font-cairo);
 }
@@ -90,9 +90,9 @@ dt {
   transform: scale(1.03);
 }
 
-/* Sticky white header shadow — navy tint to match logo */
+/* Sticky white header shadow — neutral tint to match monochrome logo */
 .vg-header-shadow {
-  box-shadow: 0 2px 4px 0 rgb(5 25 72 / 10%);
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 8%);
 }
 
 /* WhatsApp float: soft expanding rings */

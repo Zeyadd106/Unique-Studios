@@ -59,15 +59,15 @@ export default function SizeGuidePage() {
       <main className="flex-1 py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center text-[#051948]">{t('sizeGuide.title')}</h1>
-            <p className="text-center text-sm text-[#0A1A33]/60 mb-8">Off Shoulder · Sweatpants · Crewneck — all measurements in cm, measured flat</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center text-[#111111]">{t('sizeGuide.title')}</h1>
+            <p className="text-center text-sm text-[#111111]/60 mb-8">Off Shoulder · Sweatpants · Crewneck — all measurements in cm, measured flat</p>
 
             <div className="space-y-8">
               {charts.map((chart) => (
-                <div key={chart.name} className="bg-white rounded-lg border-2 border-[#DCE3F0] overflow-hidden">
-                  <div className="px-6 py-4 border-b border-[#DCE3F0] bg-[#EEF2F9]">
-                    <h2 className="text-xl font-bold text-[#051948]">{chart.name}</h2>
-                    <p className="text-xs text-[#0A1A33]/60 mt-0.5">{chart.note}</p>
+                <div key={chart.name} className="bg-white rounded-lg border-2 border-[#E5E5E5] overflow-hidden">
+                  <div className="px-6 py-4 border-b border-[#E5E5E5] bg-[#F5F5F5]">
+                    <h2 className="text-xl font-bold text-[#111111]">{chart.name}</h2>
+                    <p className="text-xs text-[#111111]/60 mt-0.5">{chart.note}</p>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full">

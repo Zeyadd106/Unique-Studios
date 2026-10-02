@@ -82,7 +82,7 @@ export default function ContactPage() {
                         <p className="font-medium">{t('contact.phone')}</p>
                         <a
                           href={`tel:${contactInfo.phone.replace(/\s/g, '')}`}
-                          className="text-gray-600 hover:text-[#051948]"
+                          className="text-gray-600 hover:text-[#111111]"
                           dir="ltr"
                         >
                           {contactInfo.phone}
@@ -96,7 +96,7 @@ export default function ContactPage() {
                         <p className="font-medium">{t('contact.email')}</p>
                         <a
                           href={`mailto:${contactInfo.email}`}
-                          className="text-gray-600 hover:text-[#051948]"
+                          className="text-gray-600 hover:text-[#111111]"
                         >
                           {contactInfo.email}
                         </a>
@@ -122,7 +122,7 @@ export default function ContactPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={label}
-                          className="p-2.5 rounded-full border border-[#E2E2E2] text-gray-600 hover:text-[#051948] hover:opacity-70 transition"
+                          className="p-2.5 rounded-full border border-[#E2E2E2] text-gray-600 hover:text-[#111111] hover:opacity-70 transition"
                         >
                           <Icon className="h-5 w-5" />
                         </a>

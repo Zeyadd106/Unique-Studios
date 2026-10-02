@@ -16,15 +16,15 @@ export const metadata: Metadata = {
   description:
     "Premium oversized streetwear for those who dare to stand out. Built Different. Worn Unique.",
   icons: {
-    icon: "/logo-cropped.png",
-    shortcut: "/logo-cropped.png",
-    apple: "/logo-cropped.png",
+    icon: "/logo-light.png",
+    shortcut: "/logo-light.png",
+    apple: "/logo-light.png",
   },
   openGraph: {
     title: "UNIQUE STUDIOS - Premium Streetwear",
     description:
       "Premium oversized streetwear for those who dare to stand out. Built Different. Worn Unique.",
-    images: ["/logo-cropped.png"],
+    images: ["/logo-light.png"],
   },
 };
 

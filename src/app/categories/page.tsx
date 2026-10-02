@@ -78,7 +78,7 @@ export default function CategoriesPage() {
                     href={`/shop?category=${category.slug}`}
                     className="group"
                   >
-                    <div className="bg-white rounded-lg border-2 border-gray-200 overflow-hidden hover:border-[#051948] transition-colors">
+                    <div className="bg-white rounded-lg border-2 border-gray-200 overflow-hidden hover:border-[#111111] transition-colors">
                       <div className="aspect-square bg-gray-100 relative">
                         {category.image ? (
                           <img

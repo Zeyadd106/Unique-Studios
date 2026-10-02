@@ -13,7 +13,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         <select
           ref={ref}
           className={cn(
-            'flex h-11 w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-2 text-base transition-colors focus-visible:outline-none focus-visible:border-[#051948] disabled:cursor-not-allowed disabled:opacity-50',
+            'flex h-11 w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-2 text-base transition-colors focus-visible:outline-none focus-visible:border-[#111111] disabled:cursor-not-allowed disabled:opacity-50',
             error && 'border-red-500 focus-visible:border-red-500',
             className
           )}

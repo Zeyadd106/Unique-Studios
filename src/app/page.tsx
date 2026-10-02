@@ -84,7 +84,7 @@ export default function HomePage() {
 
       <main className="flex-1">
         {/* Slim hero band */}
-        <section className="bg-gradient-to-b from-[#051948] to-[#030F2E] text-white">
+        <section className="bg-gradient-to-b from-[#111111] to-[#000000] text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14 text-center">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -97,7 +97,7 @@ export default function HomePage() {
               <p className="mt-3 text-sm md:text-lg text-white/70">{t('hero.subtitle')}</p>
               <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
                 <Link href="/shop">
-                  <Button size="lg" className="bg-white text-[#051948] hover:bg-white/85 w-full sm:w-auto">
+                  <Button size="lg" className="bg-white text-[#111111] hover:bg-white/85 w-full sm:w-auto">
                     {t('hero.cta')}
                   </Button>
                 </Link>
@@ -105,7 +105,7 @@ export default function HomePage() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-white/40 text-white hover:bg-white hover:text-[#051948] w-full sm:w-auto"
+                    className="border-white/40 text-white hover:bg-white hover:text-[#111111] w-full sm:w-auto"
                   >
                     {t('hero.secondaryCta')}
                   </Button>
@@ -181,10 +181,10 @@ export default function HomePage() {
         </section>
 
         {/* Brand strip */}
-        <section className="mt-8 md:mt-12 bg-[#EEF2F9] border-y border-[#DCE3F0]">
+        <section className="mt-8 md:mt-12 bg-[#F5F5F5] border-y border-[#E5E5E5]">
           <div className="max-w-3xl mx-auto px-4 py-10 md:py-14 text-center">
-            <h2 className="text-xl md:text-2xl font-extrabold text-[#051948]">{t('home.ourStory')}</h2>
-            <p className="mt-3 text-sm md:text-base text-[#0A1A33]/70 leading-relaxed">
+            <h2 className="text-xl md:text-2xl font-extrabold text-[#111111]">{t('home.ourStory')}</h2>
+            <p className="mt-3 text-sm md:text-base text-[#111111]/70 leading-relaxed">
               {t('home.ourStoryText')}
             </p>
           </div>
@@ -208,7 +208,7 @@ export default function HomePage() {
         )}
 
         {/* CTA band */}
-        <section className="bg-gradient-to-b from-[#051948] to-[#030F2E] text-white mt-4">
+        <section className="bg-gradient-to-b from-[#111111] to-[#000000] text-white mt-4">
           <div className="max-w-7xl mx-auto px-4 py-10 md:py-14 text-center">
             <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight">
               {t('hero.title')}
@@ -217,7 +217,7 @@ export default function HomePage() {
               {t('home.joinMovement')}
             </p>
             <Link href="/shop">
-              <Button size="lg" className="mt-6 bg-white text-[#051948] hover:bg-white/85">
+              <Button size="lg" className="mt-6 bg-white text-[#111111] hover:bg-white/85">
                 {t('hero.cta')}
               </Button>
             </Link>

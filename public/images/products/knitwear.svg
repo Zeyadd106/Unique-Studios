@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
-  <rect width="600" height="800" fill="#EEF2F9"/>
-  <g fill="none" stroke="#051948" stroke-width="3" opacity="0.9">
+  <rect width="600" height="800" fill="#F5F5F5"/>
+  <g fill="none" stroke="#111111" stroke-width="3" opacity="0.9">
     <path d="M230 310 h140 v190 h-140 z"/>
     <path d="M230 340 l-55 45 35 28 20 -16z"/>
     <path d="M370 340 l55 45 -35 28 -20 -16z"/>
@@ -10,6 +10,6 @@
       <path d="M182 368 l10 8 M192 376 l10 8 M408 368 l-10 8 M398 376 l-10 8"/>
     </g>
   </g>
-  <text x="300" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#051948">Knitwear</text>
-  <text x="300" y="640" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="6" fill="#051948" opacity="0.6">UNIQUE STUDIOS</text>
+  <text x="300" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#111111">Knitwear</text>
+  <text x="300" y="640" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" letter-spacing="6" fill="#111111" opacity="0.6">UNIQUE STUDIOS</text>
 </svg>
