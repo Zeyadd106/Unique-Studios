@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { Button } from '@/components/ui/button'
@@ -11,6 +12,7 @@ import { useTranslation } from '@/hooks/use-translation'
 import { useCart } from '@/hooks/use-cart'
 import { useWishlist } from '@/hooks/use-wishlist'
 import { motion } from 'framer-motion'
+import { Pause, Play } from 'lucide-react'
 import type { Product, Category } from '@/types'
 
 function SkeletonGrid({ count = 10 }: { count?: number }) {
@@ -24,6 +26,106 @@ function SkeletonGrid({ count = 10 }: { count?: number }) {
         </div>
       ))}
     </div>
+  )
+}
+
+// Fullscreen video hero (MZACO-style): autoplay muted loop, poster fallback,
+// play/pause toggle, outlined NEW ARRIVALS CTA. Drop your clip at
+// public/hero.mp4 and it plays automatically — no code change needed.
+function HeroVideo({
+  newArrivalsLabel,
+  learnMoreLabel,
+}: {
+  newArrivalsLabel: string
+  learnMoreLabel: string
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [playing, setPlaying] = useState(true)
+  const [hasVideo, setHasVideo] = useState(true)
+  const [hasPoster, setHasPoster] = useState(true)
+
+  const togglePlay = () => {
+    const video = videoRef.current
+    if (!video) return
+    if (video.paused) {
+      video.play().catch(() => {})
+      setPlaying(true)
+    } else {
+      video.pause()
+      setPlaying(false)
+    }
+  }
+
+  return (
+    <section className="relative h-[92svh] min-h-[540px] w-full overflow-hidden bg-black text-white">
+      {/* Poster fallback (also shows until the video can play) */}
+      {hasPoster && (
+        <Image
+          src="/hero-poster.jpg"
+          alt=""
+          fill
+          priority
+          onError={() => setHasPoster(false)}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      )}
+      {/* Hero clip — replace public/hero.mp4 with your own shoot */}
+      {hasVideo && (
+        <video
+          ref={videoRef}
+          src="/hero.mp4"
+          poster="/hero-poster.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          onError={() => setHasVideo(false)}
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      )}
+      {/* Legibility gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/10 to-black/60" />
+
+      {/* Centered content */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col items-center"
+        >
+          <button
+            type="button"
+            onClick={togglePlay}
+            aria-label={playing ? 'Pause video' : 'Play video'}
+            className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition hover:bg-black/60"
+          >
+            {playing ? <Pause className="h-7 w-7" /> : <Play className="ms-1 h-7 w-7" />}
+          </button>
+          <h1 className="sr-only">Unique Studios</h1>
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 items-center">
+            <Link href="/shop">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-white bg-transparent px-10 tracking-[0.2em] text-white hover:bg-white hover:text-black w-full sm:w-auto"
+              >
+                {newArrivalsLabel}
+              </Button>
+            </Link>
+            <Link
+              href="/about"
+              className="text-sm font-semibold text-white/80 underline underline-offset-8 hover:text-white"
+            >
+              {learnMoreLabel}
+            </Link>
+          </div>
+        </motion.div>
+      </div>
+    </section>
   )
 }
 
@@ -83,37 +185,10 @@ export default function HomePage() {
       />
 
       <main className="flex-1">
-        {/* Slim hero band */}
-        <section className="bg-gradient-to-b from-[#111111] to-[#000000] text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-                {t('hero.title')}
-              </h1>
-              <p className="mt-3 text-sm md:text-lg text-white/70">{t('hero.subtitle')}</p>
-              <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-                <Link href="/shop">
-                  <Button size="lg" className="bg-white text-[#111111] hover:bg-white/85 w-full sm:w-auto">
-                    {t('hero.cta')}
-                  </Button>
-                </Link>
-                <Link href="/about">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-white/40 text-white hover:bg-white hover:text-[#111111] w-full sm:w-auto"
-                  >
-                    {t('hero.secondaryCta')}
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+        <HeroVideo
+          newArrivalsLabel={t('hero.newArrivals')}
+          learnMoreLabel={t('hero.secondaryCta')}
+        />
 
         {/* Category circles */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">

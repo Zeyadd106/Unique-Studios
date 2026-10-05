@@ -4,13 +4,13 @@
 
 export const siteConfig = {
   // Social profile URLs
-  instagram: 'https://instagram.com/uniquestudios',
+  instagram: 'https://www.instagram.com/unique.studios.eg/',
   facebook: 'https://facebook.com/uniquestudios',
-  tiktok: 'https://tiktok.com/@uniquestudios',
+  tiktok: 'https://www.tiktok.com/@unique.studios.eg?lang=endios',
 
   // Contact info shown on the contact page
   phone: '+20 123 456 7890',
-  email: 'info@uniquestudios.com',
+  email: 'unique.studios.eg@gmail.com',
   address: {
     en: 'Cairo, Egypt',
     ar: 'القاهرة، مصر',
