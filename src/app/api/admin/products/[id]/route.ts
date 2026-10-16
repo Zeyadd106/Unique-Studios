@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
-import { deleteProduct, getProductById, updateProduct } from '@/data/store'
+import { PrismaClient } from '@prisma/client'
 
-export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+const prisma = new PrismaClient()
+
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getSession()
     if (!session) {
@@ -10,20 +15,67 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     }
 
     const { id } = await params
-    const product = getProductById(id)
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: {
+        category: true,
+        variants: {
+          include: {
+            images: {
+              orderBy: { sortOrder: 'asc' },
+            },
+          },
+        },
+      },
+    })
 
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    return NextResponse.json(product)
+    return NextResponse.json({
+      id: product.id,
+      name: product.name,
+      slug: product.slug,
+      description: product.description,
+      price: 0,
+      salePrice: null,
+      categoryId: product.categoryId,
+      material: null,
+      fit: null,
+      careInstructions: null,
+      featured: product.featured,
+      bestSeller: product.featured,
+      newArrival: product.featured,
+      active: product.available,
+      images: product.variants.flatMap((v) =>
+        v.images.map((img) => ({
+          id: img.id,
+          url: img.imageUrl,
+          cardUrl: img.imageUrl,
+          thumbUrl: img.imageUrl,
+          alt: img.alt,
+        }))
+      ),
+      variants: product.variants.map((v) => ({
+        id: v.id,
+        size: 'M',
+        color: v.colorName,
+        stock: 10,
+        weightMin: null,
+        weightMax: null,
+      })),
+    })
   } catch (error) {
     console.error('Error fetching product:', error)
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 })
   }
 }
 
-export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getSession()
     if (!session) {
@@ -45,27 +97,61 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       bestSeller,
       newArrival,
       active,
+      images,
+      variants,
     } = body
 
     const { id } = await params
-    const product = updateProduct(id, {
-      name,
-      slug,
-      description,
-      price: price !== undefined ? parseFloat(price) : undefined,
-      salePrice: salePrice ? parseFloat(salePrice) : null,
-      categoryId,
-      material,
-      fit,
-      careInstructions,
-      featured,
-      bestSeller,
-      newArrival,
-      active,
+
+    // Update product
+    const product = await prisma.product.update({
+      where: { id },
+      data: {
+        name,
+        slug,
+        description: description || null,
+        categoryId,
+        featured: featured || false,
+        available: active !== false,
+      },
     })
 
-    if (!product) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+    // Replace variants and images if provided
+    if (Array.isArray(variants)) {
+      // Delete existing images and variants
+      await prisma.productImage.deleteMany({
+        where: { variant: { productId: id } },
+      })
+      await prisma.productVariant.deleteMany({
+        where: { productId: id },
+      })
+
+      // Create new variants and images
+      for (const v of variants) {
+        const variant = await prisma.productVariant.create({
+          data: {
+            productId: id,
+            colorName: v.color,
+            colorCode: null,
+            primaryImage: v.images?.[0]?.url || null,
+            available: true,
+          },
+        })
+
+        if (Array.isArray(v.images)) {
+          for (const img of v.images) {
+            await prisma.productImage.create({
+              data: {
+                variantId: variant.id,
+                imageUrl: img.url,
+                alt: img.alt || name,
+                sortOrder: img.sortOrder ?? 0,
+                isPrimary: img.isPrimary ?? false,
+              },
+            })
+          }
+        }
+      }
     }
 
     return NextResponse.json(product)
@@ -75,7 +161,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getSession()
     if (!session) {
@@ -83,11 +172,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     }
 
     const { id } = await params
-    const ok = deleteProduct(id)
-
-    if (!ok) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
-    }
+    await prisma.product.delete({ where: { id } })
 
     return NextResponse.json({ success: true })
   } catch (error) {

@@ -29,6 +29,9 @@
   "nav": {
     "home": "الرئيسية",
     "shop": "المتجر",
+    "newArrivals": "وصل حديثاً",
+    "collections": "المجموعات",
+    "crewnecks": "البلوفرات",
     "categories": "الفئات",
     "about": "من نحن",
     "contact": "اتصل بنا",
@@ -37,6 +40,18 @@
     "login": "تسجيل الدخول",
     "logout": "تسجيل الخروج",
     "admin": "المسؤول"
+  },
+  "collection": {
+    "title": "المجموعة",
+    "sortBy": "ترتيب حسب",
+    "featured": "مميز",
+    "newest": "الأحدث",
+    "priceLow": "السعر: من الأقل للأعلى",
+    "priceHigh": "السعر: من الأعلى للأقل",
+    "piece": "قطعة",
+    "pieces": "قطع",
+    "inThisCollection": "في هذه المجموعة",
+    "noProducts": "لا توجد منتجات في هذه المجموعة."
   },
   "hero": {
     "title": "مختلفون. فريدون.",
@@ -49,6 +64,8 @@
     "newArrivals": "وصل حديثاً",
     "bestSellers": "الأكثر مبيعاً",
     "shopByCategory": "تسوق حسب الفئة",
+    "featuredCollections": "المجموعات المميزة",
+    "trendingNow": "رائج الآن",
     "ourStory": "قصتنا",
     "ourStoryText": "وُلدت يونيك ستوديوز من شغف بملابس الشارع التي تكسر الحدود. جريئة وواسعة ومختلفة بلا اعتذار — كل قطعة مصممة لمن يجرؤون على التميز.",
     "joinMovement": "انضم إلى الحركة. عبّر عن أسلوبك الفريد مع مجموعة ملابسنا الفاخرة واسعة المقاس."
@@ -70,6 +87,7 @@
     "sale": "خصم",
     "bestSeller": "الأكثر مبيعاً",
     "featured": "مميز",
+    "stockLeft": "بقي",
     "sizeGuide": "دليل المقاسات",
     "description": "الوصف",
     "details": "التفاصيل",
@@ -222,6 +240,11 @@
     "noProducts": "لا توجد منتجات بعد",
     "addProduct": "إضافة منتج",
     "deleteConfirm": "هل أنت متأكد من حذف هذا المنتج؟",
+    "productSaved": "تم حفظ المنتج.",
+    "productSaveFailed": "فشل حفظ المنتج",
+    "productImages": "صور المنتج",
+    "addImage": "إضافة صورة",
+    "productName": "اسم المنتج",
     "allCategories": "كل الفئات",
     "noCategories": "لا توجد فئات بعد",
     "addCategory": "إضافة فئة",

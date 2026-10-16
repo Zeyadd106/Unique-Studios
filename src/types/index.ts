@@ -34,9 +34,15 @@ export interface Category {
 export interface ProductImage {
   id: string
   productId: string
+  /** High-resolution image used for the product gallery / main view. */
   url: string
+  /** Smaller optimized image used in product cards. */
+  cardUrl?: string
+  /** Thumbnail used in gallery thumbnail strips. */
+  thumbUrl?: string
   alt: string | null
   sortOrder: number
+  isPrimary?: boolean
   createdAt: Date
 }
 

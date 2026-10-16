@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <rect width="800" height="1000" fill="#111827"/>
+  <rect x="50" y="50" width="700" height="900" fill="#1F2937" stroke="#374151" stroke-width="2"/>
+  <text x="400" y="500" text-anchor="middle" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="#4B5563">CHRONIC</text>
+  <text x="400" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#9CA3AF">Black</text>
+  <text x="400" y="940" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#4B5563" letter-spacing="4">UNIQUE STUDIOS</text>
+</svg>

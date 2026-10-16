@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
-import { PRODUCTS, createProduct } from '@/data/store'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export async function GET(request: Request) {
   try {
@@ -13,15 +15,54 @@ export async function GET(request: Request) {
     const categoryId = searchParams.get('categoryId')
     const active = searchParams.get('active')
 
-    let products = [...PRODUCTS]
-    if (categoryId) {
-      products = products.filter((p) => p.categoryId === categoryId)
-    }
-    if (active !== null) {
-      products = products.filter((p) => p.active === (active === 'true'))
-    }
+    const where: any = {}
+    if (categoryId) where.categoryId = categoryId
+    if (active !== null) where.available = active === 'true'
 
-    return NextResponse.json(products)
+    const products = await prisma.product.findMany({
+      where,
+      include: {
+        category: true,
+        variants: {
+          include: {
+            images: {
+              orderBy: { sortOrder: 'asc' },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    })
+
+    return NextResponse.json(
+      products.map((p) => ({
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        price: 0,
+        salePrice: null,
+        active: p.available,
+        featured: p.featured,
+        bestSeller: p.featured,
+        newArrival: p.featured,
+        category: { name: p.category.name },
+        images: p.variants.flatMap((v) =>
+          v.images.map((img) => ({
+            id: img.id,
+            url: img.imageUrl,
+            cardUrl: img.imageUrl,
+            thumbUrl: img.imageUrl,
+            alt: img.alt,
+          }))
+        ),
+        variants: p.variants.map((v) => ({
+          id: v.id,
+          size: 'M',
+          color: v.colorName,
+          stock: 10,
+        })),
+      }))
+    )
   } catch (error) {
     console.error('Error fetching products:', error)
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 })
@@ -54,34 +95,46 @@ export async function POST(request: Request) {
       variants,
     } = body
 
-    const product = createProduct({
-      name,
-      slug,
-      description,
-      price: parseFloat(price),
-      salePrice: salePrice ? parseFloat(salePrice) : null,
-      categoryId,
-      material,
-      fit,
-      careInstructions,
-      featured: featured || false,
-      bestSeller: bestSeller || false,
-      newArrival: newArrival || false,
-      active: active !== false,
-      images: (images ?? []).map((img: { url: string; alt?: string }) => ({
-        url: img.url,
-        alt: img.alt || name,
-      })),
-      variants: (variants ?? []).map(
-        (v: { size: string; color: string; stock: string | number; weightMin?: string; weightMax?: string }) => ({
-          size: v.size,
-          color: v.color,
-          stock: parseInt(String(v.stock)),
-          weightMin: v.weightMin ? parseFloat(String(v.weightMin)) : null,
-          weightMax: v.weightMax ? parseFloat(String(v.weightMax)) : null,
-        })
-      ),
+    // Create product
+    const product = await prisma.product.create({
+      data: {
+        name,
+        slug,
+        description: description || null,
+        categoryId,
+        featured: featured || false,
+        available: active !== false,
+      },
     })
+
+    // Create variants and images
+    if (Array.isArray(variants)) {
+      for (const v of variants) {
+        const variant = await prisma.productVariant.create({
+          data: {
+            productId: product.id,
+            colorName: v.color,
+            colorCode: null,
+            primaryImage: v.images?.[0]?.url || null,
+            available: true,
+          },
+        })
+
+        if (Array.isArray(v.images)) {
+          for (const img of v.images) {
+            await prisma.productImage.create({
+              data: {
+                variantId: variant.id,
+                imageUrl: img.url,
+                alt: img.alt || name,
+                sortOrder: img.sortOrder ?? 0,
+                isPrimary: img.isPrimary ?? false,
+              },
+            })
+          }
+        }
+      }
+    }
 
     return NextResponse.json(product)
   } catch (error) {

@@ -29,6 +29,9 @@
   "nav": {
     "home": "Home",
     "shop": "Shop",
+    "newArrivals": "New Arrivals",
+    "collections": "Collections",
+    "crewnecks": "Crewnecks",
     "categories": "Categories",
     "about": "About",
     "contact": "Contact",
@@ -37,6 +40,18 @@
     "login": "Login",
     "logout": "Logout",
     "admin": "Admin"
+  },
+  "collection": {
+    "title": "Collection",
+    "sortBy": "Sort By",
+    "featured": "Featured",
+    "newest": "Newest",
+    "priceLow": "Price: Low to High",
+    "priceHigh": "Price: High to Low",
+    "piece": "piece",
+    "pieces": "pieces",
+    "inThisCollection": "in this collection",
+    "noProducts": "No products available in this collection."
   },
   "hero": {
     "title": "Built Different. Worn Unique.",
@@ -49,6 +64,8 @@
     "newArrivals": "New Arrivals",
     "bestSellers": "Best Sellers",
     "shopByCategory": "Shop by Category",
+    "featuredCollections": "Featured Collections",
+    "trendingNow": "Trending Now",
     "ourStory": "Our Story",
     "ourStoryText": "UNIQUE STUDIOS was born from a passion for streetwear that breaks boundaries. Bold, oversized, and unapologetically unique — every piece is designed for those who dare to stand out.",
     "joinMovement": "Join the movement. Express your unique style with our premium oversized streetwear collection."
@@ -70,6 +87,7 @@
     "sale": "Sale",
     "bestSeller": "Best Seller",
     "featured": "Featured",
+    "stockLeft": "left",
     "sizeGuide": "Size Guide",
     "description": "Description",
     "details": "Details",
@@ -222,6 +240,11 @@
     "noProducts": "No products yet",
     "addProduct": "Add Product",
     "deleteConfirm": "Are you sure you want to delete this product?",
+    "productSaved": "Product saved.",
+    "productSaveFailed": "Failed to save product",
+    "productImages": "Product Images",
+    "addImage": "Add Image",
+    "productName": "Product Name",
     "allCategories": "All Categories",
     "noCategories": "No categories yet",
     "addCategory": "Add Category",

@@ -1,0 +1,84 @@
+// Prisma schema for UNIQUE STUDIOS
+// Product catalog with categories, products, color variants, and images.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  description String?
+  image     String?      // URL to category cover image
+  active    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  products  Product[]
+
+  @@index([slug])
+  @@index([active])
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  categoryId  String
+  price       Int      @default(0)      // Price in EGP
+  salePrice   Int?     // Sale price in EGP
+  featured    Boolean  @default(false)
+  available   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  variants    ProductVariant[]
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([featured])
+  @@index([available])
+}
+
+model ProductVariant {
+  id          String   @id @default(cuid())
+  productId   String
+  colorName   String
+  colorCode   String?      // Hex code e.g. "#000000"
+  primaryImage String?     // URL to primary image for this variant
+  available   Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  product     Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  images      ProductImage[]
+
+  @@index([productId])
+  @@index([colorName])
+  @@index([available])
+  @@unique([productId, colorName])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  variantId String
+  imageUrl  String
+  alt       String?
+  sortOrder Int      @default(0)
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@index([variantId])
+  @@index([sortOrder])
+  @@unique([variantId, imageUrl])
+}

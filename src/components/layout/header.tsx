@@ -23,7 +23,9 @@ export function Header({ locale, setLocale, cartCount, wishlistCount, t }: Heade
   const navItems = [
     { href: '/', label: t('nav.home') },
     { href: '/shop', label: t('nav.shop') },
-    { href: '/categories', label: t('nav.categories') },
+    { href: '/collections/crewnecks', label: t('nav.crewnecks') },
+    { href: '/shop?newArrivals=true', label: t('nav.newArrivals') },
+    { href: '/categories', label: t('nav.collections') },
     { href: '/about', label: t('nav.about') },
     { href: '/contact', label: t('nav.contact') },
   ]

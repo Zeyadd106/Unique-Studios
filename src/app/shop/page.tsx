@@ -46,6 +46,7 @@ function ShopContent() {
   const [selectedCategory, setSelectedCategory] = useState(
     () => searchParams.get('category') ?? ''
   )
+  const [newArrivals, setNewArrivals] = useState(searchParams.get('newArrivals') === 'true')
   const [selectedSize, setSelectedSize] = useState('')
   const [selectedColor, setSelectedColor] = useState('')
   const [sortBy, setSortBy] = useState('featured')
@@ -57,7 +58,7 @@ function ShopContent() {
   useEffect(() => {
     fetchProducts()
     fetchCategories()
-  }, [search, selectedCategory, selectedSize, selectedColor, sortBy])
+  }, [search, selectedCategory, newArrivals, selectedSize, selectedColor, sortBy])
 
   const fetchProducts = async () => {
     try {
@@ -65,6 +66,7 @@ function ShopContent() {
       const params = new URLSearchParams()
       if (search) params.append('search', search)
       if (selectedCategory) params.append('category', selectedCategory)
+      if (newArrivals) params.append('newArrivals', 'true')
       if (selectedSize) params.append('size', selectedSize)
       if (selectedColor) params.append('color', selectedColor)
       params.append('sort', sortBy)
@@ -123,10 +125,10 @@ function ShopContent() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('nav.shop')}</h1>
-            
+
             {/* Search */}
-            <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <div className="relative mb-6">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#111111]/40" />
               <Input
                 placeholder={t('common.searchPlaceholder')}
                 value={search}
@@ -135,17 +137,54 @@ function ShopContent() {
               />
             </div>
 
-            {/* Filter Toggle */}
-            <div className="flex items-center justify-between">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowFilters(!showFilters)}
-                className="md:hidden"
+            {/* Quick category chips */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              <button
+                onClick={() => setSelectedCategory('')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  !selectedCategory
+                    ? 'bg-[#111111] text-white'
+                    : 'border-[#111111]/20 text-[#111111]/70 hover:border-[#111111] hover:bg-[#111111]/5'
+                }`}
               >
-                <SlidersHorizontal className="h-4 w-4 mr-2" />
-                {t('common.filter')}
-              </Button>
+                {t('filters.allCategories')}
+              </button>
+              {(Array.isArray(categories) ? categories : []).map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.slug)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                    selectedCategory === category.slug
+                      ? 'bg-[#111111] text-white'
+                      : 'border-[#111111]/20 text-[#111111]/70 hover:border-[#111111] hover:bg-[#111111]/5'
+                  }`}
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+
+            {/* Filter Toggle + Sort */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={newArrivals ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setNewArrivals(!newArrivals)}
+                  className={`px-3 py-1.5 text-xs font-semibold ${newArrivals ? 'bg-[#111111] text-white' : 'border-[#111111]/30 hover:border-[#111111]'}`}
+                >
+                  {t('filters.newArrivals')}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="md:hidden"
+                >
+                  <SlidersHorizontal className="h-4 w-4 mr-2" />
+                  {t('common.filter')}
+                </Button>
+              </div>
 
               <div className="flex items-center space-x-4">
                 <Select
@@ -254,10 +293,10 @@ function ShopContent() {
             {/* Products Grid */}
             <div className="flex-1">
               {loading ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-3 md:gap-x-5 gap-y-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-4 md:gap-x-6 gap-y-8">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                     <div key={i}>
-                      <div className="vg-skeleton aspect-[3/4] rounded-md" />
+                      <div className="vg-skeleton aspect-[2/3] rounded-lg" />
                       <div className="vg-skeleton mt-3 h-3 w-3/4 rounded" />
                       <div className="vg-skeleton mt-2 h-3 w-1/3 rounded" />
                     </div>
@@ -265,10 +304,10 @@ function ShopContent() {
                 </div>
               ) : !Array.isArray(products) || products.length === 0 ? (
                 <div className="text-center py-12">
-                  <p className="text-gray-600">{t('common.noResults')}</p>
+                  <p className="text-[#111111]/60">{t('common.noResults')}</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-3 md:gap-x-5 gap-y-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-4 md:gap-x-6 gap-y-8">
                   {(Array.isArray(products) ? products : []).map((product) => (
                     <ProductCard
                       key={product.id}

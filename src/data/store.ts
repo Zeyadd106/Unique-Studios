@@ -33,7 +33,7 @@ export const CATEGORIES: Category[] = [
     name: 'Off Shoulder',
     slug: 'off-shoulder',
     description: 'Off-shoulder tops with a relaxed feminine fit',
-    image: null,
+    image: '/images/optimized/IMG_5531-card.webp',
     active: true,
     createdAt: now(),
     updatedAt: now(),
@@ -43,7 +43,7 @@ export const CATEGORIES: Category[] = [
     name: 'Sweatpants',
     slug: 'sweatpants',
     description: 'Comfortable sweatpants with premium fit',
-    image: null,
+    image: '/images/optimized/IMG_5544-card.webp',
     active: true,
     createdAt: now(),
     updatedAt: now(),
@@ -53,7 +53,7 @@ export const CATEGORIES: Category[] = [
     name: 'Crewneck',
     slug: 'round-neck',
     description: 'Classic crewneck sweatshirts for everyday wear',
-    image: null,
+    image: '/images/optimized/IMG_5546-card.webp',
     active: true,
     createdAt: now(),
     updatedAt: now(),
@@ -63,7 +63,7 @@ export const CATEGORIES: Category[] = [
     name: 'Knitwear',
     slug: 'knitwear',
     description: 'Premium knitwear with a soft, comfortable feel',
-    image: null,
+    image: '/images/optimized/IMG_5549-card.webp',
     active: true,
     createdAt: now(),
     updatedAt: now(),
@@ -119,6 +119,16 @@ function buildVariants(productId: string, seed: number, sizes: string[]): Produc
   return variants
 }
 
+interface ProductImageSeed {
+  /** Gallery (high-res) image URL. */
+  url: string
+  /** Optimized card image URL. */
+  cardUrl: string
+  /** Thumbnail URL. */
+  thumbUrl: string
+  alt: string
+}
+
 interface ProductSeed {
   id: string
   name: string
@@ -134,13 +144,16 @@ interface ProductSeed {
   bestSeller: boolean
   newArrival: boolean
   sizes: string[]
-  image: string
+  images: ProductImageSeed[]
 }
 
+// Each product is illustrated with the brand's own product photography.
+// Primary image = first entry (shown by default), subsequent images appear on
+// hover / in the product gallery.
 const PRODUCT_SEEDS: ProductSeed[] = [
   {
     id: 'prod-off-shoulder',
-    name: 'Off Shoulder',
+    name: 'Off Shoulder Top',
     slug: 'off-shoulder',
     description:
       'Relaxed off-shoulder top with ribbed cuffs and hem. Size chart (length × width): S 56 × 58 cm, M 58 × 60 cm, L 60 × 62 cm.',
@@ -154,11 +167,24 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     bestSeller: true,
     newArrival: true,
     sizes: ['S', 'M', 'L'],
-    image: '/images/products/off-shoulder.svg',
+    images: [
+      {
+        url: '/images/optimized/IMG_5531-gallery.webp',
+        cardUrl: '/images/optimized/IMG_5531-card.webp',
+        thumbUrl: '/images/optimized/IMG_5531-thumb.webp',
+        alt: 'Off Shoulder Top - front view',
+      },
+      {
+        url: '/images/optimized/IMG_5543-gallery.webp',
+        cardUrl: '/images/optimized/IMG_5543-card.webp',
+        thumbUrl: '/images/optimized/IMG_5543-thumb.webp',
+        alt: 'Off Shoulder Top - back view',
+      },
+    ],
   },
   {
     id: 'prod-sweatpants',
-    name: 'Sweatpants',
+    name: 'Signature Sweatpants',
     slug: 'sweatpants',
     description:
       'Comfortable sweatpants with drawstring waist and cuffed ankles. Size chart (hip × length): M 53 × 107 cm, L 56 × 110 cm, XL 60 × 113 cm.',
@@ -172,11 +198,24 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     bestSeller: true,
     newArrival: false,
     sizes: ['M', 'L', 'XL'],
-    image: '/images/products/sweatpants.svg',
+    images: [
+      {
+        url: '/images/optimized/IMG_5544-gallery.webp',
+        cardUrl: '/images/optimized/IMG_5544-card.webp',
+        thumbUrl: '/images/optimized/IMG_5544-thumb.webp',
+        alt: 'Signature Sweatpants - front view',
+      },
+      {
+        url: '/images/optimized/IMG_5545-gallery.webp',
+        cardUrl: '/images/optimized/IMG_5545-card.webp',
+        thumbUrl: '/images/optimized/IMG_5545-thumb.webp',
+        alt: 'Signature Sweatpants - back view',
+      },
+    ],
   },
   {
     id: 'prod-round-neck',
-    name: 'Crewneck',
+    name: 'Heavyweight Crewneck',
     slug: 'round-neck',
     description:
       'Classic crewneck sweatshirt with ribbed cuffs and hem. Size chart (length × width): M 67 × 63 cm, L 70 × 66 cm, XL 73 × 69 cm.',
@@ -190,11 +229,24 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     bestSeller: false,
     newArrival: true,
     sizes: ['M', 'L', 'XL'],
-    image: '/images/products/round-neck.svg',
+    images: [
+      {
+        url: '/images/optimized/IMG_5546-gallery.webp',
+        cardUrl: '/images/optimized/IMG_5546-card.webp',
+        thumbUrl: '/images/optimized/IMG_5546-thumb.webp',
+        alt: 'Heavyweight Crewneck - front view',
+      },
+      {
+        url: '/images/optimized/IMG_5548-gallery.webp',
+        cardUrl: '/images/optimized/IMG_5548-card.webp',
+        thumbUrl: '/images/optimized/IMG_5548-thumb.webp',
+        alt: 'Heavyweight Crewneck - detail view',
+      },
+    ],
   },
   {
     id: 'prod-knitwear',
-    name: 'Knitwear',
+    name: 'Premium Knitwear',
     slug: 'knitwear',
     description:
       'Premium knitwear top with a soft feel and comfortable regular fit.',
@@ -208,7 +260,20 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     bestSeller: false,
     newArrival: true,
     sizes: ['M', 'L', 'XL'],
-    image: '/images/products/knitwear.svg',
+    images: [
+      {
+        url: '/images/optimized/IMG_5549-gallery.webp',
+        cardUrl: '/images/optimized/IMG_5549-card.webp',
+        thumbUrl: '/images/optimized/IMG_5549-thumb.webp',
+        alt: 'Premium Knitwear - front view',
+      },
+      {
+        url: '/images/optimized/IMG_5550-gallery.webp',
+        cardUrl: '/images/optimized/IMG_5550-card.webp',
+        thumbUrl: '/images/optimized/IMG_5550-thumb.webp',
+        alt: 'Premium Knitwear - back view',
+      },
+    ],
   },
 ]
 
@@ -218,16 +283,16 @@ function buildProduct(seed: ProductSeed, index: number): Product {
     ...seed,
     active: true,
     category,
-    images: [
-      {
-        id: `${seed.id}-img-1`,
-        productId: seed.id,
-        url: seed.image,
-        alt: seed.name,
-        sortOrder: 0,
-        createdAt: now(),
-      },
-    ],
+    images: seed.images.map((img, i) => ({
+      id: `${seed.id}-img-${i + 1}`,
+      productId: seed.id,
+      url: img.url,
+      cardUrl: img.cardUrl,
+      thumbUrl: img.thumbUrl,
+      alt: img.alt,
+      sortOrder: i,
+      createdAt: now(),
+    })),
     variants: buildVariants(seed.id, index * 5 + 3, seed.sizes),
     createdAt: now(),
     updatedAt: now(),
@@ -523,6 +588,7 @@ export interface ProductQuery {
   minPrice?: number
   maxPrice?: number
   inStockOnly?: boolean
+  newArrivals?: boolean
   sort?: string
 }
 
@@ -560,6 +626,10 @@ export function queryProducts(query: ProductQuery = {}): Product[] {
 
   if (inStockOnly) {
     result = result.filter((p) => p.variants.some((v) => v.stock > 0))
+  }
+
+  if (query.newArrivals) {
+    result = result.filter((p) => p.newArrival)
   }
 
   const sorted = [...result]
@@ -642,7 +712,12 @@ export interface AdminProductInput {
   bestSeller?: boolean
   newArrival?: boolean
   active?: boolean
-  images?: { url: string; alt?: string }[]
+  images?: {
+    url: string
+    cardUrl?: string
+    thumbUrl?: string
+    alt?: string
+  }[]
   variants?: {
     size: string
     color: string
@@ -675,6 +750,8 @@ export function createProduct(input: AdminProductInput): Product {
       id: `${id}-img-${i}`,
       productId: id,
       url: img.url,
+      cardUrl: img.cardUrl ?? img.url,
+      thumbUrl: img.thumbUrl ?? img.url,
       alt: img.alt ?? input.name,
       sortOrder: i,
       createdAt: now(),
@@ -721,6 +798,23 @@ export function updateProduct(id: string, data: Partial<AdminProductInput>): Pro
       product.category = category
     }
   }
+  product.updatedAt = new Date()
+  return product
+}
+
+export function replaceProductImages(id: string, images: { url: string; cardUrl?: string; thumbUrl?: string; alt?: string }[]): Product | undefined {
+  const product = PRODUCTS.find((p) => p.id === id)
+  if (!product) return undefined
+  product.images = images.map((img, i) => ({
+    id: `${id}-img-${i}`,
+    productId: id,
+    url: img.url,
+    cardUrl: img.cardUrl ?? img.url,
+    thumbUrl: img.thumbUrl ?? img.url,
+    alt: img.alt ?? product.name,
+    sortOrder: i,
+    createdAt: now(),
+  }))
   product.updatedAt = new Date()
   return product
 }
