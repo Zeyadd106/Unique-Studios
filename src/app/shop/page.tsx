@@ -1,19 +1,35 @@
 'use client'
 
-import { Suspense, useState, useEffect } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Select } from '@/components/ui/select'
 import { ProductCard } from '@/components/product/product-card'
+import { Input } from '@/components/ui/input'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslation } from '@/hooks/use-translation'
+import type { Product } from '@/types'
 import { useCart } from '@/hooks/use-cart'
 import { useWishlist } from '@/hooks/use-wishlist'
-import { Search, SlidersHorizontal } from 'lucide-react'
-import { Product } from '@/types'
+import { Search, X, Sparkles, Filter, SlidersHorizontal, Flame } from 'lucide-react'
+
+/** The three studio collections, exactly as the brand presents them. */
+const SHOP_CATEGORIES = [
+  { slug: '', label: 'All', hint: '' },
+  { slug: 'crewnecks', label: 'Crewnecks', hint: '' },
+  { slug: 'off-shoulder', label: 'Off Shoulder', hint: '' },
+  { slug: 'sweatpants', label: 'Sweatpants', hint: '' },
+]
+
+const SORT_OPTIONS = [
+  { value: 'featured', labelKey: 'sort.featured' },
+  { value: 'newest', labelKey: 'sort.newest' },
+  { value: 'priceLow', labelKey: 'sort.priceLow' },
+  { value: 'priceHigh', labelKey: 'sort.priceHigh' },
+  { value: 'bestSelling', labelKey: 'filters.bestSellers' },
+]
 
 export default function ShopPage() {
   return (
@@ -25,8 +41,38 @@ export default function ShopPage() {
 
 function ShopLoading() {
   return (
-    <div className="flex flex-col min-h-screen items-center justify-center">
-      <p className="text-gray-600">...</p>
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-white via-brand-mist/20 to-white">
+      <div className="flex min-h-[60vh] flex-1 items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="relative"
+        >
+          <motion.div
+            className="h-12 w-12 rounded-full bg-gradient-to-br from-brand to-brand/60"
+            animate={{
+              rotate: 360,
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              rotate: { duration: 2, repeat: Infinity, ease: "linear" },
+              scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
+            }}
+          />
+          <motion.div
+            className="absolute inset-0 h-12 w-12 rounded-full bg-gradient-to-br from-brand to-brand/60 blur-xl"
+            animate={{
+              opacity: [0.5, 0.8, 0.5],
+              scale: [1, 1.4, 1],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        </motion.div>
+      </div>
     </div>
   )
 }
@@ -36,292 +82,579 @@ function ShopContent() {
   const { locale, setLocale } = useLocale()
   const { t } = useTranslation()
   const { cartCount } = useCart()
-  const { wishlistCount, addToWishlist, isInWishlist } = useWishlist()
+  const { wishlistCount, isInWishlist, addToWishlist } = useWishlist()
 
   const [products, setProducts] = useState<Product[]>([])
-  const [categories, setCategories] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  // Deep-link support: /shop?category=hoodies preselects the filter.
   const [selectedCategory, setSelectedCategory] = useState(
-    () => searchParams.get('category') ?? ''
+    () => searchParams.get('category') ?? '',
   )
-  const [newArrivals, setNewArrivals] = useState(searchParams.get('newArrivals') === 'true')
   const [selectedSize, setSelectedSize] = useState('')
-  const [selectedColor, setSelectedColor] = useState('')
+  const [inStockOnly, setInStockOnly] = useState(false)
   const [sortBy, setSortBy] = useState('featured')
-  const [showFilters, setShowFilters] = useState(false)
 
-  const sizes = ['S', 'M', 'L', 'XL', 'XXL']
-  const colors = ['Black', 'White', 'Gray', 'Navy']
+  const isNewArrivalsPage = searchParams.get('newArrivals') === 'true'
 
   useEffect(() => {
-    fetchProducts()
-    fetchCategories()
-  }, [search, selectedCategory, newArrivals, selectedSize, selectedColor, sortBy])
-
-  const fetchProducts = async () => {
-    try {
-      setLoading(true)
-      const params = new URLSearchParams()
-      if (search) params.append('search', search)
-      if (selectedCategory) params.append('category', selectedCategory)
-      if (newArrivals) params.append('newArrivals', 'true')
-      if (selectedSize) params.append('size', selectedSize)
-      if (selectedColor) params.append('color', selectedColor)
-      params.append('sort', sortBy)
-
-      const response = await fetch(`/api/products?${params.toString()}`)
-      const data = await response.json()
-      // API returns an array on success but { error } on failure —
-      // guard so `products` is always an array and .map never crashes.
-      setProducts(Array.isArray(data) ? data : [])
-    } catch (error) {
-      console.error('Error fetching products:', error)
-      setProducts([])
-    } finally {
-      setLoading(false)
+    let cancelled = false
+    const load = async () => {
+      try {
+        setLoading(true)
+        const params = new URLSearchParams()
+        if (search) params.append('search', search)
+        if (selectedCategory) params.append('category', selectedCategory)
+        if (selectedSize) params.append('size', selectedSize)
+        if (inStockOnly) params.append('inStockOnly', 'true')
+        if (isNewArrivalsPage) params.append('newArrivals', 'true')
+        params.append('sort', sortBy)
+        const response = await fetch(`/api/products?${params.toString()}`)
+        const data = await response.json()
+        if (!cancelled) {
+          setProducts(Array.isArray(data) ? data : [])
+          setLoading(false)
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error)
+        if (!cancelled) setLoading(false)
+      }
     }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [search, selectedCategory, selectedSize, inStockOnly, sortBy, isNewArrivalsPage])
+
+  const sizes = useMemo(() => ['S', 'M', 'L', 'XL', 'XXL'], [])
+
+  const toggleWishlist = (id: string) => {
+    if (!isInWishlist(id)) addToWishlist(id)
   }
 
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch('/api/categories')
-      const data = await response.json()
-      setCategories(Array.isArray(data) ? data : [])
-    } catch (error) {
-      console.error('Error fetching categories:', error)
-      setCategories([])
-    }
-  }
+  const filtered = useMemo(() => {
+    const list = products.filter((product) => {
+      if (selectedCategory && product.category.slug !== selectedCategory) {
+        return false
+      }
+      if (selectedSize && !product.variants.some((variant) => variant.size === selectedSize)) {
+        return false
+      }
+      if (inStockOnly && product.variants.every((variant) => variant.stock <= 0)) {
+        return false
+      }
+      return true
+    })
 
-  const handleAddToWishlist = (productId: string) => {
-    if (isInWishlist(productId)) {
-      return
+    const sorted = [...list]
+    switch (sortBy) {
+      case 'newest':
+        sorted.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        )
+        break
+      case 'priceLow':
+        sorted.sort((a, b) => (a.salePrice ?? a.price) - (b.salePrice ?? b.price))
+        break
+      case 'priceHigh':
+        sorted.sort(
+          (a, b) =>
+            (b.salePrice ?? b.price) - (a.salePrice ?? a.price),
+        )
+        break
+      case 'bestSelling':
+        sorted.sort(
+          (a, b) => Number(b.bestSeller) - Number(a.bestSeller),
+        )
+        break
+      default:
+        sorted.sort((a, b) => Number(b.featured) - Number(a.featured))
     }
-    addToWishlist(productId)
-  }
+    return sorted
+  }, [products, selectedCategory, selectedSize, inStockOnly, sortBy])
 
   const clearFilters = () => {
     setSearch('')
     setSelectedCategory('')
     setSelectedSize('')
-    setSelectedColor('')
+    setInStockOnly(false)
     setSortBy('featured')
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header 
-        locale={locale} 
-        setLocale={setLocale} 
-        cartCount={cartCount} 
+    <div className={`flex min-h-screen flex-col ${isNewArrivalsPage ? 'bg-gradient-to-br from-brand/5 via-white to-brand/5' : 'bg-gradient-to-br from-white via-brand-mist/20 to-white'}`}>
+      <Header
+        locale={locale}
+        setLocale={setLocale}
+        cartCount={cartCount}
         wishlistCount={wishlistCount}
         t={t}
       />
-      
-      <main className="flex-1 py-8">
-        <div className="container mx-auto px-4">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('nav.shop')}</h1>
 
-            {/* Search */}
-            <div className="relative mb-6">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#111111]/40" />
-              <Input
-                placeholder={t('common.searchPlaceholder')}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+      <main className="flex-1 relative overflow-hidden">
+        {/* Animated background elements */}
+        <motion.div
+          className="pointer-events-none absolute top-20 right-10 h-72 w-72 rounded-full bg-brand/5 blur-3xl"
+          animate={{
+            x: [0, -30, 0],
+            y: [0, 30, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="pointer-events-none absolute bottom-20 left-10 h-96 w-96 rounded-full bg-brand/5 blur-3xl"
+          animate={{
+            x: [0, 40, 0],
+            y: [0, -40, 0],
+            scale: [1, 1.3, 1],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
 
-            {/* Quick category chips */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              <button
-                onClick={() => setSelectedCategory('')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  !selectedCategory
-                    ? 'bg-[#111111] text-white'
-                    : 'border-[#111111]/20 text-[#111111]/70 hover:border-[#111111] hover:bg-[#111111]/5'
-                }`}
-              >
-                {t('filters.allCategories')}
-              </button>
-              {(Array.isArray(categories) ? categories : []).map((category) => (
-                <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.slug)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                    selectedCategory === category.slug
-                      ? 'bg-[#111111] text-white'
-                      : 'border-[#111111]/20 text-[#111111]/70 hover:border-[#111111] hover:bg-[#111111]/5'
-                  }`}
+        {/* Extra animated elements for new arrivals */}
+        {isNewArrivalsPage && (
+          <>
+            <motion.div
+              className="pointer-events-none absolute top-1/4 left-1/4 h-48 w-48 rounded-full bg-orange-500/5 blur-3xl"
+              animate={{
+                x: [0, 20, 0],
+                y: [0, -20, 0],
+                scale: [1, 1.3, 1],
+              }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            <motion.div
+              className="pointer-events-none absolute bottom-1/3 right-1/4 h-64 w-64 rounded-full bg-amber-500/5 blur-3xl"
+              animate={{
+                x: [0, -25, 0],
+                y: [0, 25, 0],
+                scale: [1, 1.4, 1],
+              }}
+              transition={{
+                duration: 7,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          </>
+        )}
+
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Page heading */}
+          <motion.header
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className={`pt-10 pb-8 sm:pt-14 ${isNewArrivalsPage ? 'pt-16 pb-12 sm:pt-20' : ''}`}
+          >
+            {isNewArrivalsPage ? (
+              <>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="mb-6 flex flex-wrap items-center gap-3"
                 >
-                  {category.name}
-                </button>
-              ))}
-            </div>
-
-            {/* Filter Toggle + Sort */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Button
-                  variant={newArrivals ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setNewArrivals(!newArrivals)}
-                  className={`px-3 py-1.5 text-xs font-semibold ${newArrivals ? 'bg-[#111111] text-white' : 'border-[#111111]/30 hover:border-[#111111]'}`}
-                >
-                  {t('filters.newArrivals')}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="md:hidden"
-                >
-                  <SlidersHorizontal className="h-4 w-4 mr-2" />
-                  {t('common.filter')}
-                </Button>
-              </div>
-
-              <div className="flex items-center space-x-4">
-                <Select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  options={[
-                    { value: 'featured', label: t('sort.featured') },
-                    { value: 'newest', label: t('sort.newest') },
-                    { value: 'priceLow', label: t('sort.priceLow') },
-                    { value: 'priceHigh', label: t('sort.priceHigh') },
-                    { value: 'bestSelling', label: t('sort.bestSelling') },
-                  ]}
-                  className="w-full md:w-auto"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-8">
-            {/* Filters Sidebar */}
-            <aside className={`md:w-64 ${showFilters ? 'block' : 'hidden md:block'}`}>
-              <div className="sticky top-24 space-y-6">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold">{t('common.filter')}</h3>
-                  <button
-                    onClick={clearFilters}
-                    className="text-sm text-gray-600 hover:text-[#111111]"
+                  <motion.span
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-100 to-amber-100 px-4 py-2 text-xs font-bold uppercase tracking-[0.25em] text-orange-600 shadow-lg shadow-orange-200/50"
                   >
-                    Clear
-                  </button>
-                </div>
+                    <Sparkles className="h-4 w-4 text-orange-500" />
+                    {t('home.newArrivals').toUpperCase()}
+                  </motion.span>
+                  <motion.span
+                    animate={{ rotate: [0, -10, 10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand/10 to-brand/20 px-4 py-2 text-xs font-bold uppercase tracking-[0.25em] text-brand shadow-lg shadow-brand/20"
+                  >
+                    <Flame className="h-4 w-4 text-brand" />
+                    {locale === 'ar' ? 'الدروب الجديد وصل' : 'Just dropped'}
+                  </motion.span>
+                </motion.div>
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-4xl font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl"
+                >
+                  {t('home.newArrivals')}
+                </motion.h1>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="mt-4 max-w-xl text-base leading-relaxed text-ink/60 sm:text-lg"
+                >
+                  {t('home.newArrivalsText')}
+                </motion.p>
+              </>
+            ) : (
+              <>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="mb-4 flex items-center gap-2"
+                >
+                  <Sparkles className="h-4 w-4 text-brand" />
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-ink/50">
+                    {t('nav.shop').toUpperCase()}
+                  </p>
+                </motion.div>
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-3xl font-bold tracking-tight text-ink sm:text-4xl"
+                >
+                  {t('nav.shop')}
+                </motion.h1>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="mt-3 max-w-xl text-sm leading-relaxed text-ink/60 sm:text-base"
+                >
+                  {t('home.shopByCategorySubtitle')}
+                </motion.p>
+              </>
+            )}
+          </motion.header>
 
-                {/* Category Filter */}
-                <div>
-                  <h4 className="font-medium mb-3">{t('filters.allCategories')}</h4>
-                  <div className="space-y-2">
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="category"
-                        value=""
-                        checked={selectedCategory === ''}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="w-4 h-4"
-                      />
-                      <span>{t('filters.allCategories')}</span>
-                    </label>
-                    {(Array.isArray(categories) ? categories : []).map((category) => (
-                      <label key={category.id} className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="category"
-                          value={category.slug}
-                          checked={selectedCategory === category.slug}
-                          onChange={(e) => setSelectedCategory(e.target.value)}
-                          className="w-4 h-4"
-                        />
-                        <span>{category.name}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
+          {/* Search + mobile filters */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="mb-8 space-y-4"
+          >
+            <div className="relative">
+              <motion.div whileFocus={{ scale: 1.01 }} transition={{ duration: 0.2 }}>
+                <Search
+                  className="pointer-events-none absolute start-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink/40"
+                  aria-hidden
+                />
+                <Input
+                  type="search"
+                  placeholder={t('common.searchPlaceholder')}
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  className="h-12 rounded-full border-2 border-brand/20 bg-white/50 pl-12 pr-10 text-base transition-all duration-300 focus:border-brand focus:bg-white focus:shadow-lg focus:shadow-brand/20"
+                  aria-label={t('common.search')}
+                />
+              </motion.div>
+              <AnimatePresence>
+                {search && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    type="button"
+                    aria-label={t('common.clear')}
+                    onClick={() => setSearch('')}
+                    className="absolute end-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-ink/50 transition-colors hover:bg-brand-mist hover:text-brand-deep"
+                  >
+                    <X className="h-4 w-4" aria-hidden />
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </div>
 
-                {/* Size Filter */}
-                <div>
-                  <h4 className="font-medium mb-3">{t('product.size')}</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {sizes.map((size) => (
-                      <button
-                        key={size}
-                        onClick={() => setSelectedSize(selectedSize === size ? '' : size)}
-                        className={`px-3 py-1 rounded border-2 ${
-                          selectedSize === size
-                            ? 'border-[#111111] bg-[#111111] text-white'
-                            : 'border-gray-300 hover:border-[#111111]'
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Color Filter */}
-                <div>
-                  <h4 className="font-medium mb-3">{t('product.color')}</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {colors.map((color) => (
-                      <button
-                        key={color}
-                        onClick={() => setSelectedColor(selectedColor === color ? '' : color)}
-                        className={`px-3 py-1 rounded border-2 ${
-                          selectedColor === color
-                            ? 'border-[#111111] bg-[#111111] text-white'
-                            : 'border-gray-300 hover:border-[#111111]'
-                        }`}
-                      >
-                        {color}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </aside>
-
-            {/* Products Grid */}
-            <div className="flex-1">
-              {loading ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-4 md:gap-x-6 gap-y-8">
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                    <div key={i}>
-                      <div className="vg-skeleton aspect-[2/3] rounded-lg" />
-                      <div className="vg-skeleton mt-3 h-3 w-3/4 rounded" />
-                      <div className="vg-skeleton mt-2 h-3 w-1/3 rounded" />
-                    </div>
-                  ))}
-                </div>
-              ) : !Array.isArray(products) || products.length === 0 ? (
-                <div className="text-center py-12">
-                  <p className="text-[#111111]/60">{t('common.noResults')}</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-4 md:gap-x-6 gap-y-8">
-                  {(Array.isArray(products) ? products : []).map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      locale={locale}
-                      newLabel={t('product.new')}
-                      saleLabel={t('product.sale')}
-                      isInWishlist={isInWishlist}
-                      onToggleWishlist={handleAddToWishlist}
-                    />
-                  ))}
-                </div>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 }}
+                className="flex flex-wrap gap-2"
+              >
+                {SHOP_CATEGORIES.map((category, index) => (
+                  <motion.button
+                    key={category.slug || 'all'}
+                    type="button"
+                    onClick={() => setSelectedCategory(category.slug)}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.7 + index * 0.05 }}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`rounded-full border-2 px-4 py-2 text-sm font-semibold transition-all duration-300 ${
+                      selectedCategory === category.slug
+                        ? 'border-brand bg-gradient-to-r from-brand to-brand/90 text-white shadow-lg shadow-brand/30'
+                        : 'border-brand/20 bg-white/50 text-ink hover:border-brand hover:text-brand-deep hover:shadow-md'
+                    }`}
+                  >
+                    {category.label}
+                  </motion.button>
+                ))}
+              </motion.div>
+              {isNewArrivalsPage && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7 }}
+                >
+                  <Link
+                    href="/shop"
+                    className="inline-flex items-center gap-2 rounded-full border-2 border-brand/20 bg-white/50 px-4 py-2 text-sm font-semibold text-ink transition-all duration-300 hover:border-brand hover:bg-brand hover:text-white hover:shadow-lg hover:shadow-brand/30"
+                  >
+                    {t('common.viewAll')}
+                  </Link>
+                </motion.div>
               )}
             </div>
+          </motion.div>
+
+          <div className="flex flex-col gap-10 lg:flex-row">
+            {/* Filters */}
+            <motion.aside
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.8 }}
+              className="lg:w-64 lg:shrink-0"
+            >
+              <div className="lg:sticky lg:top-28">
+                <div className="relative overflow-hidden rounded-2xl border-2 border-brand/10 bg-white/90 backdrop-blur-xl p-6 shadow-2xl shadow-brand/5 transition-all duration-300 hover:shadow-brand/10 hover:border-brand/20">
+                  <motion.div
+                    className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand/5 via-transparent to-transparent"
+                    animate={{
+                      opacity: [0.3, 0.5, 0.3],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <div className="relative mb-6 flex items-center justify-between border-b border-brand/10 pb-4">
+                    <motion.h2
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.9 }}
+                      className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-ink"
+                    >
+                      <Filter className="h-4 w-4 text-brand" />
+                      {t('common.filter')}
+                    </motion.h2>
+                    <motion.button
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.95 }}
+                      type="button"
+                      onClick={clearFilters}
+                      className="rounded-full bg-brand/10 px-3 py-1.5 text-xs font-semibold text-brand transition-all duration-300 hover:bg-brand hover:text-white"
+                    >
+                      {t('common.clear')}
+                    </motion.button>
+                  </div>
+
+                  {/* Sizes */}
+                  <motion.fieldset
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1 }}
+                    className="mb-6"
+                  >
+                    <legend className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-ink/70">
+                      <SlidersHorizontal className="h-3 w-3" />
+                      {t('product.size')}
+                    </legend>
+                    <div className="flex flex-wrap gap-2">
+                      {sizes.map((size, index) => (
+                        <motion.button
+                          key={size}
+                          type="button"
+                          aria-pressed={selectedSize === size}
+                          onClick={() =>
+                            setSelectedSize(
+                              selectedSize === size ? '' : size,
+                            )
+                          }
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 1.1 + index * 0.05 }}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                          className={`rounded-full border-2 px-3 py-1.5 text-sm font-semibold transition-all duration-300 ${
+                            selectedSize === size
+                              ? 'border-brand bg-gradient-to-r from-brand to-brand/90 text-white shadow-lg shadow-brand/30'
+                              : 'border-brand/20 bg-white/50 text-ink hover:border-brand hover:text-brand-deep hover:shadow-md'
+                          }`}
+                        >
+                          {size}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </motion.fieldset>
+
+                  {/* Availability */}
+                  <motion.fieldset
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.2 }}
+                  >
+                    <legend className="mb-3 text-xs font-bold uppercase tracking-wider text-ink/70">
+                      {t('filters.availability')}
+                    </legend>
+                    <motion.label
+                      whileHover={{ x: 5 }}
+                      className="flex cursor-pointer items-center gap-3 rounded-lg bg-brand-mist/30 p-3 text-sm text-ink transition-all duration-300 hover:bg-brand-mist/50"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={inStockOnly}
+                        onChange={(event) => setInStockOnly(event.target.checked)}
+                        className="h-4 w-4 accent-brand"
+                      />
+                      {t('filters.inStockOnly')}
+                    </motion.label>
+                  </motion.fieldset>
+                </div>
+              </div>
+            </motion.aside>
+
+            {/* Products */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.9 }}
+              className="min-w-0 flex-1"
+            >
+              {/* Sort + result count */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 }}
+                className="mb-6 flex flex-wrap items-center justify-between gap-3"
+              >
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.1 }}
+                  className="text-sm text-ink/60"
+                >
+                  {t('collection.inThisCollection').replace(
+                    'in this collection',
+                    `${filtered.length} ${filtered.length === 1 ? t('collection.piece') : t('collection.pieces')}`,
+                  )}
+                </motion.p>
+                <div className="flex items-center gap-2">
+                  <label
+                    htmlFor="shop-sort"
+                    className="text-xs font-semibold uppercase tracking-wider text-ink/70"
+                  >
+                    {t('common.sort')}
+                  </label>
+                  <motion.select
+                    id="shop-sort"
+                    value={sortBy}
+                    onChange={(event) => setSortBy(event.target.value)}
+                    whileFocus={{ scale: 1.02 }}
+                    className="h-10 rounded-full border-2 border-brand/20 bg-white/50 px-4 text-sm font-semibold text-ink transition-all duration-300 focus:border-brand focus:bg-white focus:shadow-lg focus:shadow-brand/20"
+                  >
+                    {SORT_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {t(option.labelKey)}
+                      </option>
+                    ))}
+                  </motion.select>
+                </div>
+              </motion.div>
+
+              <AnimatePresence mode="wait">
+                {loading ? (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
+                  >
+                    {Array.from({ length: 8 }).map((_, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.05 }}
+                        className="aspect-[4/5] animate-pulse rounded-2xl bg-brand-mist"
+                      />
+                    ))}
+                  </motion.div>
+                ) : filtered.length === 0 ? (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="rounded-2xl border-2 border-brand/20 bg-white/80 backdrop-blur-xl px-6 py-16 text-center shadow-xl"
+                  >
+                    <p className="text-ink/60">{t('common.noResults')}</p>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className={`grid gap-4 sm:grid-cols-3 lg:gap-6 ${isNewArrivalsPage ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' : 'grid-cols-2'}`}
+                  >
+                    {filtered.map((product, index) => (
+                      <motion.div
+                        key={product.id}
+                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ delay: 1.2 + index * 0.05 }}
+                        whileHover={{ y: -8, scale: 1.02 }}
+                        className={`relative overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-300 hover:shadow-2xl hover:shadow-brand/20 ${
+                          isNewArrivalsPage ? 'ring-2 ring-brand/20 hover:ring-brand/40' : ''
+                        }`}
+                      >
+                        {isNewArrivalsPage && product.newArrival && (
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 1.3 + index * 0.05 }}
+                            className="pointer-events-none absolute top-3 left-3 z-10 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 px-3 py-1 text-xs font-bold text-white shadow-lg shadow-orange-500/30"
+                          >
+                            NEW
+                          </motion.div>
+                        )}
+                        <ProductCard
+                          product={product}
+                          locale={locale}
+                          newLabel={t('product.new')}
+                          saleLabel={t('product.sale')}
+                          isInWishlist={isInWishlist}
+                          onToggleWishlist={toggleWishlist}
+                        />
+                        {/* Hover glow effect */}
+                        <motion.div
+                          className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-brand/5 via-transparent to-transparent opacity-0 transition-opacity duration-300"
+                          whileHover={{ opacity: 1 }}
+                        />
+                        {/* Extra shine effect for new arrivals */}
+                        {isNewArrivalsPage && (
+                          <motion.div
+                            className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-500/5 via-transparent to-transparent opacity-0 transition-opacity duration-300"
+                            whileHover={{ opacity: 1 }}
+                          />
+                        )}
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           </div>
         </div>
       </main>

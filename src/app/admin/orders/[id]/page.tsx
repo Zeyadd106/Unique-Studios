@@ -67,14 +67,18 @@ export default function AdminOrderDetailPage() {
   }, [id])
 
   useEffect(() => {
-    fetchOrder()
+    const timer = setTimeout(() => {
+      fetchOrder()
+      const adminName = localStorage.getItem('adminName') || 'Admin'
+      const adminEmail = localStorage.getItem('adminEmail') || 'admin@uniquestudios.com'
+      setCurrentAdmin({ name: adminName, email: adminEmail })
+    }, 0)
     // Refresh the order every 15s so updates are visible without reload.
-    const timer = setInterval(fetchOrder, 15000)
-    // Get admin info from localStorage or cookies
-    const adminName = localStorage.getItem('adminName') || 'Admin'
-    const adminEmail = localStorage.getItem('adminEmail') || 'admin@uniquestudios.com'
-    setCurrentAdmin({ name: adminName, email: adminEmail })
-    return () => clearInterval(timer)
+    const interval = setInterval(fetchOrder, 15000)
+    return () => {
+      clearTimeout(timer)
+      clearInterval(interval)
+    }
   }, [fetchOrder])
 
   const handleStatusUpdate = async (newStatus: string) => {

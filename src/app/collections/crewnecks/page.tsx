@@ -1,6 +1,21 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { AnimatePresence, motion, type Variants } from 'framer-motion'
+import {
+  ArrowRight,
+  Check,
+  ChevronRight,
+  Home,
+  Package,
+  RotateCcw,
+  Ruler,
+  Shirt,
+  Sparkles,
+  Truck,
+} from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { CollectionProductCard } from '@/components/collection/collection-product-card'
@@ -8,8 +23,14 @@ import { useLocale } from '@/hooks/use-locale'
 import { useTranslation } from '@/hooks/use-translation'
 import { useCart } from '@/hooks/use-cart'
 import { useWishlist } from '@/hooks/use-wishlist'
-import { motion, AnimatePresence } from 'framer-motion'
 
+/* ---------------------------------------------------------------------------
+ * Crewnecks collection — cinematic drop experience:
+ * parallax hero → marquee → sticky filter toolbar → animated grid →
+ * fit guide strip → sister collections → final CTA.
+ * ------------------------------------------------------------------------- */
+
+/** Shape returned by `/api/collections/[name]`. */
 interface CollectionProduct {
   id: string
   productId: string
@@ -50,161 +71,143 @@ interface CollectionData {
 }
 
 const SORT_OPTIONS = [
-  { value: 'featured', label: 'Featured' },
-  { value: 'most-relevant', label: 'Most relevant' },
-  { value: 'best-selling', label: 'Best selling' },
-  { value: 'alpha-asc', label: 'Alphabetically, A-Z' },
-  { value: 'alpha-desc', label: 'Alphabetically, Z-A' },
-  { value: 'price-asc', label: 'Price, low to high' },
-  { value: 'price-desc', label: 'Price, high to low' },
-  { value: 'date-asc', label: 'Date, old to new' },
-  { value: 'date-desc', label: 'Date, new to old' },
+  { value: 'featured', labelKey: 'collection.featured' },
+  { value: 'newest', labelKey: 'collection.newest' },
+  { value: 'priceLow', labelKey: 'collection.priceLow' },
+  { value: 'priceHigh', labelKey: 'collection.priceHigh' },
 ]
+
+type AvailabilityFilter = 'all' | 'in-stock' | 'out-of-stock'
+
+const gridContainer: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06 } },
+}
+
+const gridItem: Variants = {
+  hidden: { opacity: 0, y: 26, scale: 0.97 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.55, ease: [0.22, 0.61, 0.36, 1] },
+  },
+  exit: { opacity: 0, scale: 0.94, transition: { duration: 0.25 } },
+}
 
 export default function CrewnecksCollectionPage() {
   const { locale, setLocale } = useLocale()
   const { t } = useTranslation()
   const { cartCount } = useCart()
   const { wishlistCount } = useWishlist()
+  const isAr = locale === 'ar'
 
   const [collection, setCollection] = useState<CollectionData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [sortBy, setSortBy] = useState<string>('featured')
-  const [availabilityFilter, setAvailabilityFilter] = useState<'all' | 'in-stock' | 'out-of-stock'>('all')
-  const [priceMin, setPriceMin] = useState<string>('')
-  const [priceMax, setPriceMax] = useState<string>('')
-
-  const fetchCollection = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch(`/api/collections/crewnecks`, {
-        cache: 'no-store',
-      })
-      const data = await response.json()
-      setCollection(data)
-    } catch (error) {
-      console.error('Error fetching crewnecks collection:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const [sortBy, setSortBy] = useState('featured')
+  const [availability, setAvailability] = useState<AvailabilityFilter>('all')
 
   useEffect(() => {
+    let cancelled = false
+    const fetchCollection = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/collections/crewnecks', {
+          cache: 'no-store',
+        })
+        const data = await response.json()
+        if (!cancelled) setCollection(data)
+      } catch (error) {
+        console.error('Error fetching crewnecks collection:', error)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
     fetchCollection()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
-  // Compute max price from products for the price filter
-  const maxPrice = useMemo(() => {
-    if (!collection?.products.length) return 0
-    return Math.max(...collection.products.map((p) => p.salePrice ?? p.price))
-  }, [collection?.products])
+  const products = useMemo(() => collection?.products ?? [], [collection])
 
-  // Sort products
   const sortedProducts = useMemo(() => {
-    if (!collection?.products.length) return []
-    return [...collection.products].sort((a, b) => {
-      switch (sortBy) {
-        case 'date-desc':
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        case 'date-asc':
-          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        case 'price-asc':
-          return a.price - b.price
-        case 'price-desc':
-          return b.price - a.price
-        case 'alpha-asc':
-          return a.name.localeCompare(b.name)
-        case 'alpha-desc':
-          return b.name.localeCompare(a.name)
-        case 'best-selling':
-          return Number(b.featured) - Number(a.featured)
-        case 'featured':
-        default:
-          return Number(b.featured) - Number(a.featured)
-      }
-    })
-  }, [collection?.products, sortBy])
+    const list = [...products]
+    switch (sortBy) {
+      case 'newest':
+        return list.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+      case 'priceLow':
+        return list.sort(
+          (a, b) => (a.salePrice ?? a.price) - (b.salePrice ?? b.price)
+        )
+      case 'priceHigh':
+        return list.sort(
+          (a, b) => (b.salePrice ?? b.price) - (a.salePrice ?? a.price)
+        )
+      default:
+        return list.sort(
+          (a, b) =>
+            Number(b.featured) - Number(a.featured) ||
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+    }
+  }, [products, sortBy])
 
-  // Filter products
   const filteredProducts = useMemo(() => {
-    return sortedProducts.filter((p) => {
-      if (availabilityFilter === 'in-stock' && !p.available) return false
-      if (availabilityFilter === 'out-of-stock' && p.available) return false
-      if (priceMin && p.price < parseFloat(priceMin)) return false
-      if (priceMax && p.price > parseFloat(priceMax)) return false
+    return sortedProducts.filter((product) => {
+      if (availability === 'in-stock' && !product.available) return false
+      if (availability === 'out-of-stock' && product.available) return false
       return true
     })
-  }, [sortedProducts, availabilityFilter, priceMin, priceMax])
+  }, [sortedProducts, availability])
 
-  const inStockCount = collection?.products.filter((p) => p.available).length ?? 0
-  const outOfStockCount = collection?.products.filter((p) => !p.available).length ?? 0
+  const inStockCount = products.filter((product) => product.available).length
+  const fromPrice = products.length
+    ? Math.min(...products.map((p) => p.salePrice ?? p.price))
+    : 0
 
-  const handleRemoveAll = () => {
-    setAvailabilityFilter('all')
-    setPriceMin('')
-    setPriceMax('')
+  const availabilityOptions: Array<{
+    value: AvailabilityFilter
+    labelKey: string
+    count: number
+  }> = [
+    { value: 'all', labelKey: 'collection.all', count: products.length },
+    { value: 'in-stock', labelKey: 'product.inStock', count: inStockCount },
+    {
+      value: 'out-of-stock',
+      labelKey: 'product.outOfStock',
+      count: products.length - inStockCount,
+    },
+  ]
+
+  const resetFilters = () => {
+    setAvailability('all')
+    setSortBy('featured')
   }
 
-  if (loading) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <Header
-          locale={locale}
-          setLocale={setLocale}
-          cartCount={cartCount}
-          wishlistCount={wishlistCount}
-          t={t}
-        />
-        <main className="flex-1">
-          <section className="py-12 md:py-16">
-            <div className="container mx-auto px-4">
-              <div className="flex flex-col items-center justify-center min-h-[60vh]">
-                <div className="vg-skeleton h-10 w-48 rounded-full mb-4" />
-                <div className="vg-skeleton h-8 w-32 rounded mb-8" />
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
-                    <div key={i} className="flex flex-col items-center">
-                      <div className="vg-skeleton aspect-square rounded-lg mb-3" />
-                      <div className="vg-skeleton h-3 w-3/4 rounded mb-2" />
-                      <div className="vg-skeleton h-3 w-1/3 rounded" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-          <Footer locale={locale} t={t} />
-        </main>
-      </div>
-    )
-  }
-
-  if (!collection) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <Header
-          locale={locale}
-          setLocale={setLocale}
-          cartCount={cartCount}
-          wishlistCount={wishlistCount}
-          t={t}
-        />
-        <main className="flex-1">
-          <section className="py-12 md:py-16">
-            <div className="container mx-auto px-4">
-              <div className="text-center py-12">
-                <p className="text-[#111111]/60">Collection not found</p>
-              </div>
-            </div>
-          </section>
-          <Footer locale={locale} t={t} />
-        </main>
-      </div>
-    )
-  }
+  const fitFeatures = [
+    {
+      Icon: Ruler,
+      title: isAr ? 'مقاسات M / L / XL' : 'Sizes M / L / XL',
+      text: isAr ? 'جدول مقاسات دقيق لكل قطعة.' : 'Weight-based size chart on every product.',
+    },
+    {
+      Icon: Shirt,
+      title: isAr ? 'قطن تقيل' : 'Heavyweight cotton',
+      text: isAr ? 'خامة تقيلة بفنش بريميوم.' : 'Premium heavyweight feel, ribbed cuffs.',
+    },
+    {
+      Icon: Truck,
+      title: isAr ? 'توصيل سريع' : 'Fast COD delivery',
+      text: isAr ? 'ادفع كاش لما تستلم.' : 'Cash on delivery, 2–5 business days.',
+    },
+  ]
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex min-h-screen flex-col bg-white">
       <Header
         locale={locale}
         setLocale={setLocale}
@@ -214,169 +217,400 @@ export default function CrewnecksCollectionPage() {
       />
 
       <main className="flex-1">
-        <section className="py-8 md:py-12">
-          <div className="container mx-auto px-4 md:px-6 lg:px-8">
-            {/* Collection Header */}
-            <div className="mb-10 md:mb-16">
-              <div className="flex items-baseline gap-2 mb-3">
-                <span className="text-sm font-medium text-[#111111]/60 uppercase tracking-wider">
-                  Collection:
-                </span>
-                <h1 className="text-4xl md:text-5xl font-bold leading-none tracking-tight text-[#111111]">
-                  {collection.category.name}
-                </h1>
-              </div>
-            </div>
-
-            {/* Filter & Sort Bar */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 lg:mb-12">
-              {/* Filters Sidebar (desktop) */}
-              <div className="lg:col-span-3">
-                <div className="space-y-6">
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-[#111111]/70 mb-1">
-                    Filter:
-                  </h3>
-
-                  {/* Availability Filter */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-medium text-[#111111] block mb-2">
-                      Availability
-                    </label>
-                    <div className="flex flex-col gap-1">
-                      <label className="flex items-center gap-2 text-xs cursor-pointer select-none group">
-                        <input
-                          type="checkbox"
-                          checked={availabilityFilter === 'all'}
-                          onChange={() => setAvailabilityFilter('all')}
-                          className="w-3 h-3 rounded border-[#111111] text-[#111111] focus:ring-0"
-                        />
-                        <span className="text-[#111111]/80 group-hover:text-[#111111]">
-                          All ({collection.totalProducts})
-                        </span>
-                      </label>
-                      <label className="flex items-center gap-2 text-xs cursor-pointer select-none group">
-                        <input
-                          type="checkbox"
-                          checked={availabilityFilter === 'in-stock'}
-                          onChange={() => setAvailabilityFilter('in-stock')}
-                          className="w-3 h-3 rounded border-[#111111] text-[#111111] focus:ring-0"
-                        />
-                        <span className="text-[#111111]/80 group-hover:text-[#111111]">
-                          In stock ({inStockCount})
-                        </span>
-                      </label>
-                      <label className="flex items-center gap-2 text-xs cursor-pointer select-none group">
-                        <input
-                          type="checkbox"
-                          checked={availabilityFilter === 'out-of-stock'}
-                          onChange={() => setAvailabilityFilter('out-of-stock')}
-                          className="w-3 h-3 rounded border-[#111111] text-[#111111] focus:ring-0"
-                        />
-                        <span className="text-[#111111]/80 group-hover:text-[#111111]">
-                          Out of stock ({outOfStockCount})
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Price Filter */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-medium text-[#111111] block mb-2">
-                      Price
-                    </label>
-                    <p className="text-xs text-[#111111]/60">
-                      The highest price is {maxPrice.toLocaleString(locale === 'ar' ? 'ar-EG' : 'en-EG', {
-                        style: 'currency',
-                        currency: 'EGP',
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 0,
-                      })} EGP
-                    </p>
-                    <div className="flex gap-2">
-                      <input
-                        type="number"
-                        placeholder="From"
-                        value={priceMin}
-                        onChange={(e) => setPriceMin(e.target.value)}
-                        className="w-full h-9 border border-[#111111]/30 bg-transparent px-3 text-xs text-[#111111] focus:border-[#111111] outline-none rounded-none"
-                      />
-                      <input
-                        type="number"
-                        placeholder="To"
-                        value={priceMax}
-                        onChange={(e) => setPriceMax(e.target.value)}
-                        className="w-full h-9 border border-[#111111]/30 bg-transparent px-3 text-xs text-[#111111] focus:border-[#111111] outline-none rounded-none"
-                      />
-                    </div>
-                    {priceMin || priceMax ? (
-                      <button
-                        onClick={handleRemoveAll}
-                        className="text-[10px] font-medium text-[#111111] hover:text-[#111111]/70 underline underline-offset-4"
-                      >
-                        Remove all
-                      </button>
-                    ) : null}
-                  </div>
-                </div>
-              </div>
-
-              {/* Products Header (sort + count) */}
-              <div className="lg:col-span-9 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#111111]/70">
-                    {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
-                  </span>
-                </div>
-
-                <div className="ml-auto flex items-baseline gap-2">
-                  <label className="text-xs font-medium text-[#111111]/70 uppercase tracking-wider">
-                    Sort by:
-                  </label>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="text-xs text-[#111111] bg-transparent border-0 focus:outline-none cursor-pointer appearance-none"
-                  >
-                    {SORT_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* Product Grid */}
-            <AnimatePresence>
-              {filteredProducts.length === 0 ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="text-center py-16"
-                >
-                  <p className="text-[#111111]/60">
-                    No products available in this collection.
-                  </p>
-                </motion.div>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 gap-y-8"
-                >
-                  {filteredProducts.map((product: CollectionProduct) => (
-                    <CollectionProductCard
-                      key={product.id}
-                      product={product}
-                      locale={locale}
-                    />
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
+        {/* -------------------------------------------------- HERO */}
+        <section className="relative isolate overflow-hidden bg-black text-white">
+          <div className="us-kenburns absolute inset-0">
+            <Image
+              src="/images/optimized/IMG_5546-gallery.webp"
+              alt={collection?.category.name ?? 'Crewnecks'}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover opacity-60"
+            />
           </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/25" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+          <div className="us-glow absolute -top-20 end-10 h-80 w-80 rounded-full opacity-60" aria-hidden />
+          <div
+            aria-hidden
+            className="us-text-stroke pointer-events-none absolute bottom-4 end-4 select-none text-[22vw] font-bold leading-none tracking-tighter opacity-30 lg:text-[12rem]"
+          >
+            CN
+          </div>
+
+          <div className="relative mx-auto max-w-7xl px-5 pb-20 pt-14 sm:px-8 sm:pb-28 sm:pt-20">
+            <motion.nav
+              aria-label="Breadcrumb"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+              className="mb-8 flex flex-wrap items-center gap-2 text-xs font-semibold text-white/60"
+            >
+              <Link href="/" className="flex items-center gap-1.5 transition-colors hover:text-white">
+                <Home className="h-3.5 w-3.5" aria-hidden />
+                {t('nav.home')}
+              </Link>
+              <ChevronRight className="h-3.5 w-3.5 rtl:rotate-180" aria-hidden />
+              <Link href="/categories" className="transition-colors hover:text-white">
+                {t('nav.categories')}
+              </Link>
+              <ChevronRight className="h-3.5 w-3.5 rtl:rotate-180" aria-hidden />
+              <span className="text-white">{t('nav.crewnecks')}</span>
+            </motion.nav>
+
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+              className="flex flex-wrap items-center gap-3"
+            >
+              <span className="us-glass us-float inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-white">
+                <Sparkles className="h-3.5 w-3.5 text-amber-300" aria-hidden />
+                {t('collection.title').toUpperCase()}
+              </span>
+              <span className="us-glass us-float us-float-delay inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-white">
+                <Package className="h-3.5 w-3.5 text-amber-300" aria-hidden />
+                {loading ? '…' : `${products.length} ${t('collection.pieces')}`}
+              </span>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, delay: 0.1, ease: [0.22, 0.61, 0.36, 1] }}
+              className="mt-6 max-w-3xl text-5xl font-bold leading-[0.95] tracking-tight sm:text-7xl"
+            >
+              {collection?.category.name ?? t('nav.crewnecks')}
+              <span className="us-gradient-text block">
+                {isAr ? 'أيقونات تقيلة' : 'Heavyweight icons.'}
+              </span>
+            </motion.h1>
+
+            {collection?.category.description && (
+              <motion.p
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.25, ease: 'easeOut' }}
+                className="mt-5 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base"
+              >
+                {collection.category.description}
+              </motion.p>
+            )}
+
+            <motion.dl
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.4, ease: 'easeOut' }}
+              className="mt-10 grid max-w-xl grid-cols-3 gap-6 border-t border-white/20 pt-7"
+            >
+              <div>
+                <dt className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/60">
+                  {isAr ? 'قطعة' : 'Pieces'}
+                </dt>
+                <dd className="mt-1 text-3xl font-bold">{loading ? '…' : products.length}</dd>
+              </div>
+              <div>
+                <dt className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/60">
+                  {isAr ? 'متاح' : 'In stock'}
+                </dt>
+                <dd className="mt-1 flex items-center gap-1.5 text-3xl font-bold">
+                  <Check className="h-5 w-5 text-green-400" aria-hidden />
+                  {loading ? '…' : inStockCount}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/60">
+                  {isAr ? 'يبدأ من' : 'From'}
+                </dt>
+                <dd className="mt-1 text-3xl font-bold">
+                  {loading ? '…' : `EGP ${fromPrice.toLocaleString()}`}
+                </dd>
+              </div>
+            </motion.dl>
+          </div>
+        </section>
+
+        {/* -------------------------------------------------- MARQUEE */}
+        <div className="overflow-hidden border-y border-black bg-black py-3.5" aria-hidden>
+          <div className="us-marquee-track items-center gap-8 text-xs font-bold tracking-[0.3em] text-white">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <span key={i} className="flex items-center gap-8">
+                <span className={i % 2 === 1 ? 'text-amber-300' : ''}>
+                  {isAr ? 'كرونك' : 'CREWNECKS'}
+                </span>
+                <Sparkles className="h-3.5 w-3.5 text-white/40" aria-hidden />
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* -------------------------------------------------- TOOLBAR */}
+        <div className="us-toolbar sticky top-16 z-30 border-b border-brand-line/70 sm:top-[4.5rem]">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2.5 px-5 py-3.5 sm:px-8">
+            <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t('filters.availability')}>
+              {availabilityOptions.map((option) => {
+                const selected = availability === option.value
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => setAvailability(option.value)}
+                    className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold transition-all duration-300 ${
+                      selected
+                        ? 'us-pill-active border-black bg-black text-white'
+                        : 'border-brand-line bg-white text-ink hover:border-brand'
+                    }`}
+                  >
+                    {t(option.labelKey)}
+                    <span
+                      className={`rounded-full px-1.5 text-[11px] ${
+                        selected ? 'bg-white/20 text-white' : 'bg-brand-mist text-ink/60'
+                      }`}
+                    >
+                      {option.count}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+
+            <div className="ms-auto flex flex-wrap items-center gap-2" role="group" aria-label={t('common.sort')}>
+              {SORT_OPTIONS.map((option) => {
+                const selected = sortBy === option.value
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => setSortBy(option.value)}
+                    className={`rounded-full border px-3.5 py-2 text-xs font-bold transition-all duration-300 ${
+                      selected
+                        ? 'us-pill-active border-amber-400 bg-amber-300 text-black'
+                        : 'border-brand-line bg-white text-ink/70 hover:border-brand hover:text-ink'
+                    }`}
+                  >
+                    {t(option.labelKey)}
+                  </button>
+                )
+              })}
+              {(availability !== 'all' || sortBy !== 'featured') && (
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-bold text-ink/60 underline-offset-4 transition-colors hover:text-ink hover:underline"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" aria-hidden />
+                  {t('common.clear')}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* -------------------------------------------------- GRID */}
+        <section className="py-12 sm:py-16">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <p className="mb-7 text-sm text-ink/60" aria-live="polite">
+              {loading ? (
+                t('common.loading')
+              ) : (
+                <>
+                  <strong className="font-bold text-ink">{filteredProducts.length}</strong>{' '}
+                  {filteredProducts.length === 1 ? t('collection.piece') : t('collection.pieces')}
+                </>
+              )}
+            </p>
+
+            {loading ? (
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="vg-skeleton aspect-[4/5] rounded-2xl"
+                    style={{ animationDelay: `${i * 0.12}s` }}
+                  />
+                ))}
+              </div>
+            ) : filteredProducts.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+                className="rounded-[2rem] border border-brand-line bg-brand-mist/40 px-6 py-20 text-center"
+              >
+                <p className="text-ink/60">{t('collection.noProducts')}</p>
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="us-cta mt-6 inline-flex items-center gap-2 rounded-full bg-black px-8 py-3.5 text-sm font-bold text-white"
+                >
+                  <RotateCcw className="h-4 w-4" aria-hidden />
+                  {t('common.clear')}
+                </button>
+              </motion.div>
+            ) : (
+              <motion.div
+                variants={gridContainer}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
+              >
+                <AnimatePresence mode="popLayout">
+                  {filteredProducts.map((product) => (
+                    <motion.div
+                      key={product.id}
+                      variants={gridItem}
+                      layout
+                      exit="exit"
+                      className="us-card-enter rounded-2xl"
+                    >
+                      <CollectionProductCard product={product} locale={locale} />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </div>
+        </section>
+
+        {/* -------------------------------------------------- FIT STRIP */}
+        <section className="border-y border-brand-line bg-brand-mist/50 py-14">
+          <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:grid-cols-3 sm:px-8">
+            {fitFeatures.map((feature, i) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{ duration: 0.55, delay: i * 0.1, ease: 'easeOut' }}
+                className="flex items-start gap-4"
+              >
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-black text-white">
+                  <feature.Icon className="h-5 w-5" aria-hidden />
+                </span>
+                <span>
+                  <span className="block text-sm font-bold text-ink">{feature.title}</span>
+                  <span className="mt-1 block text-sm text-ink/60">{feature.text}</span>
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* -------------------------------------------------- SISTERS */}
+        <section className="py-16 sm:py-20">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+              className="mb-10 text-center"
+            >
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-ink/50">
+                {isAr ? 'كمل اللوك' : 'Complete the fit'}
+              </p>
+              <h2 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+                {isAr ? 'قطع تكمل بعضها' : 'Pairs well with.'}
+              </h2>
+            </motion.div>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              {[
+                {
+                  href: '/collections/off-shoulder',
+                  name: 'OFF-SHOULDER',
+                  image: '/images/optimized/IMG_5531-card.webp',
+                  tag: isAr ? 'ستايل مميز' : 'Statement fits',
+                },
+                {
+                  href: '/collections/sweatpants',
+                  name: 'SWEATPANTS',
+                  image: '/images/optimized/IMG_5544-card.webp',
+                  tag: isAr ? 'راحة كل يوم' : 'Everyday comfort',
+                },
+              ].map((item, i) => (
+                <motion.div
+                  key={item.href}
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ duration: 0.6, delay: i * 0.1, ease: 'easeOut' }}
+                >
+                  <Link
+                    href={item.href}
+                    className="us-shine group relative block overflow-hidden rounded-[1.75rem]"
+                  >
+                    <div className="relative aspect-[16/10] w-full">
+                      <Image
+                        fill
+                        src={item.image}
+                        alt={item.name}
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                        loading="lazy"
+                        className="object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-110"
+                      />
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6 sm:p-8">
+                      <div>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-amber-300">
+                          {item.tag}
+                        </p>
+                        <p className="mt-1 text-2xl font-bold text-white sm:text-3xl">{item.name}</p>
+                      </div>
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-xs font-bold text-black opacity-0 transition-all duration-500 group-hover:opacity-100">
+                        {t('common.viewCollection')}
+                        <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" aria-hidden />
+                      </span>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* -------------------------------------------------- FINAL CTA */}
+        <section className="px-5 pb-20 sm:px-8 sm:pb-28">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: 0.7, ease: 'easeOut' }}
+            className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-black px-6 py-16 text-center text-white sm:px-12 sm:py-20"
+          >
+            <div className="us-glow absolute -left-20 -top-20 h-72 w-72 rounded-full" aria-hidden />
+            <div className="us-glow absolute -bottom-24 -right-16 h-80 w-80 rounded-full" aria-hidden />
+            <div className="relative">
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-amber-300">
+                {isAr ? 'القطعة الأساسية' : 'The everyday essential'}
+              </p>
+              <h2 className="mx-auto mt-4 max-w-2xl text-3xl font-bold tracking-tight sm:text-5xl">
+                {isAr ? 'اطلب الكرونك بتاعك' : 'Get your crewneck today.'}
+              </h2>
+              <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <Link
+                  href="/shop"
+                  className="us-cta us-shine group inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-10 py-4 text-sm font-bold text-black sm:w-auto"
+                >
+                  {t('common.shopNow')}
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
+                    aria-hidden
+                  />
+                </Link>
+                <Link
+                  href="/size-guide"
+                  className="inline-flex w-full items-center justify-center rounded-full border border-white/30 px-10 py-4 text-sm font-bold text-white transition-colors duration-300 hover:bg-white/10 sm:w-auto"
+                >
+                  {isAr ? 'دليل المقاسات' : 'Size guide'}
+                </Link>
+              </div>
+            </div>
+          </motion.div>
         </section>
       </main>
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslation } from '@/hooks/use-translation'
@@ -9,13 +10,17 @@ import { ProductForm } from '@/components/admin/product-form'
 export default function NewProductPage() {
   const { locale, setLocale } = useLocale()
   const { t } = useTranslation()
+  const router = useRouter()
   const [currentAdmin, setCurrentAdmin] = useState({ name: '', email: '' })
 
   useEffect(() => {
-    setCurrentAdmin({
-      name: localStorage.getItem('adminName') || 'Admin',
-      email: localStorage.getItem('adminEmail') || 'admin@uniquestudios.com',
-    })
+    const timer = setTimeout(() => {
+      setCurrentAdmin({
+        name: localStorage.getItem('adminName') || 'Admin',
+        email: localStorage.getItem('adminEmail') || 'admin@uniquestudios.com',
+      })
+    }, 0)
+    return () => clearTimeout(timer)
   }, [])
 
   return (
@@ -28,7 +33,7 @@ export default function NewProductPage() {
             <p className="text-gray-600">{t('admin.manageProducts')}</p>
           </div>
         </div>
-        <ProductForm mode="create" onSuccess={() => window.location.assign('/admin/products')} />
+        <ProductForm mode="create" onSuccess={() => router.push('/admin/products')} />
       </main>
     </div>
   )

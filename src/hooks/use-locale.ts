@@ -18,11 +18,14 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-    const savedLocale = localStorage.getItem('locale') as Locale
-    if (savedLocale && (savedLocale === 'en' || savedLocale === 'ar')) {
-      setLocaleState(savedLocale)
-    }
+    const timer = setTimeout(() => {
+      const savedLocale = localStorage.getItem('locale') as Locale | null
+      if (savedLocale && (savedLocale === 'en' || savedLocale === 'ar')) {
+        setLocaleState(savedLocale)
+      }
+      setMounted(true)
+    }, 0)
+    return () => clearTimeout(timer)
   }, [])
 
   const handleSetLocale = (newLocale: Locale) => {

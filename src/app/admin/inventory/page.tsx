@@ -27,42 +27,55 @@ export default function AdminInventoryPage() {
   const [currentAdmin, setCurrentAdmin] = useState({ name: '', email: '' })
 
   useEffect(() => {
-    fetchInventory()
-    const adminName = localStorage.getItem('adminName') || 'Admin'
-    const adminEmail = localStorage.getItem('adminEmail') || 'admin@uniquestudios.com'
-    setCurrentAdmin({ name: adminName, email: adminEmail })
-  }, [])
+    const timer = setTimeout(() => {
+      const run = async () => {
+        try {
+          const response = await fetch('/api/admin/products')
+          if (response.ok) {
+            const products: {
+              id: string
+              name: string
+              variants: {
+                id: string
+                size: string
+                color: string
+                stock: number
+                weightMin: number | null
+                weightMax: number | null
+              }[]
+            }[] = await response.json()
+            const inventoryItems: InventoryItem[] = []
 
-  const fetchInventory = async () => {
-    try {
-      const response = await fetch('/api/admin/products')
-      if (response.ok) {
-        const products = await response.json()
-        const inventoryItems: InventoryItem[] = []
-
-        ;(Array.isArray(products) ? products : []).forEach((product: any) => {
-          product.variants.forEach((variant: any) => {
-            inventoryItems.push({
-              id: variant.id,
-              productId: product.id,
-              productName: product.name,
-              size: variant.size,
-              color: variant.color,
-              stock: variant.stock,
-              weightMin: variant.weightMin,
-              weightMax: variant.weightMax,
+            ;(Array.isArray(products) ? products : []).forEach((product) => {
+              product.variants.forEach((variant) => {
+                inventoryItems.push({
+                  id: variant.id,
+                  productId: product.id,
+                  productName: product.name,
+                  size: variant.size,
+                  color: variant.color,
+                  stock: variant.stock,
+                  weightMin: variant.weightMin,
+                  weightMax: variant.weightMax,
+                })
+              })
             })
-          })
-        })
 
-        setInventory(inventoryItems.sort((a, b) => a.stock - b.stock))
+            setInventory(inventoryItems.sort((a, b) => a.stock - b.stock))
+          }
+        } catch (error) {
+          console.error('Error fetching inventory:', error)
+        } finally {
+          setLoading(false)
+        }
       }
-    } catch (error) {
-      console.error('Error fetching inventory:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+      run()
+      const adminName = localStorage.getItem('adminName') || 'Admin'
+      const adminEmail = localStorage.getItem('adminEmail') || 'admin@uniquestudios.com'
+      setCurrentAdmin({ name: adminName, email: adminEmail })
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [])
 
   const lowStockItems = inventory.filter((item) => item.stock <= 5)
   const outOfStockItems = inventory.filter((item) => item.stock === 0)

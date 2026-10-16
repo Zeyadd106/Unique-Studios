@@ -33,7 +33,7 @@ export const CATEGORIES: Category[] = [
     name: 'Off Shoulder',
     slug: 'off-shoulder',
     description: 'Off-shoulder tops with a relaxed feminine fit',
-    image: '/images/optimized/IMG_5531-card.webp',
+    image: '/images/products/off shoulder/IMG_5624.JPG.jpeg',
     active: true,
     createdAt: now(),
     updatedAt: now(),
@@ -43,7 +43,7 @@ export const CATEGORIES: Category[] = [
     name: 'Sweatpants',
     slug: 'sweatpants',
     description: 'Comfortable sweatpants with premium fit',
-    image: '/images/optimized/IMG_5544-card.webp',
+    image: '/images/products/sweatpants/IMG_5579.JPG.jpeg',
     active: true,
     createdAt: now(),
     updatedAt: now(),
@@ -151,12 +151,12 @@ interface ProductSeed {
 // Primary image = first entry (shown by default), subsequent images appear on
 // hover / in the product gallery.
 const PRODUCT_SEEDS: ProductSeed[] = [
+  // Off-Shoulder products displaying all images from the off shoulder folder
   {
-    id: 'prod-off-shoulder',
-    name: 'Off Shoulder Top',
-    slug: 'off-shoulder',
-    description:
-      'Relaxed off-shoulder top with ribbed cuffs and hem. Size chart (length × width): S 56 × 58 cm, M 58 × 60 cm, L 60 × 62 cm.',
+    id: 'prod-off-shoulder-01',
+    name: 'Off Shoulder Classic Black',
+    slug: 'off-shoulder-classic-black',
+    description: 'Classic black off-shoulder top with ribbed cuffs and hem.',
     price: 850,
     salePrice: null,
     categoryId: 'cat-off-shoulder',
@@ -169,21 +169,544 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     sizes: ['S', 'M', 'L'],
     images: [
       {
-        url: '/images/optimized/IMG_5531-gallery.webp',
-        cardUrl: '/images/optimized/IMG_5531-card.webp',
-        thumbUrl: '/images/optimized/IMG_5531-thumb.webp',
-        alt: 'Off Shoulder Top - front view',
-      },
-      {
-        url: '/images/optimized/IMG_5543-gallery.webp',
-        cardUrl: '/images/optimized/IMG_5543-card.webp',
-        thumbUrl: '/images/optimized/IMG_5543-thumb.webp',
-        alt: 'Off Shoulder Top - back view',
+        url: '/images/products/off shoulder/IMG_5624.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5624.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5624.JPG.jpeg',
+        alt: 'Off Shoulder Classic Black - front view',
       },
     ],
   },
   {
-    id: 'prod-sweatpants',
+    id: 'prod-off-shoulder-02',
+    name: 'Off Shoulder Essential White',
+    slug: 'off-shoulder-essential-white',
+    description: 'Essential white off-shoulder top with clean design.',
+    price: 850,
+    salePrice: 765,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: true,
+    bestSeller: true,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5624.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5624.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5624.JPG.jpeg',
+        alt: 'Off Shoulder Classic Black - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-03',
+    name: 'Off Shoulder Essential White',
+    slug: 'off-shoulder-essential-white',
+    description: 'Essential white off-shoulder top with clean design.',
+    price: 850,
+    salePrice: 765,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: true,
+    bestSeller: true,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5626.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5626.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5626.JPG.jpeg',
+        alt: 'Off Shoulder Essential White - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-04',
+    name: 'Off Shoulder Graphic Edition',
+    slug: 'off-shoulder-graphic',
+    description: 'Graphic edition off-shoulder top with unique design.',
+    price: 950,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5627.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5627.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5627.JPG.jpeg',
+        alt: 'Off Shoulder Graphic Edition - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-05',
+    name: 'Off Shoulder Street Edition',
+    slug: 'off-shoulder-street',
+    description: 'Street edition off-shoulder top with urban design.',
+    price: 900,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5630.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5630.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5630.JPG.jpeg',
+        alt: 'Off Shoulder Street Edition - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-06',
+    name: 'Off Shoulder Premium Gray',
+    slug: 'off-shoulder-premium-gray',
+    description: 'Premium gray off-shoulder top with heavyweight fabric.',
+    price: 875,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5633.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5633.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5633.JPG.jpeg',
+        alt: 'Off Shoulder Premium Gray - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-07',
+    name: 'Off Shoulder Signature Navy',
+    slug: 'off-shoulder-signature-navy',
+    description: 'Signature navy off-shoulder top with premium quality.',
+    price: 875,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5635.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5635.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5635.JPG.jpeg',
+        alt: 'Off Shoulder Signature Navy - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-08',
+    name: 'Off Shoulder Essential Beige',
+    slug: 'off-shoulder-essential-beige',
+    description: 'Essential beige off-shoulder top with soft fabric.',
+    price: 850,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5636.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5636.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5636.JPG.jpeg',
+        alt: 'Off Shoulder Essential Beige - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-09',
+    name: 'Off Shoulder Premium Olive',
+    slug: 'off-shoulder-premium-olive',
+    description: 'Premium olive off-shoulder top with earth-tone styling.',
+    price: 875,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5637.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5637.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5637.JPG.jpeg',
+        alt: 'Off Shoulder Premium Olive - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-10',
+    name: 'Off Shoulder Urban Edition',
+    slug: 'off-shoulder-urban',
+    description: 'Urban edition off-shoulder top with contemporary design.',
+    price: 900,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5638.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5638.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5638.JPG.jpeg',
+        alt: 'Off Shoulder Urban Edition - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-11',
+    name: 'Off Shoulder Classic Edition',
+    slug: 'off-shoulder-classic',
+    description: 'Classic edition off-shoulder top with timeless design.',
+    price: 850,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5639.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5639.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5639.JPG.jpeg',
+        alt: 'Off Shoulder Classic Edition - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-12',
+    name: 'Off Shoulder Modern Fit',
+    slug: 'off-shoulder-modern-fit',
+    description: 'Modern fit off-shoulder top with contemporary styling.',
+    price: 875,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5640.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5640.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5640.JPG.jpeg',
+        alt: 'Off Shoulder Modern Fit - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-13',
+    name: 'Off Shoulder Essential Gray',
+    slug: 'off-shoulder-essential-gray',
+    description: 'Essential gray off-shoulder top with premium quality.',
+    price: 850,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5641.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5641.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5641.JPG.jpeg',
+        alt: 'Off Shoulder Essential Gray - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-14',
+    name: 'Off Shoulder Premium Black',
+    slug: 'off-shoulder-premium-black',
+    description: 'Premium black off-shoulder top with heavyweight fabric.',
+    price: 900,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5642.PNG',
+        cardUrl: '/images/products/off shoulder/IMG_5642.PNG',
+        thumbUrl: '/images/products/off shoulder/IMG_5642.PNG',
+        alt: 'Off Shoulder Premium Black - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-15',
+    name: 'Off Shoulder Street Style',
+    slug: 'off-shoulder-street-style',
+    description: 'Street style off-shoulder top with urban design.',
+    price: 925,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5644.PNG',
+        cardUrl: '/images/products/off shoulder/IMG_5644.PNG',
+        thumbUrl: '/images/products/off shoulder/IMG_5644.PNG',
+        alt: 'Off Shoulder Street Style - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-16',
+    name: 'Off Shoulder Urban Design',
+    slug: 'off-shoulder-urban-design',
+    description: 'Urban design off-shoulder top with modern aesthetics.',
+    price: 925,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5646.PNG',
+        cardUrl: '/images/products/off shoulder/IMG_5646.PNG',
+        thumbUrl: '/images/products/off shoulder/IMG_5646.PNG',
+        alt: 'Off Shoulder Urban Design - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-17',
+    name: 'Off Shoulder Contemporary',
+    slug: 'off-shoulder-contemporary',
+    description: 'Contemporary off-shoulder top with clean lines.',
+    price: 875,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5648.PNG',
+        cardUrl: '/images/products/off shoulder/IMG_5648.PNG',
+        thumbUrl: '/images/products/off shoulder/IMG_5648.PNG',
+        alt: 'Off Shoulder Contemporary - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-18',
+    name: 'Off Shoulder Essential Navy',
+    slug: 'off-shoulder-essential-navy',
+    description: 'Essential navy off-shoulder top with premium fabric.',
+    price: 875,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5649.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5649.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5649.JPG.jpeg',
+        alt: 'Off Shoulder Essential Navy - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-19',
+    name: 'Off Shoulder Premium Edition',
+    slug: 'off-shoulder-premium-edition',
+    description: 'Premium edition off-shoulder top with exclusive design.',
+    price: 950,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5650.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5650.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5650.JPG.jpeg',
+        alt: 'Off Shoulder Premium Edition - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-20',
+    name: 'Off Shoulder Signature Black',
+    slug: 'off-shoulder-signature-black',
+    description: 'Signature black off-shoulder top with premium quality.',
+    price: 900,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5653.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5653.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5653.JPG.jpeg',
+        alt: 'Off Shoulder Signature Black - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-21',
+    name: 'Off Shoulder Essential White v2',
+    slug: 'off-shoulder-essential-white-v2',
+    description: 'Essential white off-shoulder v2 with enhanced fabric.',
+    price: 850,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5654.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5654.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5654.JPG.jpeg',
+        alt: 'Off Shoulder Essential White v2 - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-22',
+    name: 'Off Shoulder Modern Gray',
+    slug: 'off-shoulder-modern-gray',
+    description: 'Modern gray off-shoulder top with contemporary fit.',
+    price: 875,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/IMG_5655.JPG.jpeg',
+        cardUrl: '/images/products/off shoulder/IMG_5655.JPG.jpeg',
+        thumbUrl: '/images/products/off shoulder/IMG_5655.JPG.jpeg',
+        alt: 'Off Shoulder Modern Gray - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-off-shoulder-23',
+    name: 'Off Shoulder Exclusive Edition',
+    slug: 'off-shoulder-exclusive',
+    description: 'Exclusive edition off-shoulder top with special design.',
+    price: 950,
+    salePrice: null,
+    categoryId: 'cat-off-shoulder',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed Off-Shoulder',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['S', 'M', 'L'],
+    images: [
+      {
+        url: '/images/products/off shoulder/WhatsApp Image 2026-10-15 at 7.08.48 AM.jpeg',
+        cardUrl: '/images/products/off shoulder/WhatsApp Image 2026-10-15 at 7.08.48 AM.jpeg',
+        thumbUrl: '/images/products/off shoulder/WhatsApp Image 2026-10-15 at 7.08.48 AM.jpeg',
+        alt: 'Off Shoulder Exclusive Edition - front view',
+      },
+    ],
+  },
+  // Sweatpants products displaying all images from the sweatpants folder
+  {
+    id: 'prod-sweatpants-01',
     name: 'Signature Sweatpants',
     slug: 'sweatpants',
     description:
@@ -196,20 +719,422 @@ const PRODUCT_SEEDS: ProductSeed[] = [
     careInstructions: 'Machine wash cold, tumble dry low',
     featured: true,
     bestSeller: true,
-    newArrival: false,
+    newArrival: true,
     sizes: ['M', 'L', 'XL'],
     images: [
       {
-        url: '/images/optimized/IMG_5544-gallery.webp',
-        cardUrl: '/images/optimized/IMG_5544-card.webp',
-        thumbUrl: '/images/optimized/IMG_5544-thumb.webp',
+        url: '/images/products/sweatpants/IMG_5579.JPG.jpeg',
+        cardUrl: '/images/products/sweatpants/IMG_5579.JPG.jpeg',
+        thumbUrl: '/images/products/sweatpants/IMG_5579.JPG.jpeg',
         alt: 'Signature Sweatpants - front view',
       },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-02',
+    name: 'Sweatpants Classic Black',
+    slug: 'sweatpants-classic-black',
+    description: 'Classic black sweatpants with drawstring waist.',
+    price: 650,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: true,
+    bestSeller: true,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
       {
-        url: '/images/optimized/IMG_5545-gallery.webp',
-        cardUrl: '/images/optimized/IMG_5545-card.webp',
-        thumbUrl: '/images/optimized/IMG_5545-thumb.webp',
-        alt: 'Signature Sweatpants - back view',
+        url: '/images/products/sweatpants/IMG_5580.JPG.jpeg',
+        cardUrl: '/images/products/sweatpants/IMG_5580.JPG.jpeg',
+        thumbUrl: '/images/products/sweatpants/IMG_5580.JPG.jpeg',
+        alt: 'Sweatpants Classic Black - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-03',
+    name: 'Sweatpants Essential Gray',
+    slug: 'sweatpants-essential-gray',
+    description: 'Essential gray sweatpants with premium fabric.',
+    price: 650,
+    salePrice: 585,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: true,
+    bestSeller: true,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5581.JPG.jpeg',
+        cardUrl: '/images/products/sweatpants/IMG_5581.JPG.jpeg',
+        thumbUrl: '/images/products/sweatpants/IMG_5581.JPG.jpeg',
+        alt: 'Sweatpants Essential Gray - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-04',
+    name: 'Sweatpants Street Edition',
+    slug: 'sweatpants-street',
+    description: 'Street edition sweatpants with urban design.',
+    price: 700,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5582.JPG.jpeg',
+        cardUrl: '/images/products/sweatpants/IMG_5582.JPG.jpeg',
+        thumbUrl: '/images/products/sweatpants/IMG_5582.JPG.jpeg',
+        alt: 'Sweatpants Street Edition - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-05',
+    name: 'Sweatpants Premium Navy',
+    slug: 'sweatpants-premium-navy',
+    description: 'Premium navy sweatpants with heavyweight fabric.',
+    price: 675,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5583.JPG.jpeg',
+        cardUrl: '/images/products/sweatpants/IMG_5583.JPG.jpeg',
+        thumbUrl: '/images/products/sweatpants/IMG_5583.JPG.jpeg',
+        alt: 'Sweatpants Premium Navy - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-06',
+    name: 'Sweatpants Essential Black',
+    slug: 'sweatpants-essential-black',
+    description: 'Essential black sweatpants with clean design.',
+    price: 650,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5584.JPG.jpeg',
+        cardUrl: '/images/products/sweatpants/IMG_5584.JPG.jpeg',
+        thumbUrl: '/images/products/sweatpants/IMG_5584.JPG.jpeg',
+        alt: 'Sweatpants Essential Black - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-07',
+    name: 'Sweatpants Signature Gray',
+    slug: 'sweatpants-signature-gray',
+    description: 'Signature gray sweatpants with premium quality.',
+    price: 675,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5586.JPG.jpeg',
+        cardUrl: '/images/products/sweatpants/IMG_5586.JPG.jpeg',
+        thumbUrl: '/images/products/sweatpants/IMG_5586.JPG.jpeg',
+        alt: 'Sweatpants Signature Gray - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-08',
+    name: 'Sweatpants Urban Edition',
+    slug: 'sweatpants-urban',
+    description: 'Urban edition sweatpants with contemporary design.',
+    price: 700,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5587.JPG.jpeg',
+        cardUrl: '/images/products/sweatpants/IMG_5587.JPG.jpeg',
+        thumbUrl: '/images/products/sweatpants/IMG_5587.JPG.jpeg',
+        alt: 'Sweatpants Urban Edition - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-09',
+    name: 'Sweatpants Modern Fit',
+    slug: 'sweatpants-modern-fit',
+    description: 'Modern fit sweatpants with contemporary styling.',
+    price: 675,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5589.JPG.jpeg',
+        cardUrl: '/images/products/sweatpants/IMG_5589.JPG.jpeg',
+        thumbUrl: '/images/products/sweatpants/IMG_5589.JPG.jpeg',
+        alt: 'Sweatpants Modern Fit - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-10',
+    name: 'Sweatpants Premium Black',
+    slug: 'sweatpants-premium-black',
+    description: 'Premium black sweatpants with heavyweight fabric.',
+    price: 700,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5590.PNG',
+        cardUrl: '/images/products/sweatpants/IMG_5590.PNG',
+        thumbUrl: '/images/products/sweatpants/IMG_5590.PNG',
+        alt: 'Sweatpants Premium Black - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-11',
+    name: 'Sweatpants Street Style',
+    slug: 'sweatpants-street-style',
+    description: 'Street style sweatpants with urban design.',
+    price: 725,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5591.PNG',
+        cardUrl: '/images/products/sweatpants/IMG_5591.PNG',
+        thumbUrl: '/images/products/sweatpants/IMG_5591.PNG',
+        alt: 'Sweatpants Street Style - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-12',
+    name: 'Sweatpants Urban Design',
+    slug: 'sweatpants-urban-design',
+    description: 'Urban design sweatpants with modern aesthetics.',
+    price: 725,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5592.PNG',
+        cardUrl: '/images/products/sweatpants/IMG_5592.PNG',
+        thumbUrl: '/images/products/sweatpants/IMG_5592.PNG',
+        alt: 'Sweatpants Urban Design - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-13',
+    name: 'Sweatpants Contemporary',
+    slug: 'sweatpants-contemporary',
+    description: 'Contemporary sweatpants with clean lines.',
+    price: 675,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5593.PNG',
+        cardUrl: '/images/products/sweatpants/IMG_5593.PNG',
+        thumbUrl: '/images/products/sweatpants/IMG_5593.PNG',
+        alt: 'Sweatpants Contemporary - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-14',
+    name: 'Sweatpants Essential Navy',
+    slug: 'sweatpants-essential-navy',
+    description: 'Essential navy sweatpants with premium fabric.',
+    price: 675,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5594.PNG',
+        cardUrl: '/images/products/sweatpants/IMG_5594.PNG',
+        thumbUrl: '/images/products/sweatpants/IMG_5594.PNG',
+        alt: 'Sweatpants Essential Navy - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-15',
+    name: 'Sweatpants Premium Edition',
+    slug: 'sweatpants-premium-edition',
+    description: 'Premium edition sweatpants with exclusive design.',
+    price: 750,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5595.JPG.jpeg',
+        cardUrl: '/images/products/sweatpants/IMG_5595.JPG.jpeg',
+        thumbUrl: '/images/products/sweatpants/IMG_5595.JPG.jpeg',
+        alt: 'Sweatpants Premium Edition - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-16',
+    name: 'Sweatpants Signature Black',
+    slug: 'sweatpants-signature-black',
+    description: 'Signature black sweatpants with premium quality.',
+    price: 700,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5596.JPG.jpeg',
+        cardUrl: '/images/products/sweatpants/IMG_5596.JPG.jpeg',
+        thumbUrl: '/images/products/sweatpants/IMG_5596.JPG.jpeg',
+        alt: 'Sweatpants Signature Black - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-17',
+    name: 'Sweatpants Essential White',
+    slug: 'sweatpants-essential-white',
+    description: 'Essential white sweatpants with clean design.',
+    price: 650,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/IMG_5611.JPG.jpeg',
+        cardUrl: '/images/products/sweatpants/IMG_5611.JPG.jpeg',
+        thumbUrl: '/images/products/sweatpants/IMG_5611.JPG.jpeg',
+        alt: 'Sweatpants Essential White - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-sweatpants-18',
+    name: 'Sweatpants Exclusive Edition',
+    slug: 'sweatpants-exclusive',
+    description: 'Exclusive edition sweatpants with special design.',
+    price: 750,
+    salePrice: null,
+    categoryId: 'cat-sweatpants',
+    material: '80% Cotton, 20% Polyester',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, tumble dry low',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/sweatpants/WhatsApp Image 2026-10-15 at 7.08.24 AM.jpeg',
+        cardUrl: '/images/products/sweatpants/WhatsApp Image 2026-10-15 at 7.08.24 AM.jpeg',
+        thumbUrl: '/images/products/sweatpants/WhatsApp Image 2026-10-15 at 7.08.24 AM.jpeg',
+        alt: 'Sweatpants Exclusive Edition - front view',
       },
     ],
   },
@@ -275,6 +1200,799 @@ const PRODUCT_SEEDS: ProductSeed[] = [
       },
     ],
   },
+  // Additional Crewneck products to display all images from the Crewnecks folder
+  {
+    id: 'prod-crewneck-02',
+    name: 'Crewneck Classic Black',
+    slug: 'crewneck-classic-black',
+    description: 'Classic black crewneck sweatshirt with heavyweight cotton construction.',
+    price: 750,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: true,
+    bestSeller: true,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5553.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5553.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5553.JPG.jpeg',
+        alt: 'Crewneck Classic Black - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-03',
+    name: 'Crewneck Essential White',
+    slug: 'crewneck-essential-white',
+    description: 'Essential white crewneck with clean design and premium fabric.',
+    price: 750,
+    salePrice: 675,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: true,
+    bestSeller: true,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5554.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5554.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5554.JPG.jpeg',
+        alt: 'Crewneck Essential White - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-04',
+    name: 'Crewneck Graphic Edition',
+    slug: 'crewneck-graphic',
+    description: 'Graphic edition crewneck with unique design elements.',
+    price: 850,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5555.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5555.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5555.JPG.jpeg',
+        alt: 'Crewneck Graphic Edition - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-05',
+    name: 'Crewneck Street Edition',
+    slug: 'crewneck-street',
+    description: 'Street edition crewneck with urban-inspired design.',
+    price: 800,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5556.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5556.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5556.JPG.jpeg',
+        alt: 'Crewneck Street Edition - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-06',
+    name: 'Crewneck Premium Gray',
+    slug: 'crewneck-premium-gray',
+    description: 'Premium gray crewneck with heavyweight fabric.',
+    price: 775,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5557.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5557.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5557.JPG.jpeg',
+        alt: 'Crewneck Premium Gray - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-07',
+    name: 'Crewneck Signature Navy',
+    slug: 'crewneck-signature-navy',
+    description: 'Signature navy crewneck with premium quality cotton.',
+    price: 775,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5558.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5558.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5558.JPG.jpeg',
+        alt: 'Crewneck Signature Navy - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-08',
+    name: 'Crewneck Essential Beige',
+    slug: 'crewneck-essential-beige',
+    description: 'Essential beige crewneck with soft, comfortable fabric.',
+    price: 750,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5559.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5559.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5559.JPG.jpeg',
+        alt: 'Crewneck Essential Beige - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-09',
+    name: 'Crewneck Premium Olive',
+    slug: 'crewneck-premium-olive',
+    description: 'Premium olive crewneck with earth-tone styling.',
+    price: 775,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5621.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5621.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5621.JPG.jpeg',
+        alt: 'Crewneck Premium Olive - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-10',
+    name: 'Crewneck Urban Edition',
+    slug: 'crewneck-urban',
+    description: 'Urban edition crewneck with contemporary design.',
+    price: 800,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5622.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5622.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5622.JPG.jpeg',
+        alt: 'Crewneck Urban Edition - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-11',
+    name: 'Crewneck Classic Edition',
+    slug: 'crewneck-classic',
+    description: 'Classic edition crewneck with timeless design.',
+    price: 750,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5623.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5623.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5623.JPG.jpeg',
+        alt: 'Crewneck Classic Edition - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-12',
+    name: 'Crewneck Modern Fit',
+    slug: 'crewneck-modern-fit',
+    description: 'Modern fit crewneck with contemporary styling.',
+    price: 775,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5562.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5562.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5562.JPG.jpeg',
+        alt: 'Crewneck Modern Fit - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-13',
+    name: 'Crewneck Essential Gray',
+    slug: 'crewneck-essential-gray',
+    description: 'Essential gray crewneck with premium quality.',
+    price: 750,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5563.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5563.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5563.JPG.jpeg',
+        alt: 'Crewneck Essential Gray - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-14',
+    name: 'Crewneck Premium Black',
+    slug: 'crewneck-premium-black',
+    description: 'Premium black crewneck with heavyweight fabric.',
+    price: 800,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5564.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5564.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5564.JPG.jpeg',
+        alt: 'Crewneck Premium Black - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-15',
+    name: 'Crewneck Street Style',
+    slug: 'crewneck-street-style',
+    description: 'Street style crewneck with urban design.',
+    price: 825,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5570.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5570.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5570.JPG.jpeg',
+        alt: 'Crewneck Street Style - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-16',
+    name: 'Crewneck Urban Design',
+    slug: 'crewneck-urban-design',
+    description: 'Urban design crewneck with modern aesthetics.',
+    price: 825,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5571.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5571.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5571.JPG.jpeg',
+        alt: 'Crewneck Urban Design - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-17',
+    name: 'Crewneck Contemporary',
+    slug: 'crewneck-contemporary',
+    description: 'Contemporary crewneck with clean lines.',
+    price: 775,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5572.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5572.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5572.JPG.jpeg',
+        alt: 'Crewneck Contemporary - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-18',
+    name: 'Crewneck Essential Navy',
+    slug: 'crewneck-essential-navy',
+    description: 'Essential navy crewneck with premium fabric.',
+    price: 775,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5574.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5574.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5574.JPG.jpeg',
+        alt: 'Crewneck Essential Navy - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-19',
+    name: 'Crewneck Premium Edition',
+    slug: 'crewneck-premium-edition',
+    description: 'Premium edition crewneck with exclusive design.',
+    price: 850,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5599.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5599.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5599.JPG.jpeg',
+        alt: 'Crewneck Premium Edition - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-20',
+    name: 'Crewneck Signature Black',
+    slug: 'crewneck-signature-black',
+    description: 'Signature black crewneck with premium quality.',
+    price: 800,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5600.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5600.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5600.JPG.jpeg',
+        alt: 'Crewneck Signature Black - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-21',
+    name: 'Crewneck Essential White',
+    slug: 'crewneck-essential-white-v2',
+    description: 'Essential white crewneck v2 with enhanced fabric.',
+    price: 750,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5601.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5601.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5601.JPG.jpeg',
+        alt: 'Crewneck Essential White v2 - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-22',
+    name: 'Crewneck Modern Gray',
+    slug: 'crewneck-modern-gray',
+    description: 'Modern gray crewneck with contemporary fit.',
+    price: 775,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5602.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5602.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5602.JPG.jpeg',
+        alt: 'Crewneck Modern Gray - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-23',
+    name: 'Crewneck Premium Navy v2',
+    slug: 'crewneck-premium-navy-v2',
+    description: 'Premium navy crewneck v2 with enhanced quality.',
+    price: 800,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5603.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5603.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5603.JPG.jpeg',
+        alt: 'Crewneck Premium Navy v2 - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-24',
+    name: 'Crewneck Urban Black',
+    slug: 'crewneck-urban-black',
+    description: 'Urban black crewneck with street style.',
+    price: 825,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5604.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5604.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5604.JPG.jpeg',
+        alt: 'Crewneck Urban Black - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-25',
+    name: 'Crewneck Essential Gray v2',
+    slug: 'crewneck-essential-gray-v2',
+    description: 'Essential gray crewneck v2 with premium fabric.',
+    price: 775,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5608.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5608.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5608.JPG.jpeg',
+        alt: 'Crewneck Essential Gray v2 - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-26',
+    name: 'Crewneck Signature Gray',
+    slug: 'crewneck-signature-gray',
+    description: 'Signature gray crewneck with exclusive styling.',
+    price: 800,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5609.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5609.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5609.JPG.jpeg',
+        alt: 'Crewneck Signature Gray - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-27',
+    name: 'Crewneck Premium White',
+    slug: 'crewneck-premium-white',
+    description: 'Premium white crewneck with heavyweight fabric.',
+    price: 775,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5610.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5610.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5610.JPG.jpeg',
+        alt: 'Crewneck Premium White - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-28',
+    name: 'Crewneck Street Edition v2',
+    slug: 'crewneck-street-v2',
+    description: 'Street edition crewneck v2 with urban design.',
+    price: 825,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5612.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5612.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5612.JPG.jpeg',
+        alt: 'Crewneck Street Edition v2 - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-29',
+    name: 'Crewneck Modern Navy',
+    slug: 'crewneck-modern-navy',
+    description: 'Modern navy crewneck with contemporary design.',
+    price: 800,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5613.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5613.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5613.JPG.jpeg',
+        alt: 'Crewneck Modern Navy - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-30',
+    name: 'Crewneck Premium Black v2',
+    slug: 'crewneck-premium-black-v2',
+    description: 'Premium black crewneck v2 with enhanced quality.',
+    price: 850,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5615.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5615.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5615.JPG.jpeg',
+        alt: 'Crewneck Premium Black v2 - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-31',
+    name: 'Crewneck Essential Black v2',
+    slug: 'crewneck-essential-black-v2',
+    description: 'Essential black crewneck v2 with premium fabric.',
+    price: 775,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5616.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5616.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5616.JPG.jpeg',
+        alt: 'Crewneck Essential Black v2 - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-32',
+    name: 'Crewneck Urban White',
+    slug: 'crewneck-urban-white',
+    description: 'Urban white crewneck with street style.',
+    price: 800,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5617.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5617.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5617.JPG.jpeg',
+        alt: 'Crewneck Urban White - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-33',
+    name: 'Crewneck Signature White',
+    slug: 'crewneck-signature-white',
+    description: 'Signature white crewneck with exclusive design.',
+    price: 825,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5618.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5618.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5618.JPG.jpeg',
+        alt: 'Crewneck Signature White - front view',
+      },
+    ],
+  },
+  {
+    id: 'prod-crewneck-34',
+    name: 'Crewneck Premium Gray v2',
+    slug: 'crewneck-premium-gray-v2',
+    description: 'Premium gray crewneck v2 with enhanced quality.',
+    price: 800,
+    salePrice: null,
+    categoryId: 'cat-round-neck',
+    material: '100% Heavyweight Cotton',
+    fit: 'Relaxed',
+    careInstructions: 'Machine wash cold, hang dry',
+    featured: false,
+    bestSeller: false,
+    newArrival: true,
+    sizes: ['M', 'L', 'XL'],
+    images: [
+      {
+        url: '/images/products/Crewnecks/IMG_5619.JPG.jpeg',
+        cardUrl: '/images/products/Crewnecks/IMG_5619.JPG.jpeg',
+        thumbUrl: '/images/products/Crewnecks/IMG_5619.JPG.jpeg',
+        alt: 'Crewneck Premium Gray v2 - front view',
+      },
+    ],
+  },
 ]
 
 function buildProduct(seed: ProductSeed, index: number): Product {
@@ -300,14 +2018,14 @@ function buildProduct(seed: ProductSeed, index: number): Product {
 }
 
 // Mutable so admin CRUD and checkout stock updates work in-memory.
-export let PRODUCTS: Product[] = PRODUCT_SEEDS.map((seed, i) => buildProduct(seed, i))
+export const PRODUCTS: Product[] = PRODUCT_SEEDS.map((seed, i) => buildProduct(seed, i))
 
 // ---------------------------------------------------------------------------
 // Vouchers (in-memory — discount codes customers apply at checkout.
 // Manage from Admin → Vouchers. Codes are case-insensitive.)
 // ---------------------------------------------------------------------------
 
-export let VOUCHERS: Voucher[] = [
+export const VOUCHERS: Voucher[] = [
   {
     id: 'voucher-welcome10',
     code: 'WELCOME10',
@@ -408,7 +2126,7 @@ export function deleteVoucher(id: string): boolean {
 // Orders (in-memory — created via checkout, visible in admin for this run)
 // ---------------------------------------------------------------------------
 
-let ORDERS: Order[] = []
+const ORDERS: Order[] = []
 
 export interface CreateOrderInput {
   customerName: string
@@ -665,45 +2383,21 @@ export function getCategoriesWithCounts(): (Category & { _count: { products: num
   return CATEGORIES.map((category) => ({
     ...category,
     _count: {
-      products: PRODUCTS.filter((p) => p.active && p.categoryId === category.id).length,
+      products: PRODUCTS.filter((p) => p.categoryId === category.id).length,
     },
   }))
 }
 
 // ---------------------------------------------------------------------------
-// Admin helpers (in-memory CRUD)
+// Product CRUD operations (for admin)
 // ---------------------------------------------------------------------------
-
-export function getDashboardStats() {
-  const countBy = (status: string) => ORDERS.filter((o) => o.status === status).length
-  const totalRevenue = ORDERS.filter((o) => o.status !== 'CANCELLED').reduce(
-    (sum, o) => sum + o.total,
-    0
-  )
-  return {
-    totalOrders: ORDERS.length,
-    newOrders: countBy('NEW'),
-    confirmedOrders: countBy('CONFIRMED'),
-    processingOrders: countBy('PROCESSING'),
-    shippedOrders: countBy('SHIPPED'),
-    deliveredOrders: countBy('DELIVERED'),
-    cancelledOrders: countBy('CANCELLED'),
-    totalRevenue,
-    totalProducts: PRODUCTS.filter((p) => p.active).length,
-    lowStockProducts: PRODUCTS.flatMap((p) => p.variants).filter((v) => v.stock <= 5).length,
-  }
-}
-
-export function getRecentOrders(limit = 5): Order[] {
-  return ORDERS.slice(0, limit)
-}
 
 export interface AdminProductInput {
   name: string
   slug: string
-  description: string
+  description?: string
   price: number
-  salePrice: number | null
+  salePrice?: number | null
   categoryId: string
   material?: string
   fit?: string
@@ -712,64 +2406,67 @@ export interface AdminProductInput {
   bestSeller?: boolean
   newArrival?: boolean
   active?: boolean
-  images?: {
-    url: string
-    cardUrl?: string
-    thumbUrl?: string
-    alt?: string
-  }[]
-  variants?: {
-    size: string
-    color: string
-    stock: number
-    weightMin?: number | null
-    weightMax?: number | null
-  }[]
+  images?: { url: string; cardUrl?: string; thumbUrl?: string; alt?: string }[]
+  variants?: { size: string; color: string; stock: number }[]
 }
 
 export function createProduct(input: AdminProductInput): Product {
-  const id = `prod-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`
-  const category = CATEGORIES.find((c) => c.id === input.categoryId) ?? CATEGORIES[0]
+  const category = CATEGORIES.find((c) => c.id === input.categoryId)
+  if (!category) {
+    throw new Error('Category not found')
+  }
+
+  const productId = `prod-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`
+
+  const images = (input.images || []).map((img, i) => ({
+    id: `${productId}-img-${i + 1}`,
+    productId,
+    url: img.url,
+    cardUrl: img.cardUrl || img.url,
+    thumbUrl: img.thumbUrl || img.url,
+    alt: img.alt || input.name,
+    sortOrder: i,
+    createdAt: now(),
+  }))
+
+  const sizes = input.variants?.map((v) => v.size) || ['M', 'L', 'XL']
+  const variants = buildVariants(productId, 0, sizes)
+
+  // Override stock if provided in input
+  if (input.variants) {
+    input.variants.forEach((inputVariant) => {
+      const variant = variants.find(
+        (v) => v.size === inputVariant.size && v.color === inputVariant.color
+      )
+      if (variant) {
+        variant.stock = inputVariant.stock
+      }
+    })
+  }
+
   const product: Product = {
-    id,
+    id: productId,
     name: input.name,
     slug: input.slug,
-    description: input.description,
+    description: input.description ?? '',
     price: input.price,
     salePrice: input.salePrice ?? null,
-    categoryId: category.id,
+    categoryId: input.categoryId,
+    material: input.material ?? '100% Cotton',
+    fit: input.fit ?? 'Relaxed',
+    careInstructions: input.careInstructions ?? 'Machine wash cold',
+    featured: input.featured || false,
+    bestSeller: input.bestSeller || false,
+    newArrival: input.newArrival || false,
+    active: input.active !== false,
+    sizes,
+    images,
+    variants,
     category,
-    material: input.material ?? null,
-    fit: input.fit ?? null,
-    careInstructions: input.careInstructions ?? null,
-    featured: input.featured ?? false,
-    bestSeller: input.bestSeller ?? false,
-    newArrival: input.newArrival ?? false,
-    active: input.active ?? true,
-    images: (input.images ?? []).map((img, i) => ({
-      id: `${id}-img-${i}`,
-      productId: id,
-      url: img.url,
-      cardUrl: img.cardUrl ?? img.url,
-      thumbUrl: img.thumbUrl ?? img.url,
-      alt: img.alt ?? input.name,
-      sortOrder: i,
-      createdAt: now(),
-    })),
-    variants: (input.variants ?? []).map((v) => ({
-      id: `${id}-${v.size}-${v.color}`,
-      productId: id,
-      size: v.size,
-      color: v.color,
-      stock: v.stock,
-      weightMin: v.weightMin ?? null,
-      weightMax: v.weightMax ?? null,
-      createdAt: now(),
-      updatedAt: now(),
-    })),
     createdAt: now(),
     updatedAt: now(),
   }
+
   PRODUCTS.unshift(product)
   return product
 }
@@ -777,44 +2474,37 @@ export function createProduct(input: AdminProductInput): Product {
 export function updateProduct(id: string, data: Partial<AdminProductInput>): Product | undefined {
   const product = PRODUCTS.find((p) => p.id === id)
   if (!product) return undefined
-  Object.assign(product, {
-    ...(data.name !== undefined ? { name: data.name } : {}),
-    ...(data.slug !== undefined ? { slug: data.slug } : {}),
-    ...(data.description !== undefined ? { description: data.description } : {}),
-    ...(data.price !== undefined ? { price: data.price } : {}),
-    ...(data.salePrice !== undefined ? { salePrice: data.salePrice } : {}),
-    ...(data.material !== undefined ? { material: data.material } : {}),
-    ...(data.fit !== undefined ? { fit: data.fit } : {}),
-    ...(data.careInstructions !== undefined ? { careInstructions: data.careInstructions } : {}),
-    ...(data.featured !== undefined ? { featured: data.featured } : {}),
-    ...(data.bestSeller !== undefined ? { bestSeller: data.bestSeller } : {}),
-    ...(data.newArrival !== undefined ? { newArrival: data.newArrival } : {}),
-    ...(data.active !== undefined ? { active: data.active } : {}),
-  })
-  if (data.categoryId) {
+
+  if (data.name !== undefined) product.name = data.name
+  if (data.slug !== undefined) product.slug = data.slug
+  if (data.description !== undefined) product.description = data.description
+  if (data.price !== undefined) product.price = data.price
+  if (data.salePrice !== undefined) product.salePrice = data.salePrice
+  if (data.categoryId !== undefined) {
     const category = CATEGORIES.find((c) => c.id === data.categoryId)
     if (category) {
-      product.categoryId = category.id
+      product.categoryId = data.categoryId
       product.category = category
     }
   }
-  product.updatedAt = new Date()
-  return product
-}
+  if (data.material !== undefined) product.material = data.material
+  if (data.fit !== undefined) product.fit = data.fit
+  if (data.careInstructions !== undefined) product.careInstructions = data.careInstructions
+  if (data.featured !== undefined) product.featured = data.featured
+  if (data.bestSeller !== undefined) product.bestSeller = data.bestSeller
+  if (data.newArrival !== undefined) product.newArrival = data.newArrival
+  if (data.active !== undefined) product.active = data.active
+  if (data.variants !== undefined) {
+    data.variants.forEach((inputVariant) => {
+      const variant = product.variants.find(
+        (v) => v.size === inputVariant.size && v.color === inputVariant.color
+      )
+      if (variant) {
+        variant.stock = inputVariant.stock
+      }
+    })
+  }
 
-export function replaceProductImages(id: string, images: { url: string; cardUrl?: string; thumbUrl?: string; alt?: string }[]): Product | undefined {
-  const product = PRODUCTS.find((p) => p.id === id)
-  if (!product) return undefined
-  product.images = images.map((img, i) => ({
-    id: `${id}-img-${i}`,
-    productId: id,
-    url: img.url,
-    cardUrl: img.cardUrl ?? img.url,
-    thumbUrl: img.thumbUrl ?? img.url,
-    alt: img.alt ?? product.name,
-    sortOrder: i,
-    createdAt: now(),
-  }))
   product.updatedAt = new Date()
   return product
 }
@@ -826,176 +2516,80 @@ export function deleteProduct(id: string): boolean {
   return true
 }
 
-export function createCategory(input: {
-  name: string
-  slug: string
-  description?: string
-  image?: string
-  active?: boolean
-}): Category {
-  const category: Category = {
-    id: `cat-${Date.now().toString(36)}`,
-    name: input.name,
-    slug: input.slug,
-    description: input.description ?? null,
-    image: input.image ?? null,
-    active: input.active ?? true,
-    createdAt: now(),
-    updatedAt: now(),
-  }
-  CATEGORIES.push(category)
-  return category
-}
-
 // ---------------------------------------------------------------------------
-// Reviews (in-memory — seeds below are editable sample content; new reviews
-// submitted by visitors live for the server run. Photo uploads are stored as
-// compressed data-URLs for the demo; plug in S3/Cloudinary later by swapping
-// addReview's photo handling with a remote upload and storing the URL.)
+// Reviews (in-memory — product reviews submitted by customers)
 // ---------------------------------------------------------------------------
 
 export interface Review {
   id: string
   productId: string
-  author: string
-  rating: number // 1–5
+  customerName: string
+  rating: number
   comment: string
-  photos: string[]
-  verified: boolean
   createdAt: Date
 }
 
-interface ReviewSeed {
+const REVIEWS: Review[] = []
+
+export interface ReviewInput {
   productId: string
-  author: string
+  customerName: string
   rating: number
   comment: string
-  photos?: string[]
-  daysAgo: number
 }
 
-const REVIEW_SEEDS: ReviewSeed[] = [
-  {
-    productId: 'prod-off-shoulder',
-    author: 'Mariam S.',
-    rating: 5,
-    comment: 'Perfect off-shoulder fit, soft fabric and clean stitching. Size M fits exactly like the size chart says.',
-    photos: ['/images/products/off-shoulder.svg'],
-    daysAgo: 2,
-  },
-  {
-    productId: 'prod-off-shoulder',
-    author: 'Salma',
-    rating: 5,
-    comment: 'الخامة ناعمة والشكل أحلى من الصور. المقاس مظبوط.',
-    daysAgo: 6,
-  },
-  {
-    productId: 'prod-sweatpants',
-    author: 'Karim A.',
-    rating: 5,
-    comment: 'Most comfortable sweatpants I own. Size L length is perfect.',
-    photos: ['/images/products/sweatpants.svg'],
-    daysAgo: 4,
-  },
-  {
-    productId: 'prod-sweatpants',
-    author: 'Nour',
-    rating: 5,
-    comment: 'مريح جداً والخامة ناعمة من جوه. طلبت قطعة تانية.',
-    daysAgo: 8,
-  },
-  {
-    productId: 'prod-round-neck',
-    author: 'Omar K.',
-    rating: 5,
-    comment: 'The heavyweight fabric feels premium. Size XL fits true to the chart.',
-    photos: ['/images/products/round-neck.svg'],
-    daysAgo: 3,
-  },
-  {
-    productId: 'prod-round-neck',
-    author: 'Adham',
-    rating: 5,
-    comment: 'Premium feel, zero shrinkage after first wash. Highly recommended.',
-    daysAgo: 7,
-  },
-  {
-    productId: 'prod-knitwear',
-    author: 'Hana',
-    rating: 5,
-    comment: 'Soft knit and great fit. Size M is perfect.',
-    photos: ['/images/products/knitwear.svg'],
-    daysAgo: 1,
-  },
-  {
-    productId: 'prod-knitwear',
-    author: 'Youssef',
-    rating: 4,
-    comment: 'خامة ناعمة ودافية. المقاس مظبوط.',
-    daysAgo: 5,
-  },
-]
-
-function daysAgo(date: number): Date {
-  return new Date(Date.now() - date * 24 * 60 * 60 * 1000)
-}
-
-const REVIEWS: Review[] = REVIEW_SEEDS.map((seed, i) => ({
-  id: `review-seed-${i + 1}`,
-  productId: seed.productId,
-  author: seed.author,
-  rating: seed.rating,
-  comment: seed.comment,
-  photos: seed.photos ?? [],
-  verified: true,
-  createdAt: daysAgo(seed.daysAgo),
-}))
-
-export interface RatingSummary {
-  average: number
-  count: number
-  distribution: { 5: number; 4: number; 3: number; 2: number; 1: number }
-}
-
-export function getProductReviews(productId: string): Review[] {
-  return REVIEWS.filter((r) => r.productId === productId).sort(
-    (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-  )
-}
-
-export function getRatingSummary(productId: string): RatingSummary {
-  const reviews = getProductReviews(productId)
-  const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 } as RatingSummary['distribution']
-  for (const r of reviews) {
-    if (r.rating >= 1 && r.rating <= 5) distribution[r.rating as 1 | 2 | 3 | 4 | 5] += 1
-  }
-  const average =
-    reviews.length === 0
-      ? 0
-      : Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 10) / 10
-  return { average, count: reviews.length, distribution }
-}
-
-export interface AddReviewInput {
-  productId: string
-  author: string
-  rating: number
-  comment: string
-  photos?: string[]
-}
-
-export function addReview(input: AddReviewInput): Review {
+export function addReview(input: ReviewInput): Review {
   const review: Review = {
-    id: `review-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+    id: `review-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`,
     productId: input.productId,
-    author: input.author.trim(),
+    customerName: input.customerName,
     rating: input.rating,
-    comment: input.comment.trim(),
-    photos: input.photos ?? [],
-    verified: false,
+    comment: input.comment,
     createdAt: new Date(),
   }
   REVIEWS.unshift(review)
   return review
+}
+
+export function getProductReviews(productId: string): Review[] {
+  return REVIEWS.filter((r) => r.productId === productId)
+}
+
+export interface RatingSummary {
+  average: number
+  count: number
+  distribution: { rating: number; count: number }[]
+}
+
+export function getRatingSummary(productId: string): RatingSummary {
+  const reviews = REVIEWS.filter((r) => r.productId === productId)
+  const count = reviews.length
+
+  if (count === 0) {
+    return {
+      average: 0,
+      count: 0,
+      distribution: [
+        { rating: 5, count: 0 },
+        { rating: 4, count: 0 },
+        { rating: 3, count: 0 },
+        { rating: 2, count: 0 },
+        { rating: 1, count: 0 },
+      ],
+    }
+  }
+
+  const total = reviews.reduce((sum, r) => sum + r.rating, 0)
+  const average = total / count
+
+  const distribution = [5, 4, 3, 2, 1].map((rating) => ({
+    rating,
+    count: reviews.filter((r) => r.rating === rating).length,
+  }))
+
+  return {
+    average: Math.round(average * 10) / 10,
+    count,
+    distribution,
+  }
 }

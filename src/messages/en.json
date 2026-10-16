@@ -3,7 +3,9 @@
     "brandName": "UNIQUE STUDIOS",
     "announcement": "Cash on Delivery across Egypt — pay when you receive your order",
     "shopNow": "Shop Now",
+    "shopAll": "Shop All",
     "viewAll": "View All",
+    "viewCollection": "View Collection",
     "search": "Search",
     "searchPlaceholder": "Search products...",
     "filter": "Filter",
@@ -24,7 +26,9 @@
     "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",
-    "language": "Language"
+    "language": "Language",
+    "increaseQuantity": "Increase quantity",
+    "decreaseQuantity": "Decrease quantity"
   },
   "nav": {
     "home": "Home",
@@ -32,6 +36,8 @@
     "newArrivals": "New Arrivals",
     "collections": "Collections",
     "crewnecks": "Crewnecks",
+    "offShoulder": "Off Shoulder",
+    "sweatpants": "Sweatpants",
     "categories": "Categories",
     "about": "About",
     "contact": "Contact",
@@ -43,6 +49,7 @@
   },
   "collection": {
     "title": "Collection",
+    "all": "All",
     "sortBy": "Sort By",
     "featured": "Featured",
     "newest": "Newest",
@@ -62,8 +69,12 @@
   },
   "home": {
     "newArrivals": "New Arrivals",
+    "newDrop": "New Drop",
+    "newDropText": "The latest pieces just landed. Explore the drop and shop the newest arrivals.",
+    "newArrivalsText": "The newest pieces just arrived. Every piece is part of the current drop.",
     "bestSellers": "Best Sellers",
     "shopByCategory": "Shop by Category",
+    "shopByCategorySubtitle": "Browse the core collections and find your signature piece.",
     "featuredCollections": "Featured Collections",
     "trendingNow": "Trending Now",
     "ourStory": "Our Story",

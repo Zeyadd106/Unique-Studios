@@ -1,6 +1,7 @@
 'use client'
 
 import { Suspense, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useSearchParams } from 'next/navigation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
@@ -12,7 +13,7 @@ import { useLocale } from '@/hooks/use-locale'
 import { useTranslation } from '@/hooks/use-translation'
 import { useCart } from '@/hooks/use-cart'
 import { useWishlist } from '@/hooks/use-wishlist'
-import { PackageSearch, Check } from 'lucide-react'
+import { Check, Package, Truck, Clock, MapPin, CreditCard, Sparkles } from 'lucide-react'
 
 interface TrackedItem {
   productName: string
@@ -47,7 +48,35 @@ export default function TrackPage() {
 function TrackLoading() {
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <p className="text-gray-600">...</p>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="relative"
+      >
+        <motion.div
+          className="h-12 w-12 rounded-full bg-gradient-to-br from-brand to-brand/60"
+          animate={{
+            rotate: 360,
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            rotate: { duration: 2, repeat: Infinity, ease: "linear" },
+            scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
+          }}
+        />
+        <motion.div
+          className="pointer-events-none absolute inset-0 h-12 w-12 rounded-full bg-gradient-to-br from-brand to-brand/60 blur-xl"
+          animate={{
+            opacity: [0.5, 0.8, 0.5],
+            scale: [1, 1.4, 1],
+          }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </motion.div>
     </div>
   )
 }
@@ -59,7 +88,9 @@ function TrackContent() {
   const { cartCount } = useCart()
   const { wishlistCount } = useWishlist()
 
-  const [orderNumber, setOrderNumber] = useState(searchParams.get('orderNumber') ?? '')
+  const [orderNumber, setOrderNumber] = useState(
+    () => searchParams.get('orderNumber') ?? '',
+  )
   const [phone, setPhone] = useState('')
   const [order, setOrder] = useState<TrackedOrder | null>(null)
   const [error, setError] = useState('')
@@ -84,8 +115,8 @@ function TrackContent() {
     }
   }
 
-  const handleTrack = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleTrack = async (event: React.FormEvent) => {
+    event.preventDefault()
     setError('')
     setOrder(null)
     setIsLoading(true)
@@ -106,10 +137,12 @@ function TrackContent() {
     }
   }
 
-  const currentStep = order ? TIMELINE.indexOf(order.status as (typeof TIMELINE)[number]) : -1
+  const currentStep = order
+    ? TIMELINE.indexOf(order.status as (typeof TIMELINE)[number])
+    : -1
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-white via-brand-mist/20 to-white">
       <Header
         locale={locale}
         setLocale={setLocale}
@@ -118,121 +151,477 @@ function TrackContent() {
         t={t}
       />
 
-      <main className="flex-1">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10 md:py-14">
-          <div className="text-center mb-8">
-            <PackageSearch className="h-12 w-12 mx-auto mb-4 text-[#111111]" />
-            <h1 className="text-2xl md:text-3xl font-extrabold">{t('track.title')}</h1>
-            <p className="mt-2 text-sm text-[#111111]/70">{t('track.subtitle')}</p>
-          </div>
+      <main className="flex-1 relative overflow-hidden">
+        {/* Animated background elements */}
+        <motion.div
+          className="pointer-events-none absolute top-20 left-10 h-64 w-64 rounded-full bg-brand/5 blur-3xl"
+          animate={{
+            x: [0, 30, 0],
+            y: [0, -30, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="pointer-events-none absolute bottom-20 right-10 h-96 w-96 rounded-full bg-brand/5 blur-3xl"
+          animate={{
+            x: [0, -40, 0],
+            y: [0, 40, 0],
+            scale: [1, 1.3, 1],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
 
-          <Card>
-            <CardContent className="pt-6">
-              <form onSubmit={handleTrack} className="space-y-4">
-                {error && (
-                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-                    {error}
-                  </div>
-                )}
-                <div>
-                  <Label htmlFor="orderNumber">{t('track.orderNumber')}</Label>
-                  <Input
-                    id="orderNumber"
-                    value={orderNumber}
-                    onChange={(e) => setOrderNumber(e.target.value)}
-                    placeholder={t('track.orderNumberPlaceholder')}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="phone">{t('track.phone')}</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                  />
-                </div>
-                <Button type="submit" className="w-full" loading={isLoading}>
-                  {t('track.trackButton')}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          {order && (
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>{order.orderNumber}</span>
-                  <span className="text-sm font-bold">{statusLabel(order.status)}</span>
-                </CardTitle>
-                <p className="text-xs text-[#111111]/60">
-                  {t('track.orderDate')}: {new Date(order.createdAt).toLocaleString()}
+        <section className="relative py-16 md:py-24">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="mb-12 max-w-2xl"
+            >
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mb-4 flex items-center gap-2"
+              >
+                <Sparkles className="h-4 w-4 text-brand" />
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-ink/50">
+                  {t('track.title').toUpperCase()}
                 </p>
-              </CardHeader>
-              <CardContent>
-                {/* Timeline */}
-                {order.status === 'CANCELLED' ? (
-                  <p className="text-sm font-bold text-red-600">
-                    {statusLabel(order.status)}
-                  </p>
-                ) : (
-                  <ol className="flex items-center gap-1 mb-6">
-                    {TIMELINE.map((step, i) => {
-                      const done = i <= currentStep
-                      return (
-                        <li key={step} className="flex-1">
-                          <div
-                            className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${
-                              done ? 'bg-[#111111] text-white' : 'bg-[#F1F1F1] text-[#111111]/40'
-                            }`}
-                          >
-                            {done ? <Check className="h-4 w-4" /> : i + 1}
-                          </div>
-                          <p
-                            className={`mt-1 text-[10px] md:text-[11px] font-semibold leading-tight ${
-                              done ? '' : 'text-[#111111]/40'
-                            }`}
-                          >
-                            {statusLabel(step)}
-                          </p>
-                          {i < TIMELINE.length - 1 && (
-                            <div className={`mt-1 h-0.5 ${i < currentStep ? 'bg-[#111111]' : 'bg-[#E2E2E2]'}`} />
-                          )}
-                        </li>
-                      )
-                    })}
-                  </ol>
-                )}
+              </motion.div>
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-4xl font-bold leading-tight tracking-tight text-ink md:text-5xl"
+              >
+                {t('track.title')}
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="mt-4 text-sm leading-relaxed text-ink/60 md:text-base"
+              >
+                {t('track.subtitle')}
+              </motion.p>
+            </motion.div>
 
-                <div className="border-t border-[#E2E2E2] pt-4">
-                  <p className="text-sm font-bold mb-2">{t('track.items')}</p>
-                  <div className="space-y-2">
-                    {order.items.map((item, i) => (
-                      <div key={i} className="flex justify-between text-sm">
-                        <span>
-                          {item.productName} — {item.size} / {item.color} × {item.quantity}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex justify-between mt-4 pt-3 border-t border-[#E2E2E2]">
-                    <span className="font-bold">{t('track.total')}</span>
-                    <span className="font-extrabold">EGP {order.total.toLocaleString()}</span>
-                  </div>
-                  {order.discountAmount > 0 && (
-                    <p className="mt-1 text-xs font-semibold text-green-700">
-                      {t('voucher.discount')}: −EGP {order.discountAmount.toLocaleString()}
-                      {order.voucherCode ? ` (${order.voucherCode})` : ''}
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+            <div className="grid gap-10 lg:grid-cols-2">
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+              >
+                <Card className="relative overflow-hidden border-2 border-brand/10 bg-white/80 backdrop-blur-xl shadow-2xl shadow-brand/5 transition-all duration-300 hover:shadow-brand/10 hover:border-brand/20">
+                  <motion.div
+                    className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand/5 via-transparent to-transparent"
+                    animate={{
+                      opacity: [0.3, 0.5, 0.3],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <CardContent className="relative pt-6">
+                    <form onSubmit={handleTrack} className="space-y-5">
+                      <AnimatePresence mode="wait">
+                        {error && (
+                          <motion.div
+                            role="alert"
+                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                            className="rounded-xl border-2 border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 shadow-lg"
+                          >
+                            {error}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 }}
+                      >
+                        <Label htmlFor="orderNumber" className="mb-2 text-sm font-semibold text-ink">
+                          {t('track.orderNumber')}
+                        </Label>
+                        <motion.div whileFocus={{ scale: 1.01 }} transition={{ duration: 0.2 }}>
+                          <Input
+                            id="orderNumber"
+                            value={orderNumber}
+                            onChange={(event) =>
+                              setOrderNumber(event.target.value)
+                            }
+                            placeholder={t('track.orderNumberPlaceholder')}
+                            required
+                            className="border-2 border-brand/20 bg-white/50 text-ink transition-all duration-300 focus:border-brand focus:bg-white focus:shadow-lg focus:shadow-brand/20"
+                          />
+                        </motion.div>
+                      </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7 }}
+                      >
+                        <Label htmlFor="phone" className="mb-2 text-sm font-semibold text-ink">
+                          {t('track.phone')}
+                        </Label>
+                        <motion.div whileFocus={{ scale: 1.01 }} transition={{ duration: 0.2 }}>
+                          <Input
+                            id="phone"
+                            type="tel"
+                            value={phone}
+                            onChange={(event) => setPhone(event.target.value)}
+                            required
+                            className="border-2 border-brand/20 bg-white/50 text-ink transition-all duration-300 focus:border-brand focus:bg-white focus:shadow-lg focus:shadow-brand/20"
+                          />
+                        </motion.div>
+                      </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.8 }}
+                      >
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <Button
+                            type="submit"
+                            size="lg"
+                            className="relative w-full overflow-hidden bg-gradient-to-r from-brand to-brand/90 text-white shadow-xl shadow-brand/30 transition-all duration-300 hover:shadow-brand/50"
+                            disabled={isLoading}
+                          >
+                            <motion.div
+                              className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                              animate={{
+                                x: ['-100%', '100%'],
+                              }}
+                              transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                ease: "linear",
+                              }}
+                            />
+                            {isLoading ? (
+                              <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                              >
+                                <Check className="h-5 w-5" />
+                              </motion.div>
+                            ) : (
+                              <span className="relative flex items-center gap-2 font-semibold">
+                                <Truck className="h-5 w-5" />
+                                {t('track.trackButton')}
+                              </span>
+                            )}
+                          </Button>
+                        </motion.div>
+                      </motion.div>
+                    </form>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              <AnimatePresence mode="wait">
+                {order && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 30, scale: 0.95 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    exit={{ opacity: 0, x: 30, scale: 0.95 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    className="space-y-6"
+                  >
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                    >
+                      <Card className="relative overflow-hidden border-2 border-brand/20 bg-white/90 backdrop-blur-xl shadow-2xl shadow-brand/10">
+                        <motion.div
+                          className="pointer-events-none absolute top-0 right-0 h-32 w-32 rounded-full bg-gradient-to-br from-brand/10 to-transparent blur-2xl"
+                          animate={{
+                            scale: [1, 1.2, 1],
+                            opacity: [0.5, 0.8, 0.5],
+                          }}
+                          transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          }}
+                        />
+                        <CardHeader className="relative">
+                          <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                          >
+                            <CardTitle className="flex flex-wrap items-baseline justify-between gap-3">
+                              <motion.span
+                                className="flex items-center gap-2"
+                                whileHover={{ scale: 1.02 }}
+                              >
+                                <Package className="h-5 w-5 text-brand" />
+                                {order.orderNumber}
+                              </motion.span>
+                              <motion.span
+                                className="rounded-full bg-gradient-to-r from-brand to-brand/80 px-3 py-1 text-sm font-bold text-white shadow-lg shadow-brand/30"
+                                animate={{
+                                  scale: [1, 1.05, 1],
+                                }}
+                                transition={{
+                                  duration: 2,
+                                  repeat: Infinity,
+                                  ease: "easeInOut",
+                                }}
+                              >
+                                {statusLabel(order.status)}
+                              </motion.span>
+                            </CardTitle>
+                            <motion.p
+                              className="mt-2 flex items-center gap-2 text-xs text-ink/50"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: 0.3 }}
+                            >
+                              <Clock className="h-3 w-3" />
+                              {t('track.orderDate')}: {new Date(order.createdAt).toLocaleString(locale === 'ar' ? 'ar-EG' : 'en-EG')}
+                            </motion.p>
+                          </motion.div>
+                        </CardHeader>
+                        <CardContent className="relative">
+                          {order.status === 'CANCELLED' ? (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              className="rounded-xl border-2 border-red-200 bg-red-50 p-4 text-center"
+                            >
+                              <p className="text-sm font-bold text-red-600">
+                                {statusLabel(order.status)}
+                              </p>
+                            </motion.div>
+                          ) : (
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.3 }}
+                            >
+                              <ol className="relative flex items-start gap-2 overflow-x-auto pb-4">
+                                {TIMELINE.map((step, index) => {
+                                  const done = index <= currentStep
+                                  const current = index === currentStep
+                                  return (
+                                    <motion.li
+                                      key={step}
+                                      initial={{ opacity: 0, y: 10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      transition={{ delay: 0.4 + index * 0.1 }}
+                                      className="flex-1 min-w-[60px]"
+                                    >
+                                      <motion.div
+                                        className={`relative flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold shadow-lg transition-all duration-300 ${
+                                          done
+                                            ? 'bg-gradient-to-br from-brand to-brand/80 text-white shadow-brand/30'
+                                            : current
+                                            ? 'bg-gradient-to-br from-brand/40 to-brand/20 text-brand ring-4 ring-brand/20'
+                                            : 'bg-brand-mist text-ink/30'
+                                        }`}
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.95 }}
+                                      >
+                                        {done ? (
+                                          <motion.div
+                                            initial={{ scale: 0 }}
+                                            animate={{ scale: 1 }}
+                                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                          >
+                                            <Check className="h-5 w-5" />
+                                          </motion.div>
+                                        ) : (
+                                          index + 1
+                                        )}
+                                        {current && (
+                                          <motion.div
+                                            className="pointer-events-none absolute inset-0 rounded-full bg-brand/30 blur-xl"
+                                            animate={{
+                                              scale: [1, 1.5, 1],
+                                              opacity: [0.5, 0.8, 0.5],
+                                            }}
+                                            transition={{
+                                              duration: 2,
+                                              repeat: Infinity,
+                                              ease: "easeInOut",
+                                            }}
+                                          />
+                                        )}
+                                      </motion.div>
+                                      <motion.p
+                                        className={`mt-2 text-center text-[10px] font-semibold leading-tight md:text-[11px] ${
+                                          done ? 'text-ink' : current ? 'text-brand font-bold' : 'text-ink/40'
+                                        }`}
+                                        animate={current ? {
+                                          scale: [1, 1.05, 1],
+                                        } : {}}
+                                        transition={{
+                                          duration: 2,
+                                          repeat: Infinity,
+                                          ease: "easeInOut",
+                                        }}
+                                      >
+                                        {statusLabel(step)}
+                                      </motion.p>
+                                      {index < TIMELINE.length - 1 && (
+                                        <motion.div
+                                          className={`absolute top-5 left-1/2 h-0.5 w-full -translate-y-1/2 rounded-full ${
+                                            index < currentStep
+                                              ? 'bg-gradient-to-r from-brand to-brand/60'
+                                              : 'bg-brand-line'
+                                          }`}
+                                          initial={{ scaleX: 0 }}
+                                          animate={{ scaleX: done ? 1 : 0 }}
+                                          transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
+                                        />
+                                      )}
+                                    </motion.li>
+                                  )
+                                })}
+                              </ol>
+                            </motion.div>
+                          )}
+
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.8 }}
+                            className="mt-6 border-t-2 border-brand/10 pt-6"
+                          >
+                            <motion.p
+                              className="mb-4 flex items-center gap-2 text-sm font-bold text-ink"
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.9 }}
+                            >
+                              <Package className="h-4 w-4 text-brand" />
+                              {t('track.items')}
+                            </motion.p>
+                            <motion.div
+                              className="space-y-3"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: 1 }}
+                            >
+                              {order.items.map((item, index) => (
+                                <motion.div
+                                  key={index}
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: 1.1 + index * 0.1 }}
+                                  whileHover={{ x: 5 }}
+                                  className="group flex justify-between gap-4 rounded-lg bg-brand-mist/30 p-3 text-sm transition-all duration-300 hover:bg-brand-mist/50"
+                                >
+                                  <span className="text-ink/75 transition-colors group-hover:text-ink">
+                                    {item.productName} — {item.size} / {item.color}{' '}
+                                    × {item.quantity}
+                                  </span>
+                                  <motion.div
+                                    className="h-2 w-2 rounded-full bg-brand/50"
+                                    animate={{
+                                      scale: [1, 1.2, 1],
+                                      opacity: [0.5, 1, 0.5],
+                                    }}
+                                    transition={{
+                                      duration: 2,
+                                      repeat: Infinity,
+                                      ease: "easeInOut",
+                                    }}
+                                  />
+                                </motion.div>
+                              ))}
+                            </motion.div>
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 1.4 }}
+                              className="mt-6 flex justify-between border-t-2 border-brand/10 pt-4 text-lg"
+                            >
+                              <span className="font-bold text-ink">{t('track.total')}</span>
+                              <motion.span
+                                className="font-extrabold bg-gradient-to-r from-brand to-brand/80 bg-clip-text text-transparent"
+                                initial={{ scale: 0.8 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                              >
+                                {new Intl.NumberFormat(locale === 'ar' ? 'ar-EG' : 'en-EG', {
+                                  style: 'currency',
+                                  currency: 'EGP',
+                                  maximumFractionDigits: 0,
+                                }).format(order.total)}
+                              </motion.span>
+                            </motion.div>
+                            {order.discountAmount > 0 && (
+                              <motion.p
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 1.5 }}
+                                className="mt-2 flex items-center gap-2 text-xs font-semibold text-brand"
+                              >
+                                <Sparkles className="h-3 w-3" />
+                                {t('voucher.discount')}: −
+                                {new Intl.NumberFormat(locale === 'ar' ? 'ar-EG' : 'en-EG', {
+                                  style: 'currency',
+                                  currency: 'EGP',
+                                  maximumFractionDigits: 0,
+                                }).format(order.discountAmount)}
+                                {order.voucherCode ? ` (${order.voucherCode})` : ''}
+                              </motion.p>
+                            )}
+                          </motion.div>
+
+                          {/* Order Details Footer */}
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 1.6 }}
+                            className="mt-6 grid grid-cols-2 gap-3 rounded-xl bg-gradient-to-br from-brand/5 to-brand/10 p-4"
+                          >
+                            <motion.div
+                              className="flex items-center gap-2 text-xs text-ink/60"
+                              whileHover={{ scale: 1.02 }}
+                            >
+                              <MapPin className="h-4 w-4 text-brand" />
+                              <span>{order.city}</span>
+                            </motion.div>
+                            <motion.div
+                              className="flex items-center gap-2 text-xs text-ink/60"
+                              whileHover={{ scale: 1.02 }}
+                            >
+                              <CreditCard className="h-4 w-4 text-brand" />
+                              <span>{order.paymentMethod}</span>
+                            </motion.div>
+                          </motion.div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </section>
       </main>
 
       <Footer locale={locale} t={t} />

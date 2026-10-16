@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import NextImage from 'next/image'
 import { Star, Camera, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -36,7 +37,7 @@ function Stars({ value, className = 'h-4 w-4' }: { value: number; className?: st
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
           key={i}
-          className={`${className} ${i <= Math.round(value) ? 'fill-[#111111] text-[#111111]' : 'text-gray-300'}`}
+          className={`${className} ${i <= Math.round(value) ? 'fill-brand text-brand' : 'text-ink/30'}`}
         />
       ))}
     </span>
@@ -81,7 +82,7 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
   const [formError, setFormError] = useState('')
   const [justPosted, setJustPosted] = useState(false)
 
-  const load = async () => {
+  const load = useCallback(async () => {
     try {
       const res = await fetch(`/api/reviews?productId=${productId}`)
       const data = await res.json()
@@ -90,12 +91,14 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
     } catch (error) {
       console.error('Error loading reviews:', error)
     }
-  }
+  }, [productId])
 
   useEffect(() => {
-    load()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productId])
+    const timer = setTimeout(() => {
+      load()
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [load])
 
   const handlePhotos = async (files: FileList | null) => {
     setPhotoError('')
@@ -140,7 +143,7 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
   }
 
   return (
-    <section className="mt-12 md:mt-16 border-t border-[#E2E2E2] pt-8 md:pt-10">
+    <section className="mt-12 border-t border-brand-line pt-8 md:mt-16 md:pt-10">
       <h2 className="text-xl md:text-2xl font-extrabold">{t('reviews.title')}</h2>
 
       {/* Summary */}
@@ -151,7 +154,7 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
               <span className="text-3xl font-extrabold">{summary.average}</span>
               <div>
                 <Stars value={summary.average} />
-                <p className="text-xs text-[#111111]/60">
+                <p className="text-xs text-ink/60">
                   {summary.count} {t('reviews.basedOn')}
                 </p>
               </div>
@@ -160,7 +163,7 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
               {[5, 4, 3, 2, 1].map((s) => (
                 <span
                   key={s}
-                  className="rounded-full bg-[#F3F3F3] px-2.5 py-1 text-xs font-bold"
+                  className="rounded-full bg-brand-mist px-2.5 py-1 text-xs font-bold text-brand"
                 >
                   {s}★ {summary.distribution[String(s)] ?? 0}
                 </span>
@@ -168,7 +171,7 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
             </div>
           </>
         ) : (
-          <p className="text-sm text-[#111111]/60">{t('reviews.noReviews')}</p>
+          <p className="text-sm text-ink/60">{t('reviews.noReviews')}</p>
         )}
         <Button
           variant={formOpen ? 'ghost' : 'outline'}
@@ -186,7 +189,7 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
           <CardContent className="pt-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               {formError && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+                <div className="rounded-md border border-brand-line bg-brand-mist px-4 py-3 text-sm text-brand">
                   {formError}
                 </div>
               )}
@@ -215,7 +218,7 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
                         className="p-0.5"
                       >
                         <Star
-                          className={`h-7 w-7 ${s <= rating ? 'fill-[#111111] text-[#111111]' : 'text-gray-300'}`}
+                          className={`h-7 w-7 ${s <= rating ? 'fill-brand text-brand' : 'text-ink/30'}`}
                         />
                       </button>
                     ))}
@@ -240,7 +243,7 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
                 <div className="flex items-center gap-3 mt-1">
                   <label
                     htmlFor="review-photos"
-                    className="flex cursor-pointer items-center gap-2 rounded-md border border-[#E2E2E2] px-3 py-2 text-sm font-semibold hover:opacity-70"
+                    className="flex cursor-pointer items-center gap-2 rounded-md border border-brand-line px-3 py-2 text-sm font-semibold hover:opacity-70"
                   >
                     <Camera className="h-4 w-4" />
                     {t('reviews.addPhotos').split('(')[0]}
@@ -255,23 +258,25 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
                   />
                   {photos.map((p, i) => (
                     <div key={i} className="relative h-14 w-14">
-                      <img
+                      <NextImage
                         src={p}
                         alt=""
-                        className="h-14 w-14 rounded-md object-cover border border-[#E2E2E2]"
+                        width={56}
+                        height={56}
+                        className="h-14 w-14 rounded-md object-cover border border-brand-line"
                       />
                       <button
                         type="button"
                         aria-label={t('common.remove')}
                         onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
-                        className="absolute -top-2 -end-2 rounded-full bg-[#111111] p-0.5 text-white"
+                        className="absolute -top-2 -end-2 rounded-full bg-brand p-0.5 text-white"
                       >
                         <X className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   ))}
                 </div>
-                {photoError && <p className="mt-1 text-xs text-red-600">{photoError}</p>}
+                {photoError && <p className="mt-1 text-xs font-semibold text-brand">{photoError}</p>}
               </div>
               <Button type="submit" loading={submitting}>
                 {submitting ? t('reviews.submitting') : t('reviews.submit')}
@@ -282,21 +287,21 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
       )}
 
       {justPosted && (
-        <p className="mt-4 text-sm font-semibold text-green-700">{t('reviews.thanks')}</p>
+        <p className="mt-4 text-sm font-semibold text-brand">{t('reviews.thanks')}</p>
       )}
 
       {/* List */}
       <div className="mt-6 space-y-4">
         {reviews.map((review) => (
-          <article key={review.id} className="rounded-md border border-[#E2E2E2] p-4 md:p-5">
+          <article key={review.id} className="rounded-2xl border border-brand-line bg-white p-4 md:p-5">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#111111] text-xs font-bold text-white">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-xs font-bold text-white">
                   {review.author.charAt(0).toUpperCase()}
                 </span>
                 <div>
                   <p className="text-sm font-bold">{review.author}</p>
-                  <p className="text-[11px] text-[#111111]/50">
+                  <p className="text-[11px] text-ink/50">
                     {new Date(review.createdAt).toLocaleDateString()}
                     {review.verified && ` · ${t('reviews.verified')}`}
                   </p>
@@ -308,12 +313,13 @@ export function ReviewsSection({ productId, locale, t }: ReviewsSectionProps) {
             {review.photos.length > 0 && (
               <div className="mt-3 flex gap-2">
                 {review.photos.map((photo, i) => (
-                  <img
+                  <NextImage
                     key={i}
                     src={photo}
                     alt=""
-                    loading="lazy"
-                    className="h-20 w-20 rounded-md border border-[#E2E2E2] object-cover"
+                    width={80}
+                    height={80}
+                    className="h-20 w-20 rounded-xl border border-brand-line object-cover"
                   />
                 ))}
               </div>

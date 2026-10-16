@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -28,6 +28,7 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ currentAdmin, locale, setLocale, t }: AdminSidebarProps) {
   const pathname = usePathname()
+  const router = useRouter()
   const [isMobileOpen, setIsMobileOpen] = useState(false)
 
   const navItems = [
@@ -42,7 +43,7 @@ export function AdminSidebar({ currentAdmin, locale, setLocale, t }: AdminSideba
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
-    window.location.href = '/admin/login'
+    router.push('/admin/login')
   }
 
   return (

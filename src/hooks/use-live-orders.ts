@@ -28,7 +28,7 @@ export function useLiveOrders(limit = 50, intervalMs = DEFAULT_INTERVAL_MS): Liv
   const knownIds = useRef<Set<string> | null>(null)
 
   const fetchOrders = useCallback(
-    async (isFirst: boolean) => {
+    async () => {
       try {
         const response = await fetch(`/api/admin/orders?limit=${limit}`)
         if (response.status === 401) {
@@ -65,12 +65,15 @@ export function useLiveOrders(limit = 50, intervalMs = DEFAULT_INTERVAL_MS): Liv
 
   useEffect(() => {
     let cancelled = false
-    fetchOrders(true)
+    const initialTimer = setTimeout(() => {
+      if (!cancelled) fetchOrders()
+    }, 0)
     const timer = setInterval(() => {
-      if (!cancelled) fetchOrders(false)
+      if (!cancelled) fetchOrders()
     }, intervalMs)
     return () => {
       cancelled = true
+      clearTimeout(initialTimer)
       clearInterval(timer)
     }
   }, [fetchOrders, intervalMs])
@@ -83,7 +86,7 @@ export function useLiveOrders(limit = 50, intervalMs = DEFAULT_INTERVAL_MS): Liv
     newOrderIds,
     lastUpdated,
     unauthorized,
-    refresh: () => fetchOrders(false),
+    refresh: () => fetchOrders(),
     dismissNew,
   }
 }
@@ -107,7 +110,7 @@ export function useLiveStats(limit = 5, intervalMs = DEFAULT_INTERVAL_MS): LiveS
   const knownIds = useRef<Set<string> | null>(null)
 
   const fetchStats = useCallback(
-    async (isFirst: boolean) => {
+    async () => {
       try {
         const response = await fetch(`/api/admin/stats?limit=${limit}`)
         if (response.status === 401) {
@@ -143,12 +146,15 @@ export function useLiveStats(limit = 5, intervalMs = DEFAULT_INTERVAL_MS): LiveS
 
   useEffect(() => {
     let cancelled = false
-    fetchStats(true)
+    const initialTimer = setTimeout(() => {
+      if (!cancelled) fetchStats()
+    }, 0)
     const timer = setInterval(() => {
-      if (!cancelled) fetchStats(false)
+      if (!cancelled) fetchStats()
     }, intervalMs)
     return () => {
       cancelled = true
+      clearTimeout(initialTimer)
       clearInterval(timer)
     }
   }, [fetchStats, intervalMs])

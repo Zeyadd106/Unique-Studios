@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
@@ -17,12 +16,13 @@ interface ProductCardProps {
 }
 
 /**
- * Premium product card with color swatch support.
+ * Image-focused product card.
  *
- * - Primary image shows by default; secondary image cross-fades on hover.
- * - Color swatches displayed below the image; clicking a swatch updates the
- *   card image without navigating away from the category page.
- * - Fixed aspect-ratio container prevents layout shift on hover.
+ * - The primary image shows by default; a secondary image cross-fades in on
+ *   hover so customers can preview the product naturally while browsing.
+ * - There are no color selectors: every variant of a product shares the
+ *   primary photography, and customers choose a size on the product page.
+ * - Fixed aspect ratio prevents layout shift when the secondary loads.
  */
 export function ProductCard({
   product,
@@ -36,89 +36,61 @@ export function ProductCard({
   const primaryImage = images.find((i) => i.isPrimary) ?? images[0]
   const secondaryImage = images.length > 1 ? images[1] : null
 
-  // Get unique colors from variants
-  const colors = [...new Set(product.variants?.map((v) => v.color) ?? [])]
-  const [selectedColor, setSelectedColor] = useState<string | null>(null)
-
-  // Image to display: if a color is selected, find an image matching that color
-  // Otherwise show primary
-  const displayImage =
-    selectedColor && images.length > 1
-      ? images.find((i) => i.alt?.includes(selectedColor)) ?? primaryImage
-      : primaryImage
-
   const wished = isInWishlist?.(product.id) ?? false
   const displayPrice = product.salePrice ?? product.price
   const isOnSale = Boolean(product.salePrice)
 
-  // Color swatch color codes
-  const colorCodes: Record<string, string> = {
-    black: '#000000',
-    white: '#ffffff',
-    gray: '#808080',
-    grey: '#808080',
-    blue: '#0000ff',
-    burgundy: '#800020',
-    pink: '#ffc0cb',
-    navy: '#000080',
-    red: '#ff0000',
-    green: '#008000',
-    yellow: '#ffd700',
-    purple: '#800080',
-    orange: '#ffa500',
-    beige: '#f5f5dc',
-    brown: '#a52a2a',
-    cream: '#fffdd0',
-    nude: '#e6cfaa',
-    gold: '#ffd700',
-    silver: '#c0c0c0',
-  }
-
-  const getColorCode = (colorName: string) => {
-    return colorCodes[colorName.toLowerCase()] || '#cccccc'
-  }
-
   return (
-    <motion.div
-      whileHover={{ y: -4 }}
-      whileTap={{ y: 0, scale: 0.98 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+    <motion.article
+      whileHover={{ y: -6 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: 'spring', stiffness: 320, damping: 28 }}
       className="group"
     >
-      <div className="relative overflow-hidden rounded-lg bg-[#F3F3F3] aspect-[2/3]">
-        <Link
-          href={`/product/${product.slug}`}
-          aria-label={product.name}
-          className="block h-full"
-          onClick={(e) => {
-            // Allow navigation on card click (not on swatches)
-          }}
-        >
-          {displayImage ? (
+      <Link
+        href={`/product/${product.slug}`}
+        aria-label={product.name}
+        className="block"
+      >
+        <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-brand-mist">
+          {primaryImage ? (
             <Image
               fill
-              src={displayImage.cardUrl ?? displayImage.url}
-              alt={displayImage.alt || product.name}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              src={primaryImage.cardUrl ?? primaryImage.url}
+              alt={primaryImage.alt ?? product.name}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw"
               priority={false}
               loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-out opacity-100"
+              className="absolute inset-0 h-full w-full object-cover"
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-sm text-[#111111]/40">
+            <div className="flex h-full w-full items-center justify-center text-sm text-ink/40">
               {product.name}
             </div>
           )}
 
-          {/* New / Sale badges */}
-          <div className="absolute top-3 start-3 flex flex-col gap-2 z-10">
+          {/* Secondary image cross-fades in on hover. */}
+          {secondaryImage && (
+            <Image
+              fill
+              src={secondaryImage.cardUrl ?? secondaryImage.url}
+              alt={secondaryImage.alt ?? `${product.name} — alternate view`}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw"
+              priority={false}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            />
+          )}
+
+          {/* Badges */}
+          <div className="absolute top-3 start-3 flex flex-col gap-2">
             {product.newArrival && (
-              <span className="rounded-full bg-[#111111] px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
+              <span className="rounded-full bg-brand px-2.5 py-1 text-[11px] font-bold tracking-wide text-white shadow-sm">
                 {newLabel}
               </span>
             )}
             {isOnSale && (
-              <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-[#111111] border border-[#E5E5E5] shadow-sm">
+              <span className="rounded-full border border-brand bg-white px-2.5 py-1 text-[11px] font-bold tracking-wide text-brand shadow-sm">
                 {saleLabel}
               </span>
             )}
@@ -129,108 +101,50 @@ export function ProductCard({
             <button
               type="button"
               aria-label={wished ? 'Remove from wishlist' : 'Add to wishlist'}
+              aria-pressed={wished}
               onClick={(e) => {
                 e.preventDefault()
                 onToggleWishlist(product.id)
               }}
-              className="absolute bottom-3 end-3 z-10 p-2.5 rounded-full bg-white/90 backdrop-blur shadow-md transition-opacity md:opacity-0 group-hover:opacity-100 hover:bg-white focus:outline-none"
+              className="absolute end-3 bottom-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-brand opacity-0 shadow-md backdrop-blur transition-all duration-300 hover:bg-white group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
             >
               <svg
-                className={`h-4 w-4 ${wished ? 'fill-[#111111] text-[#111111]' : 'text-[#111111]/80'}`}
+                className={`h-5 w-5 ${wished ? 'fill-brand text-brand' : 'text-ink/70'}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                strokeWidth="2.5"
+                strokeWidth="2"
+                aria-hidden
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 19l7-6 7 6" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.75a1.5 1.5 0 0 0-2.12 0l-7.5 7.5a1.5 1.5 0 0 0 0 2.12l4.5 4.5a1.5 1.5 0 0 0 2.12 0l8.5-8.5Z" />
               </svg>
             </button>
           )}
-        </Link>
+        </div>
 
-        {/* Color swatches overlay - bottom of card */}
-        {colors.length > 1 && (
-          <div className="absolute bottom-2 left-4 right-2 flex gap-2 z-20">
-            {colors.map((color) => {
-              const isSelected = selectedColor === color
-              const colorCode = getColorCode(color)
-              const contrastColor = getContrastColor(colorCode)
-              return (
-                <button
-                  key={color}
-                  type="button"
-                  aria-label={`Select ${color}`}
-                  aria-pressed={isSelected}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    e.preventDefault()
-                    setSelectedColor(isSelected ? null : color)
-                  }}
-                  className={`w-6 h-6 rounded-full border-2 transition-all duration-200 flex-shrink-0 ${
-                    isSelected
-                      ? 'border-[#111111] ring-1 ring-[#111111] scale-110'
-                      : 'border-[#111111]/30 hover:border-[#111111]'
-                  }`}
-                  style={{
-                    backgroundColor: colorCode,
-                    color: contrastColor,
-                  }}
-                >
-                  <span className="sr-only">{color}</span>
-                  {isSelected && (
-                    <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        )}
-
-        {/* Mobile hint */}
-        {colors.length > 1 && (
-          <div className="absolute bottom-0 start-0 end-0 h-6 bg-gradient-to-t from-black/60 to-transparent flex items-center justify-center pointer-events-none text-[10px] font-bold text-white uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-            Select color
-          </div>
-        )}
-      </div>
-
-      <div className="pt-3 px-0.5">
-        <Link
-          href={`/product/${product.slug}`}
-          className="hover:opacity-70 transition-opacity"
-          onClick={(e) => {
-            // Navigation works normally
-          }}
-        >
-          <h3 className="text-sm font-semibold leading-snug line-clamp-1">{product.name}</h3>
-        </Link>
-        <p className="mt-0.5 text-xs text-[#111111]/60 line-clamp-1">
-          {product.category.name}
-        </p>
-        <div className="mt-1 flex items-center gap-2">
-          {isOnSale ? (
-            <>
-              <span className="text-sm font-bold">{formatPrice(product.salePrice ?? product.price, locale)}</span>
-              <span className="text-xs text-[#111111]/50 line-through">
+        {/* Product information */}
+        <div className="pt-3">
+          <Link
+            href={`/product/${product.slug}`}
+            className="block"
+          >
+            <h3 className="line-clamp-1 text-sm font-bold leading-snug text-ink">
+              {product.name}
+            </h3>
+          </Link>
+          <p className="mt-0.5 text-xs uppercase tracking-wider text-ink/50">
+            {product.category.name}
+          </p>
+          <p className="mt-1 text-sm font-bold text-ink">
+            {formatPrice(displayPrice, locale)}
+            {isOnSale && (
+              <span className="ml-2 text-xs font-normal text-ink/50 line-through">
                 {formatPrice(product.price, locale)}
               </span>
-            </>
-          ) : (
-            <span className="text-sm font-bold">{formatPrice(displayPrice, locale)}</span>
-          )}
+            )}
+          </p>
         </div>
-      </div>
-    </motion.div>
+      </Link>
+    </motion.article>
   )
-}
-
-function getContrastColor(hex: string): string {
-  // Simple luminance-based contrast
-  const r = parseInt(hex.slice(1, 3), 16)
-  const g = parseInt(hex.slice(3, 5), 16)
-  const b = parseInt(hex.slice(5, 7), 16)
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
-  return luminance > 0.5 ? '#000000' : '#ffffff'
 }

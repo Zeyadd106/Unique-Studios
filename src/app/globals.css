@@ -1,20 +1,37 @@
 @import "tailwindcss";
 
-/* Unique Studios brand — monochrome to match the black/white logo:
-   primary black surfaces, white pages, gray-tinted sections. */
+/* ==========================================================================
+   UNIQUE STUDIOS — Design System
+   --------------------------------------------------------------------------
+   Inspired by the layout language of premium fashion flagships (large
+   full-bleed heroes, editorial grids, stacked category chapters, minimal
+   overlaid typography), rebuilt entirely on UNIQUE STUDIOS' own
+   black/white brand identity.
+
+   Brand tokens:
+   - `brand`      : primary action color (near-black)
+   - `brand-deep` : pressed / darkest surface
+   - `brand-mist` : tinted surfaces between white and black
+   - `brand-line` : hairlines and borders
+   - `ink`        : primary text
+   - `foreground` : page text (kept for compatibility)
+   ========================================================================== */
+
 :root {
+  /* Brand palette — UNIQUE STUDIOS identity (do not replace). */
   --background: #ffffff;
   --foreground: #111111;
-  --color-primary: 0, 0, 0;
-  --color-a11y: 255, 255, 255;
-  --border-soft: #e2e2e2;
-  --surface-muted: #f5f5f5;
+
   --brand: #111111;
   --brand-deep: #000000;
   --brand-hover: #2b2b2b;
   --brand-ink: #111111;
   --brand-mist: #f5f5f5;
   --brand-line: #e5e5e5;
+
+  /* Shared surfaces and borders. */
+  --surface-muted: #f5f5f5;
+  --border-soft: #e5e5e5;
 }
 
 @theme inline {
@@ -22,13 +39,13 @@
   --color-foreground: var(--foreground);
   --color-ink: #111111;
   --color-line: var(--border-soft);
-  --color-muted-surface: var(--surface-muted);
-  --color-brand: #111111;
-  --color-brand-deep: #000000;
-  --color-brand-hover: #2b2b2b;
-  --color-brand-ink: #111111;
-  --color-brand-mist: #f5f5f5;
-  --color-brand-line: #e5e5e5;
+  --color-surface-muted: var(--surface-muted);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-mist: var(--brand-mist);
+  --color-brand-line: var(--brand-line);
   --font-sans: var(--font-cairo);
   --font-arabic: var(--font-cairo);
 }
@@ -43,7 +60,7 @@ body {
   overflow-x: clip;
 }
 
-/* Brand font everywhere, like Van-Graph (Cairo for latin + arabic) */
+/* Every text element shares the brand typeface (latin + arabic in one). */
 span,
 strong,
 a,
@@ -64,6 +81,10 @@ dt {
   font-family: "Cairo", var(--font-cairo), Arial, sans-serif;
 }
 
+/* --------------------------------------------------------------------------
+   Shared building blocks
+   -------------------------------------------------------------------------- */
+
 /* Skeleton shimmer for product grids */
 @keyframes vg-shimmer {
   0% {
@@ -79,20 +100,7 @@ dt {
 
 .vg-skeleton {
   animation: vg-shimmer 1.6s ease-in-out infinite;
-  background: #f3f3f3;
-}
-
-/* Minimal product card hover */
-.vg-card-image {
-  transition: transform 0.35s ease;
-}
-.group:hover .vg-card-image {
-  transform: scale(1.03);
-}
-
-/* Sticky white header shadow — neutral tint to match monochrome logo */
-.vg-header-shadow {
-  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 8%);
+  background: var(--brand-mist);
 }
 
 /* WhatsApp float: soft expanding rings */
@@ -120,20 +128,50 @@ dt {
   animation-delay: 1.2s;
 }
 
+/* Thin brand hairlines that separate sections. */
+.brand-hairline {
+  border-color: var(--brand-line);
+}
+
+/* Elegant underline used for links and nav states. */
+.us-underline {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+/* --------------------------------------------------------------------------
+   Homepage & site-chrome motion live in `@/styles/home.css`
+   (imported by the root layout) — this file keeps shared tokens only.
+   -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   Motion preferences (shared)
+   -------------------------------------------------------------------------- */
+
 @media (prefers-reduced-motion: reduce) {
   .vg-wa-ring,
   .vg-skeleton {
     animation: none;
   }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
-/* RTL Support */
+/* --------------------------------------------------------------------------
+   RTL support
+   -------------------------------------------------------------------------- */
+
 [dir="rtl"] {
   direction: rtl;
   text-align: right;
 }
 
-/* RTL-specific adjustments */
 [dir="rtl"] .space-x-2 > * + * {
   margin-left: 0;
   margin-right: 0.5rem;
@@ -161,5 +199,5 @@ dt {
 
 [dir="rtl"] .mr-4 {
   margin-right: 0;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
 }

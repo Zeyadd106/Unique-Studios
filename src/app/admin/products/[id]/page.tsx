@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslation } from '@/hooks/use-translation'
@@ -9,15 +10,19 @@ import { ProductForm } from '@/components/admin/product-form'
 export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { locale, setLocale } = useLocale()
   const { t } = useTranslation()
+  const router = useRouter()
   const [currentAdmin, setCurrentAdmin] = useState({ name: '', email: '' })
-  const [product, setProduct] = useState<any>(null)
+  const [product, setProduct] = useState<{ id: string; name: string } | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setCurrentAdmin({
-      name: localStorage.getItem('adminName') || 'Admin',
-      email: localStorage.getItem('adminEmail') || 'admin@uniquestudios.com',
-    })
+    const timer = setTimeout(() => {
+      setCurrentAdmin({
+        name: localStorage.getItem('adminName') || 'Admin',
+        email: localStorage.getItem('adminEmail') || 'admin@uniquestudios.com',
+      })
+    }, 0)
+    return () => clearTimeout(timer)
   }, [])
 
   useEffect(() => {
@@ -77,7 +82,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
           mode="edit"
           productId={product.id}
           initialProduct={product}
-          onSuccess={() => window.location.assign('/admin/products')}
+          onSuccess={() => router.push('/admin/products')}
         />
       </main>
     </div>

@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { CATEGORIES, queryProducts } from '@/data/store'
 
 export async function GET(
   request: Request,
@@ -9,12 +7,17 @@ export async function GET(
 ) {
   try {
     const { name } = await params
-    const categorySlug = name.toLowerCase()
+    const rawSlug = name.toLowerCase()
 
-    // Find the category by slug
-    const category = await prisma.category.findUnique({
-      where: { slug: categorySlug },
-    })
+    // Brand alias: the "Crewnecks" collection page lives at /collections/crewnecks
+    // while the catalog category slug is "round-neck".
+    const ALIASES: Record<string, string> = {
+      crewnecks: 'round-neck',
+      crewneck: 'round-neck',
+    }
+    const categorySlug = ALIASES[rawSlug] ?? rawSlug
+
+    const category = CATEGORIES.find((c) => c.slug === categorySlug)
 
     if (!category) {
       return NextResponse.json(
@@ -23,43 +26,24 @@ export async function GET(
       )
     }
 
-    // Fetch products in this category with variants and images
-    const products = await prisma.product.findMany({
-      where: {
-        categoryId: category.id,
-        available: true,
-      },
-      include: {
-        category: true,
-        variants: {
-          where: { available: true },
-          orderBy: { colorName: 'asc' },
-          include: {
-            images: {
-              orderBy: { sortOrder: 'asc' },
-            },
-          },
-        },
-      },
-      orderBy: [{ featured: 'desc' }, { createdAt: 'desc' }],
-    })
+    const products = queryProducts({ category: categorySlug, sort: 'featured' })
 
-    // Transform: each variant becomes a distinct product card entry
-    // (no color swatches on collection page — each variant is its own card)
+    // One card per color variant (no swatches on collection pages).
     const collectionProducts = products.flatMap((product) => {
-      return product.variants.map((variant) => {
-        const images = variant.images.map((img) => ({
+      const colors = [...new Set(product.variants.map((v) => v.color))]
+      return colors.map((colorName) => {
+        const colorVariants = product.variants.filter((v) => v.color === colorName)
+        const images = product.images.map((img) => ({
           id: img.id,
-          url: img.imageUrl,
-          cardUrl: img.imageUrl,
-          thumbUrl: img.imageUrl,
+          url: img.url,
+          cardUrl: img.cardUrl,
+          thumbUrl: img.thumbUrl,
           alt: img.alt ?? product.name,
           sortOrder: img.sortOrder,
-          isPrimary: img.isPrimary,
+          isPrimary: img.sortOrder === 0,
         }))
-
         return {
-          id: variant.id,
+          id: `${product.id}-${colorName}`,
           productId: product.id,
           name: product.name,
           slug: product.slug,
@@ -69,14 +53,13 @@ export async function GET(
             name: category.name,
             slug: category.slug,
           },
-          // Primary image is the first image of this variant
           image: images[0]?.url || null,
           images,
           imageCount: images.length,
           price: product.price,
           salePrice: product.salePrice,
-          available: variant.available,
-          colorName: variant.colorName,
+          available: colorVariants.some((v) => v.stock > 0),
+          colorName,
           featured: product.featured,
           createdAt: product.createdAt,
           updatedAt: product.updatedAt,

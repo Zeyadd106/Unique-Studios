@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "./globals.css";
+import "@/styles/home.css";
 import { LocaleProvider } from "@/hooks/use-locale";
-import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 
 // Single brand font (Cairo, latin + arabic) — same approach as Van-Graph.
 const cairo = Cairo({
@@ -12,6 +12,7 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: "UNIQUE STUDIOS - Premium Streetwear",
   description:
     "Premium oversized streetwear for those who dare to stand out. Built Different. Worn Unique.",
@@ -34,7 +35,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen flex flex-col font-sans">
         <LocaleProvider>
           {children}
-          <WhatsAppFloat />
         </LocaleProvider>
       </body>
     </html>

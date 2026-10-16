@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "tmp-*.mjs",
+    "tmp-*.cjs",
+    // Standalone Node maintenance scripts (CommonJS, not app code).
+    "scripts/**",
+    "optimize-products.js",
   ]),
 ]);
 

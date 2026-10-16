@@ -3,7 +3,9 @@
     "brandName": "يونيك ستوديوز",
     "announcement": "الدفع عند الاستلام في جميع أنحاء مصر — ادفع عند استلام طلبك",
     "shopNow": "تسوق الآن",
+    "shopAll": "المتجر",
     "viewAll": "عرض الكل",
+    "viewCollection": "عرض المجموعة",
     "search": "بحث",
     "searchPlaceholder": "ابحث عن المنتجات...",
     "filter": "تصفية",
@@ -24,7 +26,9 @@
     "confirm": "تأكيد",
     "yes": "نعم",
     "no": "لا",
-    "language": "اللغة"
+    "language": "اللغة",
+    "increaseQuantity": "زيادة الكمية",
+    "decreaseQuantity": "إنقاص الكمية"
   },
   "nav": {
     "home": "الرئيسية",
@@ -32,6 +36,8 @@
     "newArrivals": "وصل حديثاً",
     "collections": "المجموعات",
     "crewnecks": "البلوفرات",
+    "offShoulder": "بلوز عن الجوانب",
+    "sweatpants": "السروالين",
     "categories": "الفئات",
     "about": "من نحن",
     "contact": "اتصل بنا",
@@ -43,6 +49,7 @@
   },
   "collection": {
     "title": "المجموعة",
+    "all": "الكل",
     "sortBy": "ترتيب حسب",
     "featured": "مميز",
     "newest": "الأحدث",
@@ -62,8 +69,12 @@
   },
   "home": {
     "newArrivals": "وصل حديثاً",
+    "newDrop": "إصدار جديد",
+    "newDropText": "القطع الأحدث توصل للتسوق. استمتع بالإصدار الجديد والمخزون الأحدث.",
+    "newArrivalsText": "أحدث القطع وصل للتو. كلها جزء من الإصدار الحالي.",
     "bestSellers": "الأكثر مبيعاً",
     "shopByCategory": "تسوق حسب الفئة",
+    "shopByCategorySubtitle": "تصفح المجموعات الأساسية وابحث عن قطعتك المميزة.",
     "featuredCollections": "المجموعات المميزة",
     "trendingNow": "رائج الآن",
     "ourStory": "قصتنا",

@@ -1,44 +1,41 @@
-'use client'
-
 import Link from 'next/link'
 import Image from 'next/image'
 
-interface CollectionProductCardProps {
-  product: {
+interface CollectionProduct {
+  id: string
+  productId: string
+  name: string
+  slug: string
+  description: string
+  image: string | null
+  images: Array<{
     id: string
-    productId: string
-    name: string
-    slug: string
-    description: string
-    image: string | null
-    images: Array<{
-      id: string
-      url: string
-      cardUrl?: string | null
-      thumbUrl?: string | null
-      alt: string | null
-      sortOrder: number
-      isPrimary: boolean
-    }>
-    imageCount: number
-    price: number
-    salePrice: number | null
-    available: boolean
-    colorName?: string | null
-    category: { id: string; name: string; slug: string }
-    featured: boolean
-  }
+    url: string
+    cardUrl?: string | null
+    thumbUrl?: string | null
+    alt: string | null
+    sortOrder: number
+    isPrimary: boolean
+  }>
+  imageCount: number
+  price: number
+  salePrice: number | null
+  available: boolean
+  colorName?: string | null
+  category: { id: string; name: string; slug: string }
+  featured: boolean
+}
+
+interface CollectionProductCardProps {
+  product: CollectionProduct
   locale: string
 }
 
 /**
- * Collection product card — matches CAVE Egypt crewnecks collection card styling.
+ * Elegant product card used inside collection chapters.
  *
- * - Single square product image (no hover swap, no color swatches)
- * - Product name below image
- * - "VENDOR: UNIQUE STUDIOS" in small caps
- * - Price in EGP (sale price + crossed-out regular price when on sale)
- * - Links to product detail page
+ * Image-focused, with the secondary image cross-fading in on hover. No color
+ * selectors: every variant of a product is browsed through the product page.
  */
 export function CollectionProductCard({
   product,
@@ -46,10 +43,7 @@ export function CollectionProductCard({
 }: CollectionProductCardProps) {
   const images = product.images ?? []
   const primaryImage = images.find((i) => i.isPrimary) ?? images[0]
-
-  const productName = product.colorName
-    ? `${product.name} ${product.colorName}`
-    : product.name
+  const secondaryImage = images.length > 1 ? images[1] : null
 
   const format = (value: number) =>
     new Intl.NumberFormat(locale === 'ar' ? 'ar-EG' : 'en-EG', {
@@ -59,59 +53,59 @@ export function CollectionProductCard({
       maximumFractionDigits: 0,
     }).format(value)
 
+  const name = product.colorName
+    ? `${product.name} ${product.colorName}`
+    : product.name
+
   return (
     <article className="group">
-      <Link
-        href={`/product/${product.slug}`}
-        aria-label={productName}
-        className="block"
-      >
-        {/* Square product image */}
-        <div className="relative aspect-square overflow-hidden rounded-sm bg-[#F3F3F3] mb-3">
+      <Link href={`/product/${product.slug}`} aria-label={name} className="block">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-brand-mist">
           {primaryImage ? (
             <Image
               fill
               src={primaryImage.cardUrl ?? primaryImage.url}
-              alt={primaryImage.alt || productName}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              alt={primaryImage.alt ?? name}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw"
               priority={false}
               loading="lazy"
               className="absolute inset-0 h-full w-full object-cover"
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-sm text-[#111111]/40">
-              {productName}
+            <div className="flex h-full w-full items-center justify-center text-sm text-ink/40">
+              {name}
             </div>
+          )}
+
+          {/* Secondary image cross-fades in on hover. */}
+          {secondaryImage && (
+            <Image
+              fill
+              src={secondaryImage.cardUrl ?? secondaryImage.url}
+              alt={secondaryImage.alt ?? `${name} — alternate view`}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw"
+              priority={false}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            />
           )}
         </div>
 
-        {/* Product name */}
-        <h3 className="text-base font-medium leading-tight mb-1 text-[#111111] group-hover:text-[#111111]/80 transition-colors">
-          {productName}
-        </h3>
-
-        {/* Vendor */}
-        <p className="text-[10px] text-[#111111]/50 uppercase tracking-widest mb-2">
-          Vendor: UNIQUE STUDIOS
-        </p>
-
-        {/* Pricing */}
-        <div className="flex items-baseline gap-1.5">
-          {product.salePrice ? (
-            <>
-              <span className="text-sm font-bold text-[#111111]">
-                {format(product.salePrice)}
-              </span>
-              <span className="text-xs text-[#111111]/50 line-through">
+        <div className="pt-3">
+          <h3 className="line-clamp-1 text-sm font-bold leading-snug text-ink">
+            {name}
+          </h3>
+          <p className="mt-0.5 text-xs uppercase tracking-wider text-ink/50">
+            {product.category.name}
+          </p>
+          <p className="mt-1 text-sm font-bold text-ink">
+            {format(product.salePrice ?? product.price)}
+            {product.salePrice !== null && product.salePrice !== product.price && (
+              <span className="ml-2 text-xs font-normal text-ink/50 line-through">
                 {format(product.price)}
               </span>
-            </>
-          ) : (
-            <span className="text-sm font-bold text-[#111111]">
-              {format(product.price)}
-            </span>
-          )}
-          <span className="text-[10px] text-[#111111]/40">EGP</span>
+            )}
+          </p>
         </div>
       </Link>
     </article>

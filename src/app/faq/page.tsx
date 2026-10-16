@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { useLocale } from '@/hooks/use-locale'
@@ -20,7 +21,7 @@ export default function FaqPage() {
   const answers = tList('faq.answers')
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex min-h-screen flex-col bg-white">
       <Header
         locale={locale}
         setLocale={setLocale}
@@ -30,38 +31,60 @@ export default function FaqPage() {
       />
 
       <main className="flex-1">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 md:py-14">
-          <h1 className="text-2xl md:text-3xl font-extrabold text-center">{t('faq.title')}</h1>
-          <p className="mt-3 text-sm md:text-base text-center text-[#111111]/70">
-            {t('faq.subtitle')}
-          </p>
+        <section className="py-16 md:py-24">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <div className="mb-12 max-w-3xl text-center">
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-ink/50">
+                {t('faq.title').toUpperCase()}
+              </p>
+              <h1 className="text-4xl font-bold leading-tight tracking-tight text-ink md:text-5xl">
+                {t('faq.title')}
+              </h1>
+              <p className="mt-4 text-sm leading-relaxed text-ink/60 md:text-base">
+                {t('faq.subtitle')}
+              </p>
+            </div>
 
-          <div className="mt-8 border-t border-[#E2E2E2]">
-            {questions.map((q, i) => {
-              const open = openIndex === i
-              return (
-                <div key={i} className="border-b border-[#E2E2E2]">
-                  <button
-                    type="button"
-                    aria-expanded={open}
-                    onClick={() => setOpenIndex(open ? null : i)}
-                    className="flex w-full items-center justify-between gap-4 py-5 text-start"
-                  >
-                    <span className="text-sm md:text-base font-bold">{q}</span>
-                    <ChevronDown
-                      className={`h-5 w-5 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`}
-                    />
-                  </button>
-                  {open && (
-                    <p className="pb-5 text-sm text-[#111111]/70 leading-relaxed">
-                      {answers[i] ?? ''}
-                    </p>
-                  )}
-                </div>
-              )
-            })}
+            <div className="mx-auto max-w-3xl">
+              <div className="rounded-2xl border border-brand-line bg-white shadow-[0_18px_40px_-24px_rgb(0_0_0_0.18)]">
+                {questions.map((question, index) => {
+                  const open = openIndex === index
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={false}
+                      animate={{ opacity: open ? 1 : 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="overflow-hidden border-b border-brand-line last:border-b-0"
+                    >
+                      <button
+                        type="button"
+                        aria-expanded={open}
+                        onClick={() => setOpenIndex(open ? null : index)}
+                        className="flex w-full items-center justify-between gap-4 py-5 text-start"
+                      >
+                        <span className="text-sm font-bold text-ink md:text-base">
+                          {question}
+                        </span>
+                        <ChevronDown
+                          className={`h-5 w-5 shrink-0 text-brand transition-transform ${
+                            open ? 'rotate-180' : ''
+                          }`}
+                          aria-hidden
+                        />
+                      </button>
+                      {open && (
+                        <p className="pb-6 text-sm leading-relaxed text-ink/75">
+                          {answers[index] ?? ''}
+                        </p>
+                      )}
+                    </motion.div>
+                  )
+                })}
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
       </main>
 
       <Footer locale={locale} t={t} />

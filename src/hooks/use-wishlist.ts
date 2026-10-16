@@ -4,16 +4,26 @@ import { useState, useEffect } from 'react'
 
 const WISHLIST_STORAGE_KEY = 'unique-studios-wishlist'
 
+function readStoredWishlist(): string[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const savedWishlist = localStorage.getItem(WISHLIST_STORAGE_KEY)
+    return savedWishlist ? (JSON.parse(savedWishlist) as string[]) : []
+  } catch {
+    return []
+  }
+}
+
 export function useWishlist() {
   const [wishlist, setWishlist] = useState<string[]>([])
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-    const savedWishlist = localStorage.getItem(WISHLIST_STORAGE_KEY)
-    if (savedWishlist) {
-      setWishlist(JSON.parse(savedWishlist))
-    }
+    const timer = setTimeout(() => {
+      setWishlist(readStoredWishlist())
+      setMounted(true)
+    }, 0)
+    return () => clearTimeout(timer)
   }, [])
 
   useEffect(() => {

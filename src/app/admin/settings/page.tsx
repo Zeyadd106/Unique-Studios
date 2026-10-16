@@ -12,9 +12,12 @@ export default function AdminSettingsPage() {
   const [currentAdmin, setCurrentAdmin] = useState({ name: '', email: '' })
 
   useEffect(() => {
-    const adminName = localStorage.getItem('adminName') || 'Admin'
-    const adminEmail = localStorage.getItem('adminEmail') || 'admin@uniquestudios.com'
-    setCurrentAdmin({ name: adminName, email: adminEmail })
+    const timer = setTimeout(() => {
+      const adminName = localStorage.getItem('adminName') || 'Admin'
+      const adminEmail = localStorage.getItem('adminEmail') || 'admin@uniquestudios.com'
+      setCurrentAdmin({ name: adminName, email: adminEmail })
+    }, 0)
+    return () => clearTimeout(timer)
   }, [])
 
   return (

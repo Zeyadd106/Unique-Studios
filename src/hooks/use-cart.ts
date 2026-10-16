@@ -5,16 +5,28 @@ import { CartItem } from '@/types'
 
 const CART_STORAGE_KEY = 'unique-studios-cart'
 
+function readStoredCart(): CartItem[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const savedCart = localStorage.getItem(CART_STORAGE_KEY)
+    return savedCart ? (JSON.parse(savedCart) as CartItem[]) : []
+  } catch {
+    return []
+  }
+}
+
 export function useCart() {
   const [cart, setCart] = useState<CartItem[]>([])
   const [mounted, setMounted] = useState(false)
 
+  // Hydrate from localStorage after mount (deferred so the effect body itself
+  // stays side-effect free for the react-hooks lint rules).
   useEffect(() => {
-    setMounted(true)
-    const savedCart = localStorage.getItem(CART_STORAGE_KEY)
-    if (savedCart) {
-      setCart(JSON.parse(savedCart))
-    }
+    const timer = setTimeout(() => {
+      setCart(readStoredCart())
+      setMounted(true)
+    }, 0)
+    return () => clearTimeout(timer)
   }, [])
 
   useEffect(() => {
@@ -28,7 +40,7 @@ export function useCart() {
       const existingItem = prevCart.find(
         (i) => i.productId === item.productId && i.size === item.size && i.color === item.color
       )
-      
+
       if (existingItem) {
         return prevCart.map((i) =>
           i.productId === item.productId && i.size === item.size && i.color === item.color
@@ -36,7 +48,7 @@ export function useCart() {
             : i
         )
       }
-      
+
       return [...prevCart, item]
     })
   }
@@ -54,7 +66,7 @@ export function useCart() {
       removeFromCart(productId, size, color)
       return
     }
-    
+
     setCart((prevCart) =>
       prevCart.map((item) =>
         item.productId === productId && item.size === size && item.color === color

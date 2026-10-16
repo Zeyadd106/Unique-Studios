@@ -9,6 +9,7 @@ import { useTranslation } from '@/hooks/use-translation'
 import { useState, useEffect } from 'react'
 import { Plus, Edit, Trash2 } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface Product {
   id: string
@@ -33,25 +34,27 @@ export default function AdminProductsPage() {
   const [currentAdmin, setCurrentAdmin] = useState({ name: '', email: '' })
 
   useEffect(() => {
-    fetchProducts()
-    const adminName = localStorage.getItem('adminName') || 'Admin'
-    const adminEmail = localStorage.getItem('adminEmail') || 'admin@uniquestudios.com'
-    setCurrentAdmin({ name: adminName, email: adminEmail })
-  }, [])
-
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch('/api/admin/products')
-      if (response.ok) {
-        const data = await response.json()
-        setProducts(Array.isArray(data) ? data : [])
+    const timer = setTimeout(() => {
+      const load = async () => {
+        try {
+          const response = await fetch('/api/admin/products')
+          if (response.ok) {
+            const data = await response.json()
+            setProducts(Array.isArray(data) ? data : [])
+          }
+        } catch (error) {
+          console.error('Error fetching products:', error)
+        } finally {
+          setLoading(false)
+        }
       }
-    } catch (error) {
-      console.error('Error fetching products:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+      load()
+      const adminName = localStorage.getItem('adminName') || 'Admin'
+      const adminEmail = localStorage.getItem('adminEmail') || 'admin@uniquestudios.com'
+      setCurrentAdmin({ name: adminName, email: adminEmail })
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleDelete = async (id: string) => {
     if (!confirm(t('admin.deleteConfirm'))) return
@@ -118,9 +121,11 @@ export default function AdminProductsPage() {
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0">
                         {product.images[0] ? (
-                          <img
+                          <Image
                             src={product.images[0].url}
                             alt={product.name}
+                            width={64}
+                            height={64}
                             className="w-full h-full object-cover rounded-lg"
                           />
                         ) : (

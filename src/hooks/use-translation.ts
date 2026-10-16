@@ -14,22 +14,22 @@ export function useTranslation() {
   
   const t = (key: string): string => {
     const keys = key.split('.')
-    let value: any = messages[locale]
+    let value: unknown = messages[locale]
 
     for (const k of keys) {
-      value = value?.[k]
+      value = (value as Record<string, unknown> | undefined)?.[k]
     }
 
-    return value || key
+    return typeof value === 'string' ? value : key
   }
 
   // For message values that are string arrays (e.g. FAQ lists).
   const tList = (key: string): string[] => {
     const keys = key.split('.')
-    let value: any = messages[locale]
+    let value: unknown = messages[locale]
 
     for (const k of keys) {
-      value = value?.[k]
+      value = (value as Record<string, unknown> | undefined)?.[k]
     }
 
     return Array.isArray(value) ? value : []

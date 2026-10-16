@@ -25,25 +25,27 @@ export default function AdminCategoriesPage() {
   const [currentAdmin, setCurrentAdmin] = useState({ name: '', email: '' })
 
   useEffect(() => {
-    fetchCategories()
-    const adminName = localStorage.getItem('adminName') || 'Admin'
-    const adminEmail = localStorage.getItem('adminEmail') || 'admin@uniquestudios.com'
-    setCurrentAdmin({ name: adminName, email: adminEmail })
-  }, [])
-
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch('/api/admin/categories')
-      if (response.ok) {
-        const data = await response.json()
-        setCategories(Array.isArray(data) ? data : [])
+    const timer = setTimeout(() => {
+      const run = async () => {
+        try {
+          const response = await fetch('/api/admin/categories')
+          if (response.ok) {
+            const data = await response.json()
+            setCategories(Array.isArray(data) ? data : [])
+          }
+        } catch (error) {
+          console.error('Error fetching categories:', error)
+        } finally {
+          setLoading(false)
+        }
       }
-    } catch (error) {
-      console.error('Error fetching categories:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+      run()
+      const adminName = localStorage.getItem('adminName') || 'Admin'
+      const adminEmail = localStorage.getItem('adminEmail') || 'admin@uniquestudios.com'
+      setCurrentAdmin({ name: adminName, email: adminEmail })
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [])
 
   if (loading) {
     return (

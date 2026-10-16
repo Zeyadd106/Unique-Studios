@@ -1,0 +1,575 @@
+/* ==========================================================================
+   UNIQUE STUDIOS — Homepage & site-chrome motion system
+   --------------------------------------------------------------------------
+   Contents:
+     0. Tokens
+     1. Hero          (ken burns, ghost type, gradient headline, glass,
+                       scroll cue, glow)
+     2. Marquee       (infinite brand strip)
+     3. CTAs          (magnetic buttons, shine sweep)
+     4. Cards         (3D tilt, image zoom helpers)
+     5. Header        (announcement shimmer, glass bar, nav underline,
+                       badge pop, drawer)
+     6. Footer        (link slide, social lift, newsletter glow)
+     7. Utilities     (float, editorial rule)
+     8. Categories    (editorial rows, cover drift, count pills)
+     9. Collections   (sticky toolbar, pill glow, card entrance)
+     10. Product      (gallery thumbs, size glow, accordion clip)
+     11. Cart         (step fill, empty-bag float)
+     12. Checkout     (section numbers, input glow, pay glow, check pop)
+     13. Confirmation (confetti, dashed ticket)
+     14. Reduced motion
+   ========================================================================== */
+
+/* ------------------------------------------------------------------ 0. Tokens */
+:root {
+  --us-gold: #f3d27a;
+  --us-gold-deep: #c9a227;
+  --us-glass-bg: rgba(255, 255, 255, 0.12);
+  --us-glass-border: rgba(255, 255, 255, 0.25);
+  --us-ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ------------------------------------------------------------------ 1. Hero */
+@keyframes us-kenburns {
+  0% {
+    transform: scale(1.02) translateY(0);
+  }
+  100% {
+    transform: scale(1.14) translateY(-1.5%);
+  }
+}
+
+.us-kenburns {
+  animation: us-kenburns 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Animated gradient headline (last word of the hero title) */
+@keyframes us-gradient-pan {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.us-gradient-text {
+  background: linear-gradient(100deg, #ffffff 20%, var(--us-gold) 42%, #ffffff 60%);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: us-gradient-pan 7s ease-in-out infinite;
+}
+
+/* Outlined ghost typography */
+.us-text-stroke {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.35);
+  color: transparent;
+}
+
+.us-text-stroke-dark {
+  -webkit-text-stroke: 1px rgba(17, 17, 17, 0.22);
+  color: transparent;
+}
+
+.us-text-stroke-faint {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.14);
+  color: transparent;
+}
+
+/* Glassmorphism chips */
+.us-glass {
+  background: var(--us-glass-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--us-glass-border);
+}
+
+/* Pulsing scroll cue */
+@keyframes us-scroll-cue {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
+
+.us-scroll-dot {
+  animation: us-scroll-cue 1.8s ease-in-out infinite;
+}
+
+/* Soft glow behind imagery */
+.us-glow {
+  background:
+    radial-gradient(closest-side, rgba(243, 210, 122, 0.28), transparent 70%),
+    radial-gradient(closest-side, rgba(255, 255, 255, 0.16), transparent 70%);
+  filter: blur(10px);
+}
+
+/* ------------------------------------------------------------------ 2. Marquee */
+@keyframes us-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.us-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: us-marquee 28s linear infinite;
+  will-change: transform;
+}
+
+.us-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+[dir="rtl"] .us-marquee-track {
+  animation-direction: reverse;
+}
+
+/* ------------------------------------------------------------------ 3. CTAs */
+.us-cta {
+  transition:
+    transform 0.35s var(--us-ease-out),
+    box-shadow 0.35s ease,
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease;
+  will-change: transform;
+}
+
+.us-cta:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.55);
+}
+
+.us-cta:active {
+  transform: translateY(0) scale(0.99);
+}
+
+/* Shine sweep across cards and buttons */
+.us-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.us-shine::after {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 58%
+  );
+  transform: translateX(-70%);
+  transition: transform 1s ease;
+  pointer-events: none;
+}
+
+.us-shine:hover::after {
+  transform: translateX(70%);
+}
+
+[dir="rtl"] .us-shine::after {
+  transform: translateX(70%) scaleX(-1);
+}
+
+[dir="rtl"] .us-shine:hover::after {
+  transform: translateX(-70%) scaleX(-1);
+}
+
+/* ------------------------------------------------------------------ 4. Cards */
+.us-tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--us-ease-out);
+  will-change: transform;
+}
+
+.us-card-zoom img {
+  transition: transform 1.2s var(--us-ease-out);
+}
+
+.us-card-zoom:hover img {
+  transform: scale(1.08);
+}
+
+/* ------------------------------------------------------------------ 5. Header */
+/* Announcement shimmer sweep */
+@keyframes us-announce-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+.us-announce-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.us-announce-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 45%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.16),
+    transparent
+  );
+  animation: us-announce-shimmer 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Glass header states */
+.us-header {
+  transition:
+    box-shadow 0.4s ease,
+    background-color 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.us-header-scrolled {
+  box-shadow: 0 12px 40px -22px rgba(0, 0, 0, 0.35);
+}
+
+/* Animated nav underline */
+.us-nav-link {
+  position: relative;
+}
+
+.us-nav-link::after {
+  content: "";
+  position: absolute;
+  inset-inline: 12px;
+  bottom: 4px;
+  height: 2px;
+  border-radius: 9999px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.35s var(--us-ease-out);
+}
+
+.us-nav-link:hover::after,
+.us-nav-link[data-active="true"]::after {
+  transform: scaleX(1);
+}
+
+/* Cart / wishlist badge entrance */
+@keyframes us-badge-pop {
+  0% {
+    transform: scale(0.3);
+  }
+  60% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.us-badge-pop {
+  animation: us-badge-pop 0.35s var(--us-ease-out);
+}
+
+/* ------------------------------------------------------------------ 6. Footer */
+.us-footer-link {
+  position: relative;
+  width: fit-content;
+  transition: color 0.3s ease, transform 0.3s var(--us-ease-out);
+}
+
+.us-footer-link::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  bottom: -3px;
+  height: 1px;
+  width: 100%;
+  background: var(--us-gold);
+  transform: scaleX(0);
+  transform-origin: inline-start;
+  transition: transform 0.35s var(--us-ease-out);
+}
+
+.us-footer-link:hover {
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+[dir="rtl"] .us-footer-link:hover {
+  transform: translateX(-3px);
+}
+
+.us-footer-link:hover::after {
+  transform: scaleX(1);
+}
+
+.us-social {
+  transition:
+    transform 0.35s var(--us-ease-out),
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    color 0.35s ease;
+}
+
+.us-social:hover {
+  transform: translateY(-3px) scale(1.06);
+  background: var(--us-gold);
+  border-color: var(--us-gold);
+  color: #000000;
+}
+
+/* Newsletter glow input */
+.us-newsletter:focus-within {
+  border-color: var(--us-gold);
+  box-shadow: 0 0 0 3px rgba(243, 210, 122, 0.22);
+}
+
+/* ------------------------------------------------------------------ 7. Utilities */
+/* Floating chips over the hero */
+@keyframes us-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.us-float {
+  animation: us-float 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.us-float-delay {
+  animation-delay: 2.2s;
+}
+
+/* Editorial hairline reveal */
+.us-rule {
+  background: linear-gradient(90deg, transparent, var(--brand-line), transparent);
+  height: 1px;
+}
+
+/* ---------------------------------------------------------- 8. Categories page */
+/* Expanding hairline under editorial rows */
+.us-row-line {
+  position: relative;
+}
+
+.us-row-line::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--us-gold-deep), transparent);
+  transform: scaleX(0);
+  transform-origin: inline-start;
+  transition: transform 0.7s var(--us-ease-out);
+}
+
+.us-row-line:hover::after {
+  transform: scaleX(1);
+}
+
+/* Piece-count pill */
+.us-count-pill {
+  transition:
+    transform 0.35s var(--us-ease-out),
+    background-color 0.35s ease,
+    color 0.35s ease;
+}
+
+a:hover .us-count-pill,
+.us-row-line:hover .us-count-pill {
+  transform: scale(1.06);
+}
+
+/* Slow image drift inside editorial covers */
+@keyframes us-cover-drift {
+  0%,
+  100% {
+    transform: scale(1.05) translateY(0);
+  }
+  50% {
+    transform: scale(1.12) translateY(-1.5%);
+  }
+}
+
+.us-cover-drift {
+  animation: us-cover-drift 14s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ---------------------------------------------------------- 9. Collection pages */
+/* Sticky glass filter toolbar */
+.us-toolbar {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition: box-shadow 0.4s ease;
+}
+
+.us-toolbar.is-stuck {
+  box-shadow: 0 18px 44px -26px rgba(0, 0, 0, 0.35);
+}
+
+/* Active filter pill glow */
+.us-pill-active {
+  box-shadow: 0 12px 28px -14px rgba(0, 0, 0, 0.6);
+}
+
+/* Product card entrance lift */
+.us-card-enter {
+  transition:
+    transform 0.45s var(--us-ease-out),
+    box-shadow 0.45s ease;
+}
+
+.us-card-enter:hover {
+  transform: translateY(-6px);
+}
+
+/* ---------------------------------------------------------- 10. Product page */
+/* Active gallery thumbnail */
+.us-thumb-active {
+  outline: 2px solid var(--us-gold-deep);
+  outline-offset: 2px;
+}
+
+/* Size pill selected glow */
+.us-size-active {
+  box-shadow: 0 12px 26px -14px rgba(0, 0, 0, 0.65);
+}
+
+/* Accordion content clip */
+.us-accordion {
+  overflow: hidden;
+  will-change: height;
+}
+
+/* ---------------------------------------------------------- 11. Cart page */
+/* Checkout step connector fill */
+@keyframes us-step-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.us-step-fill {
+  transform-origin: inline-start;
+  animation: us-step-fill 0.8s var(--us-ease-out) both;
+}
+
+/* Empty-bag float */
+.us-bag-float {
+  animation: us-float 4s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------- 12. Checkout page */
+/* Numbered section badge */
+.us-section-num {
+  background: #000000;
+  color: #ffffff;
+  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* Input focus glow (works with the shared Input component) */
+.us-form input:focus,
+.us-form textarea:focus {
+  border-color: #111111;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.12);
+  outline: none;
+}
+
+/* Selected payment card glow */
+.us-pay-selected {
+  border-color: #111111;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.12), 0 20px 44px -26px rgba(0, 0, 0, 0.45);
+}
+
+/* Success check pop */
+@keyframes us-check-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.us-check-pop {
+  animation: us-check-pop 0.5s var(--us-ease-out) both;
+}
+
+/* ---------------------------------------------------------- 13. Confirmation */
+/* Confetti particle */
+.us-confetti {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Dashed order-number ticket */
+.us-ticket {
+  border: 2px dashed rgba(255, 255, 255, 0.25);
+  transition: border-color 0.35s ease, background-color 0.35s ease;
+}
+
+.us-ticket:hover {
+  border-color: var(--us-gold);
+}
+
+/* ---------------------------------------------------------- 14. Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .us-kenburns,
+  .us-marquee-track,
+  .us-float,
+  .us-bag-float,
+  .us-gradient-text,
+  .us-scroll-dot,
+  .us-badge-pop,
+  .us-cover-drift,
+  .us-step-fill,
+  .us-check-pop,
+  .us-confetti,
+  .us-announce-shimmer::after {
+    animation: none;
+  }
+}

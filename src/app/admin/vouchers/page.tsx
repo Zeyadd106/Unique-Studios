@@ -33,25 +33,27 @@ export default function AdminVouchersPage() {
   const [formError, setFormError] = useState('')
   const [saving, setSaving] = useState(false)
 
-  const fetchVouchers = async () => {
-    try {
-      const response = await fetch('/api/admin/vouchers')
-      if (response.ok) {
-        const data = await response.json()
-        setVouchers(Array.isArray(data) ? data : [])
-      }
-    } catch (error) {
-      console.error('Error fetching vouchers:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   useEffect(() => {
-    fetchVouchers()
-    const adminName = localStorage.getItem('adminName') || 'Admin'
-    const adminEmail = localStorage.getItem('adminEmail') || 'admin@uniquestudios.com'
-    setCurrentAdmin({ name: adminName, email: adminEmail })
+    const timer = setTimeout(() => {
+      const load = async () => {
+        try {
+          const response = await fetch('/api/admin/vouchers')
+          if (response.ok) {
+            const data = await response.json()
+            setVouchers(Array.isArray(data) ? data : [])
+          }
+        } catch (error) {
+          console.error('Error fetching vouchers:', error)
+        } finally {
+          setLoading(false)
+        }
+      }
+      load()
+      const adminName = localStorage.getItem('adminName') || 'Admin'
+      const adminEmail = localStorage.getItem('adminEmail') || 'admin@uniquestudios.com'
+      setCurrentAdmin({ name: adminName, email: adminEmail })
+    }, 0)
+    return () => clearTimeout(timer)
   }, [])
 
   const handleCreate = async (e: React.FormEvent) => {

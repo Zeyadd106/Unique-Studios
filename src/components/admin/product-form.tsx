@@ -1,12 +1,11 @@
 'use client'
 
-import { useState, useEffect, useTransition } from 'react'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useState, useCallback, useEffect, useTransition } from 'react'
+import { useForm, useFieldArray, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useLocale } from '@/hooks/use-locale'
 import { useTranslation } from '@/hooks/use-translation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -48,15 +47,55 @@ type ProductFormValues = z.infer<typeof productSchema> & {
     size: string
     color: string
     stock: number
-    weightMin?: number | null
-    weightMax?: number | null
+    weightMin?: number | string | null
+    weightMax?: number | string | null
   }[]
+}
+
+interface ProductImageLike {
+  url: string
+  cardUrl?: string | null
+  thumbUrl?: string | null
+  alt?: string | null
+}
+
+interface ProductVariantLike {
+  size: string
+  color: string
+  stock: number
+  weightMin?: number | string | null
+  weightMax?: number | string | null
+}
+
+interface ProductLike {
+  id?: string
+  name?: string
+  slug?: string
+  description?: string
+  price?: number
+  salePrice?: number | null
+  categoryId?: string
+  material?: string | null
+  fit?: string | null
+  careInstructions?: string | null
+  featured?: boolean | null
+  bestSeller?: boolean | null
+  newArrival?: boolean | null
+  active?: boolean | null
+  images?: ProductImageLike[] | null
+  variants?: ProductVariantLike[] | null
+}
+
+interface CategoryLike {
+  id: string
+  name: string
+  slug: string
 }
 
 interface ProductFormProps {
   mode: 'create' | 'edit'
   productId?: string
-  initialProduct?: any
+  initialProduct?: ProductLike
   onSuccess: () => void
 }
 
@@ -92,80 +131,86 @@ export function ProductForm({ mode, productId, initialProduct, onSuccess }: Prod
     formState: { errors },
   } = useForm<ProductFormValues>({
     // Cast resolver to keep the generic aligned with our values type.
-    resolver: zodResolver(productSchema) as any,
+    resolver: zodResolver(productSchema) as unknown as Resolver<ProductFormValues>,
     defaultValues,
   })
 
-  const { fields: imageFields, append: appendImage, remove: removeImage, move: moveImage } =
+  const { fields: imageFields, append: appendImage, remove: removeImage, move: moveImage, replace: replaceImages } =
     useFieldArray({
       control,
       name: 'images',
     })
 
-  const { fields: variantFields, append: appendVariant, remove: removeVariant } =
+  const { fields: variantFields, append: appendVariant, remove: removeVariant, replace: replaceVariants } =
     useFieldArray({
       control,
       name: 'variants',
     })
 
-  useEffect(() => {
-    fetchCategories()
-    if (mode === 'edit' && initialProduct) {
-      populateProduct(initialProduct)
-    }
-  }, [mode, initialProduct])
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const res = await fetch('/api/categories')
-      const data = await res.json()
+      const data: unknown = await res.json()
       if (Array.isArray(data)) {
-        setCategories(data.map((c: any) => ({ id: c.id, name: c.name, slug: c.slug })))
+        setCategories(
+          (data as CategoryLike[]).map((c) => ({ id: c.id, name: c.name, slug: c.slug })),
+        )
       }
     } catch (err) {
       console.error('Failed to load categories', err)
     }
-  }
+  }, [])
 
-  const populateProduct = (product: any) => {
-    setValue('name', product.name)
-    setValue('slug', product.slug)
-    setValue('description', product.description)
-    setValue('price', product.price)
-    setValue('salePrice', product.salePrice)
-    setValue('categoryId', product.categoryId)
-    setValue('material', product.material ?? '')
-    setValue('fit', product.fit ?? '')
-    setValue('careInstructions', product.careInstructions ?? '')
-    setValue('featured', !!product.featured)
-    setValue('bestSeller', !!product.bestSeller)
-    setValue('newArrival', !!product.newArrival)
-    setValue('active', !!product.active)
+  const populateProduct = useCallback(
+    (product: ProductLike) => {
+      setValue('name', product.name ?? '')
+      setValue('slug', product.slug ?? '')
+      setValue('description', product.description ?? '')
+      setValue('price', product.price ?? 0)
+      setValue('salePrice', product.salePrice ?? null)
+      setValue('categoryId', product.categoryId ?? '')
+      setValue('material', product.material ?? '')
+      setValue('fit', product.fit ?? '')
+      setValue('careInstructions', product.careInstructions ?? '')
+      setValue('featured', !!product.featured)
+      setValue('bestSeller', !!product.bestSeller)
+      setValue('newArrival', !!product.newArrival)
+      setValue('active', product.active ?? true)
 
-    const images = (product.images || []).map((img: any) => ({
-      url: img.url,
-      cardUrl: img.cardUrl ?? img.url,
-      thumbUrl: img.thumbUrl ?? img.url,
-      alt: img.alt ?? '',
-    }))
-    while (imageFields.length > 0) removeImage(0)
-    images.forEach((img: any) => appendImage(img))
+      const images = (product.images ?? []).map((img) => ({
+        url: img.url,
+        cardUrl: img.cardUrl ?? img.url,
+        thumbUrl: img.thumbUrl ?? img.url,
+        alt: img.alt ?? '',
+      }))
+      replaceImages(images)
 
-    while (variantFields.length > 0) removeVariant(0)
-    ;(product.variants || []).forEach((v: any) =>
-      appendVariant({
-        size: v.size,
-        color: v.color,
-        stock: v.stock,
-        weightMin: v.weightMin ?? '',
-        weightMax: v.weightMax ?? '',
-      })
-    )
-  }
+      replaceVariants(
+        (product.variants ?? []).map((v) => ({
+          size: v.size,
+          color: v.color,
+          stock: v.stock,
+          weightMin: v.weightMin ?? null,
+          weightMax: v.weightMax ?? null,
+        })),
+      )
+    },
+    [setValue, replaceImages, replaceVariants],
+  )
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchCategories()
+      if (mode === 'edit' && initialProduct) {
+        populateProduct(initialProduct)
+      }
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [mode, initialProduct, fetchCategories, populateProduct])
 
   const onSubmit = async (values: ProductFormValues) => {
     setMessage(null)
-    const images = imageFields.map((img, i) => ({
+    const images = imageFields.map((img) => ({
       url: img.url,
       cardUrl: img.cardUrl || img.url,
       thumbUrl: img.thumbUrl || img.url,
@@ -179,7 +224,7 @@ export function ProductForm({ mode, productId, initialProduct, onSuccess }: Prod
       weightMax: v.weightMax ? parseFloat(String(v.weightMax)) : null,
     }))
 
-    const body: any = {
+    const body: Record<string, unknown> = {
       ...values,
       salePrice: values.salePrice || null,
       material: values.material || null,
@@ -207,8 +252,9 @@ export function ProductForm({ mode, productId, initialProduct, onSuccess }: Prod
       }
       setMessage({ kind: 'success', text: t('admin.productSaved') })
       setTimeout(() => onSuccess(), 800)
-    } catch (err: any) {
-      setMessage({ kind: 'error', text: err.message || t('admin.productSaveFailed') })
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : null
+      setMessage({ kind: 'error', text: message || t('admin.productSaveFailed') })
     }
   }
 
@@ -345,16 +391,18 @@ export function ProductForm({ mode, productId, initialProduct, onSuccess }: Prod
 
         {/* Flags */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-          {[
-            { key: 'featured', label: t('admin.featured') },
-            { key: 'bestSeller', label: t('admin.bestSeller') },
-            { key: 'newArrival', label: t('admin.new') },
-            { key: 'active', label: t('admin.active') },
-          ].map((flag) => (
+          {(
+            [
+              { key: 'featured', label: t('admin.featured') },
+              { key: 'bestSeller', label: t('admin.bestSeller') },
+              { key: 'newArrival', label: t('admin.new') },
+              { key: 'active', label: t('admin.active') },
+            ] as const
+          ).map((flag) => (
             <div key={flag.key} className="flex items-center gap-2">
               <input
                 type="checkbox"
-                {...register(flag.key as any)}
+                {...register(flag.key)}
                 className="w-4 h-4 rounded border-[#111111]/30 text-[#111111] focus:ring-[#111111] bg-[#111111]/5 checked:bg-[#111111] checked:border-[#111111]"
               />
               <label className="text-sm text-[#111111]/70 cursor-pointer">{flag.label}</label>

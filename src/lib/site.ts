@@ -18,5 +18,5 @@ export const siteConfig = {
 
   // WhatsApp number in international format WITHOUT "+" (e.g. Egypt: 2010xxxxxxxx).
   // Used by the floating chat button and the contact form.
-  whatsapp: '201000000000',
+  whatsapp: '201000209047',
 }
