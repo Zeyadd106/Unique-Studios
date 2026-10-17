@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Maximize, Minimize } from 'lucide-react'
@@ -16,13 +16,50 @@ interface ProductGalleryProps {
  *
  * - The main image is the primary photograph; thumbnails switch between the
  *   remaining views. Arrows and zoom are available on larger screens.
+ * - Swipe support for mobile devices.
  * - Images are lazy-loaded except for the first one.
  */
 export function ProductGallery({ images, className }: ProductGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [zoomed, setZoomed] = useState(false)
+  const touchStartX = useRef(0)
+  const touchEndX = useRef(0)
 
   const image = images[selectedIndex] ?? images[0]
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.changedTouches[0].screenX
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].screenX
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return
+
+    const swipeThreshold = 50
+    const diff = touchStartX.current - touchEndX.current
+
+    if (diff > swipeThreshold) {
+      // Swipe left - next image
+      setSelectedIndex((i) => (i + 1) % images.length)
+    } else if (diff < -swipeThreshold) {
+      // Swipe right - previous image
+      setSelectedIndex((i) => (i - 1 + images.length) % images.length)
+    }
+
+    touchStartX.current = 0
+    touchEndX.current = 0
+  }
+
+  const handlePrevious = () => {
+    setSelectedIndex((i) => (i - 1 + images.length) % images.length)
+  }
+
+  const handleNext = () => {
+    setSelectedIndex((i) => (i + 1) % images.length)
+  }
 
   if (!image) {
     return (
@@ -36,7 +73,12 @@ export function ProductGallery({ images, className }: ProductGalleryProps) {
 
   return (
     <div className={`space-y-4 ${className ?? ''}`}>
-      <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-brand-mist">
+      <div
+        className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-brand-mist"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         <Image
           fill
           src={image.url}
@@ -62,18 +104,16 @@ export function ProductGallery({ images, className }: ProductGalleryProps) {
             <button
               type="button"
               aria-label="Previous image"
-              onClick={() =>
-                setSelectedIndex((i) => (i - 1 + images.length) % images.length)
-              }
-              className="absolute start-3 top-1/2 z-30 -translate-y-1/2 rounded-full bg-white/95 p-2.5 text-brand opacity-0 shadow-md backdrop-blur transition-all hover:bg-white group-hover:opacity-100"
+              onClick={handlePrevious}
+              className="absolute start-3 top-1/2 z-30 -translate-y-1/2 rounded-full bg-white/95 p-2.5 text-brand opacity-0 shadow-md backdrop-blur transition-all hover:bg-white group-hover:opacity-100 sm:opacity-100"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
             <button
               type="button"
               aria-label="Next image"
-              onClick={() => setSelectedIndex((i) => (i + 1) % images.length)}
-              className="absolute end-3 top-1/2 z-30 -translate-y-1/2 rounded-full bg-white/95 p-2.5 text-brand opacity-0 shadow-md backdrop-blur transition-all hover:bg-white group-hover:opacity-100"
+              onClick={handleNext}
+              className="absolute end-3 top-1/2 z-30 -translate-y-1/2 rounded-full bg-white/95 p-2.5 text-brand opacity-0 shadow-md backdrop-blur transition-all hover:bg-white group-hover:opacity-100 sm:opacity-100"
             >
               <ChevronRight className="h-5 w-5" />
             </button>

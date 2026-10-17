@@ -221,7 +221,7 @@ export default function OffShoulderCollectionPage() {
         <section className="relative isolate overflow-hidden bg-black text-white">
           <div className="us-kenburns absolute inset-0">
             <Image
-              src="/images/optimized/IMG_5531-gallery.webp"
+              src="/images/products/off shoulder/IMG_5635.JPG.jpeg"
               alt={collection?.category.name ?? 'Off Shoulder'}
               fill
               priority

@@ -175,6 +175,12 @@ export default function ProductPage() {
             .filter((v) => v.color === firstVariant.colorName)
             .sort((a, b) => b.stock - a.stock)[0]
           setSelectedSize(firstSize?.size ?? '')
+        } else {
+          // Fallback: set first available size if no color variants
+          const firstSize = (data.variants as ProductDetailData['variants'])
+            .sort((a, b) => b.stock - a.stock)[0]
+          setSelectedSize(firstSize?.size ?? '')
+          setSelectedColor(firstSize?.color ?? '')
         }
         setSelectedImage(0)
         setQuantity(1)
@@ -218,11 +224,12 @@ export default function ProductPage() {
 
   const currentVariant = product?.variantsByColor.find(
     (variant) => variant.colorName === selectedColor
-  )
+  ) ?? product?.variantsByColor[0]
 
-  const galleryImages = useMemo(
-    () =>
-      currentVariant?.images.map((image) => ({
+  const galleryImages = useMemo(() => {
+    const images = currentVariant?.images ?? []
+    if (images.length > 0) {
+      return images.map((image) => ({
         id: image.id,
         productId: product?.id ?? '',
         url: image.imageUrl,
@@ -231,9 +238,20 @@ export default function ProductPage() {
         sortOrder: image.sortOrder,
         isPrimary: image.isPrimary,
         createdAt: new Date(),
-      })) ?? [],
-    [currentVariant, product?.id, product?.name]
-  )
+      }))
+    }
+    // Fallback to product images
+    return product?.images.map((image) => ({
+      id: image.id,
+      productId: product?.id ?? '',
+      url: image.url,
+      thumbUrl: image.thumbUrl ?? image.url,
+      alt: image.alt ?? product?.name ?? '',
+      sortOrder: image.sortOrder,
+      isPrimary: image.isPrimary,
+      createdAt: image.createdAt,
+    })) ?? []
+  }, [currentVariant, product?.id, product?.name, product?.images])
 
   const activeImage = galleryImages[selectedImage] ?? galleryImages[0]
 
@@ -241,18 +259,17 @@ export default function ProductPage() {
     if (!product) return []
     const seen = new Map<string, { size: string; stock: number; weightMin: number | null; weightMax: number | null }>()
     for (const v of product.variants) {
-      if (v.color !== selectedColor) continue
       const existing = seen.get(v.size)
       if (!existing || v.stock > existing.stock) {
         seen.set(v.size, { size: v.size, stock: v.stock, weightMin: v.weightMin, weightMax: v.weightMax })
       }
     }
     return [...seen.values()]
-  }, [product, selectedColor])
+  }, [product])
 
   const selectedVariant = sizesForColor.find((s) => s.size === selectedSize)
   const currentStock = selectedVariant?.stock ?? 0
-  const isOutOfStock = !currentVariant || currentStock <= 0
+  const isOutOfStock = currentStock <= 0
   const isLowStock = !isOutOfStock && currentStock <= 5
 
   const format = (value: number) =>
@@ -279,14 +296,23 @@ export default function ProductPage() {
     setSelectedSize(firstSize?.size ?? '')
   }
 
+  const handleSelectSize = (size: string) => {
+    setSelectedSize(size)
+    // Update selected color to match the selected size's color
+    const variant = product?.variants.find((v) => v.size === size)
+    if (variant) {
+      setSelectedColor(variant.color)
+    }
+  }
+
   const handleAddToCart = () => {
-    if (!product || !currentVariant || !selectedSize || isOutOfStock) return
+    if (!product || !selectedSize || isOutOfStock) return
     const unit = product.salePrice ?? product.price
     addToCart({
       productId: product.id,
       productName: product.name,
       productSlug: product.slug,
-      image: currentVariant.images[0]?.imageUrl ?? product.images[0]?.url ?? '',
+      image: product.images[0]?.url ?? '',
       size: selectedSize,
       color: selectedColor,
       quantity,
@@ -606,40 +632,11 @@ export default function ProductPage() {
                   {product.description}
                 </p>
 
-                {/* Color */}
-                <div className="mt-7">
-                  <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-ink/60">
-                    {t('product.color')} — <span className="text-ink">{selectedColor}</span>
-                  </p>
-                  <div className="flex flex-wrap gap-2.5">
-                    {product.variantsByColor.map((variant) => {
-                      const selected = selectedColor === variant.colorName
-                      return (
-                        <button
-                          key={variant.id}
-                          type="button"
-                          aria-pressed={selected}
-                          disabled={!variant.available}
-                          onClick={() => handleSelectColor(variant.colorName)}
-                          className={`rounded-full border px-5 py-2.5 text-sm font-bold transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-35 ${
-                            selected
-                              ? 'us-size-active border-black bg-black text-white'
-                              : 'border-brand-line bg-white text-ink hover:border-black'
-                          }`}
-                        >
-                          {variant.colorName}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-
                 {/* Size */}
                 <div className="mt-6">
                   <div className="mb-3 flex items-center justify-between">
                     <p className="text-xs font-bold uppercase tracking-[0.18em] text-ink/60">
                       {t('product.size')}
-                      {selectedSize && <span className="text-ink"> — {selectedSize}</span>}
                     </p>
                     <Link href="/size-guide" className="flex items-center gap-1 text-xs font-bold text-ink/60 underline-offset-4 hover:text-ink hover:underline">
                       <Ruler className="h-3.5 w-3.5" aria-hidden />
@@ -657,7 +654,7 @@ export default function ProductPage() {
                           aria-pressed={selected}
                           disabled={empty}
                           onClick={() => {
-                            setSelectedSize(size)
+                            handleSelectSize(size)
                             setQuantity(1)
                           }}
                           className={`relative rounded-2xl border py-3.5 text-sm font-bold transition-all duration-300 disabled:cursor-not-allowed ${
@@ -872,7 +869,7 @@ export default function ProductPage() {
                 <p className="text-sm font-bold">
                   {format(product.salePrice ?? product.price)}
                   <span className="ms-2 text-xs font-semibold text-ink/50">
-                    {selectedColor} · {selectedSize || '—'}
+                    {selectedSize || '—'}
                   </span>
                 </p>
               </div>

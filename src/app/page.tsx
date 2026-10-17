@@ -54,13 +54,13 @@ const CATEGORY_CHAPTERS: CategoryChapter[] = [
   {
     slug: '/collections/off-shoulder',
     name: 'OFF-SHOULDER',
-    fallbackImage: '/images/optimized/IMG_5531-card.webp',
+    fallbackImage: '/images/products/off shoulder/IMG_5635.JPG.jpeg',
     tagline: 'Soft statement fits',
   },
   {
     slug: '/collections/sweatpants',
     name: 'SWEATPANTS',
-    fallbackImage: '/images/optimized/IMG_5544-card.webp',
+    fallbackImage: '/images/products/sweatpants/IMG_5611.JPG.jpeg',
     tagline: 'Everyday uniforms',
   },
 ]
@@ -375,13 +375,9 @@ export default function HomePage() {
               transition={{ duration: 0.6, ease: 'easeOut' }}
               className="mb-6 flex flex-wrap items-center gap-3"
             >
-              <span className="us-glass us-float inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white">
+              <span className="us-glass us-float inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px font-bold uppercase tracking-[0.2em] text-white">
                 <Sparkles className="h-3.5 w-3.5 text-amber-300" aria-hidden />
                 {t('home.newArrivals').toUpperCase()}
-              </span>
-              <span className="us-glass us-float us-float-delay inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white">
-                <Flame className="h-3.5 w-3.5 text-orange-400" aria-hidden />
-                {isAr ? 'الدروب الجديد وصل' : 'The new drop just landed'}
               </span>
             </motion.div>
 
@@ -632,153 +628,6 @@ export default function HomePage() {
         </section>
 
         <div className="us-rule mx-auto max-w-7xl" aria-hidden />
-
-        {/* ------------------------------------------------ NEW ARRIVALS */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-brand-mist/50 via-white to-brand-mist/30 py-20 sm:py-28">
-          {/* Animated background elements */}
-          <motion.div
-            className="pointer-events-none absolute top-10 left-10 h-64 w-64 rounded-full bg-brand/5 blur-3xl"
-            animate={{
-              x: [0, 30, 0],
-              y: [0, -30, 0],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-          <motion.div
-            className="pointer-events-none absolute bottom-10 right-10 h-96 w-96 rounded-full bg-brand/5 blur-3xl"
-            animate={{
-              x: [0, -40, 0],
-              y: [0, 40, 0],
-              scale: [1, 1.3, 1],
-            }}
-            transition={{
-              duration: 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-
-          <div
-            aria-hidden
-            className="pointer-events-none absolute end-0 top-8 select-none text-[18vw] font-bold leading-none tracking-tighter text-black/[0.04] lg:text-[10rem]"
-          >
-            NEW
-          </div>
-          <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
-            <Reveal className="mb-12 flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6 }}
-                  className="mb-3 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-100 to-amber-100 px-4 py-2 text-xs font-bold uppercase tracking-[0.25em] text-orange-600 shadow-lg shadow-orange-200/50"
-                >
-                  <motion.div
-                    animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                    <Flame className="h-4 w-4 text-orange-500" aria-hidden />
-                  </motion.div>
-                  {isAr ? 'وصل حديثاً' : 'Fresh off the rack'}
-                </motion.div>
-                <motion.h2
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.6 }}
-                  className="text-3xl font-bold tracking-tight text-ink sm:text-5xl"
-                >
-                  {t('home.newArrivals')}
-                </motion.h2>
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                  className="mt-3 max-w-xl text-sm leading-relaxed text-ink/60 sm:text-base"
-                >
-                  {t('home.newArrivalsText')}
-                </motion.p>
-              </div>
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4, duration: 0.6 }}
-              >
-                <Link
-                  href="/shop?newArrivals=true"
-                  className="us-cta group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-black to-gray-800 px-7 py-3.5 text-sm font-bold text-white shadow-xl shadow-black/20 transition-all duration-300 hover:shadow-black/40 hover:scale-105"
-                >
-                  <motion.div
-                    className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                    animate={{
-                      x: ['-100%', '100%'],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  />
-                  <span className="relative flex items-center gap-2">
-                    {t('common.viewAll')}
-                    <ArrowRight
-                      className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
-                      aria-hidden
-                    />
-                  </span>
-                </Link>
-              </motion.div>
-            </Reveal>
-
-            {loading ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
-              >
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.05 }}
-                    className="vg-skeleton aspect-[4/5] rounded-2xl"
-                  />
-                ))}
-              </motion.div>
-            ) : (
-              <motion.div
-                variants={gridContainer}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.1 }}
-                className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
-              >
-                {newArrivals.map((product, index) => (
-                  <motion.div
-                    key={product.id}
-                    variants={gridItem}
-                    whileHover={{ y: -8, scale: 1.02 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div className="relative overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-300 hover:shadow-2xl hover:shadow-brand/20">
-                      <ProductCard product={product} {...cardProps} />
-                      {/* Hover glow effect */}
-                      <motion.div
-                        className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-brand/5 via-transparent to-transparent opacity-0 transition-opacity duration-300"
-                        whileHover={{ opacity: 1 }}
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            )}
-          </div>
-        </section>
 
         {/* ------------------------------------------------ CRAFT */}
         <section className="border-y border-brand-line bg-white py-14">

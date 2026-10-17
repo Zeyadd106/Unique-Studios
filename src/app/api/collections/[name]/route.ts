@@ -28,43 +28,39 @@ export async function GET(
 
     const products = queryProducts({ category: categorySlug, sort: 'featured' })
 
-    // One card per color variant (no swatches on collection pages).
-    const collectionProducts = products.flatMap((product) => {
-      const colors = [...new Set(product.variants.map((v) => v.color))]
-      return colors.map((colorName) => {
-        const colorVariants = product.variants.filter((v) => v.color === colorName)
-        const images = product.images.map((img) => ({
-          id: img.id,
-          url: img.url,
-          cardUrl: img.cardUrl,
-          thumbUrl: img.thumbUrl,
-          alt: img.alt ?? product.name,
-          sortOrder: img.sortOrder,
-          isPrimary: img.sortOrder === 0,
-        }))
-        return {
-          id: `${product.id}-${colorName}`,
-          productId: product.id,
-          name: product.name,
-          slug: product.slug,
-          description: product.description ?? '',
-          category: {
-            id: category.id,
-            name: category.name,
-            slug: category.slug,
-          },
-          image: images[0]?.url || null,
-          images,
-          imageCount: images.length,
-          price: product.price,
-          salePrice: product.salePrice,
-          available: colorVariants.some((v) => v.stock > 0),
-          colorName,
-          featured: product.featured,
-          createdAt: product.createdAt,
-          updatedAt: product.updatedAt,
-        }
-      })
+    // One card per product (no color variant duplication).
+    const collectionProducts = products.map((product) => {
+      const images = product.images.map((img) => ({
+        id: img.id,
+        url: img.url,
+        cardUrl: img.cardUrl,
+        thumbUrl: img.thumbUrl,
+        alt: img.alt ?? product.name,
+        sortOrder: img.sortOrder,
+        isPrimary: img.sortOrder === 0,
+      }))
+      return {
+        id: product.id,
+        productId: product.id,
+        name: product.name,
+        slug: product.slug,
+        description: product.description ?? '',
+        category: {
+          id: category.id,
+          name: category.name,
+          slug: category.slug,
+        },
+        image: images[0]?.url || null,
+        images,
+        imageCount: images.length,
+        price: product.price,
+        salePrice: product.salePrice,
+        available: product.variants.some((v) => v.stock > 0),
+        colorName: null,
+        featured: product.featured,
+        createdAt: product.createdAt,
+        updatedAt: product.updatedAt,
+      }
     })
 
     return NextResponse.json({
