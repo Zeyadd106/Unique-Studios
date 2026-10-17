@@ -1097,6 +1097,27 @@ export function createProduct(input: AdminProductInput): Product {
   return product
 }
 
+export function createCategory(input: {
+  name: string
+  slug: string
+  description?: string
+  image?: string
+  active?: boolean
+}): Category {
+  const category: Category = {
+    id: `cat-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`,
+    name: input.name,
+    slug: input.slug,
+    description: input.description ?? null,
+    image: input.image ?? null,
+    active: input.active !== false,
+    createdAt: now(),
+    updatedAt: now(),
+  }
+  CATEGORIES.push(category)
+  return category
+}
+
 export function updateProduct(id: string, data: Partial<AdminProductInput>): Product | undefined {
   const product = PRODUCTS.find((p) => p.id === id)
   if (!product) return undefined
@@ -1142,6 +1163,40 @@ export function deleteProduct(id: string): boolean {
   return true
 }
 
+export function replaceProductImages(
+  id: string,
+  images: { id?: string; url: string; cardUrl?: string; thumbUrl?: string; alt?: string }[]
+): Product | undefined {
+  const product = PRODUCTS.find((p) => p.id === id)
+  if (!product) return undefined
+
+  product.images = images.map((img, i) => ({
+    id: img.id || `${product.id}-img-${i + 1}`,
+    productId: product.id,
+    url: img.url,
+    cardUrl: img.cardUrl || img.url,
+    thumbUrl: img.thumbUrl || img.url,
+    alt: img.alt || product.name,
+    sortOrder: i,
+    createdAt: now(),
+  }))
+  product.updatedAt = new Date()
+  return product
+}
+
+export function getDashboardStats() {
+  return {
+    totalProducts: PRODUCTS.length,
+    totalCategories: CATEGORIES.length,
+    totalOrders: ORDERS.length,
+    totalRevenue: ORDERS.reduce((sum, order) => sum + order.total, 0),
+  }
+}
+
+export function getRecentOrders(limit: number = 10) {
+  return ORDERS.slice(0, limit)
+}
+
 // ---------------------------------------------------------------------------
 // Reviews (in-memory — product reviews submitted by customers)
 // ---------------------------------------------------------------------------
@@ -1149,9 +1204,11 @@ export function deleteProduct(id: string): boolean {
 export interface Review {
   id: string
   productId: string
-  customerName: string
+  author: string
   rating: number
   comment: string
+  photos: string[]
+  verified: boolean
   createdAt: Date
 }
 
@@ -1159,18 +1216,21 @@ const REVIEWS: Review[] = []
 
 export interface ReviewInput {
   productId: string
-  customerName: string
+  author: string
   rating: number
   comment: string
+  photos?: string[]
 }
 
 export function addReview(input: ReviewInput): Review {
   const review: Review = {
     id: `review-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`,
     productId: input.productId,
-    customerName: input.customerName,
+    author: input.author,
     rating: input.rating,
     comment: input.comment,
+    photos: input.photos ?? [],
+    verified: false,
     createdAt: new Date(),
   }
   REVIEWS.unshift(review)

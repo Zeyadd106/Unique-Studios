@@ -14,6 +14,7 @@ export interface Product {
   bestSeller: boolean
   newArrival: boolean
   active: boolean
+  sizes: string[]
   images: ProductImage[]
   variants: ProductVariant[]
   createdAt: Date
