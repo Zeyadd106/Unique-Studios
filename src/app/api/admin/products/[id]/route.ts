@@ -1,11 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
-import {
-  getProductById,
-  updateProduct,
-  deleteProduct,
-  replaceProductImages,
-} from '@/data/store'
+import { prisma } from '@/lib/prisma'
 
 export async function GET(
   request: Request,
@@ -18,7 +13,18 @@ export async function GET(
     }
 
     const { id } = await params
-    const product = getProductById(id)
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: {
+        category: { select: { name: true } },
+        variants: {
+          include: {
+            images: { orderBy: { sortOrder: 'asc' } },
+          },
+          orderBy: { colorName: 'asc' },
+        },
+      },
+    })
 
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
@@ -41,30 +47,57 @@ export async function PATCH(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
     const { id } = await params
+    const body = await request.json()
 
-    const { images, variants, ...rest } = body as {
-      images?: { url: string; cardUrl?: string; thumbUrl?: string; alt?: string }[]
+    const {
+      variants,
+      ...rest
+    } = body as {
       variants?: { size: string; color: string; stock: number }[]
       [key: string]: unknown
     }
 
-    const updated = updateProduct(id, rest)
-    if (!updated) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+    // Update product base fields
+    const { variants: _, ...updateData } = rest
+    const updated = await prisma.product.update({
+      where: { id },
+      data: updateData,
+      include: {
+        variants: {
+          include: { images: { orderBy: { sortOrder: 'asc' } } },
+          orderBy: { colorName: 'asc' },
+        },
+        category: { select: { name: true } },
+      },
+    })
+
+    // Replace variants if provided
+    if (Array.isArray(variants)) {
+      await prisma.productVariant.deleteMany({ where: { productId: id } })
+      await prisma.productVariant.createMany({
+        data: variants.map((v: { size: string; color: string; stock: number }) => ({
+          productId: id,
+          colorName: v.color,
+          stock: v.stock,
+          available: true,
+        })),
+      })
     }
 
-    if (Array.isArray(images)) {
-      replaceProductImages(id, images)
-    }
+    // Return updated product with relations
+    const refreshed = await prisma.product.findUnique({
+      where: { id },
+      include: {
+        variants: {
+          include: { images: { orderBy: { sortOrder: 'asc' } } },
+          orderBy: { colorName: 'asc' },
+        },
+        category: { select: { name: true } },
+      },
+    })
 
-    // Variant replacement: rebuild via delete + re-add is out of scope for the
-    // in-memory store — variants are edited through the product form's full
-    // save. Silently ignore here to avoid data loss.
-    void variants
-
-    return NextResponse.json(getProductById(id))
+    return NextResponse.json(refreshed)
   } catch (error) {
     console.error('Error updating product:', error)
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 })
@@ -82,10 +115,7 @@ export async function DELETE(
     }
 
     const { id } = await params
-    const ok = deleteProduct(id)
-    if (!ok) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
-    }
+    await prisma.product.delete({ where: { id } })
 
     return NextResponse.json({ success: true })
   } catch (error) {

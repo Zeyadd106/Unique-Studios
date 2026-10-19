@@ -344,7 +344,7 @@ export default function HomePage() {
           <motion.div style={{ y: heroY }} className="absolute inset-0">
             <div className="us-kenburns absolute inset-0">
               <Image
-                src="/images/optimized/IMG_5531-gallery.webp"
+                src="/images/hero-cover-image.jpeg"
                 alt="UNIQUE STUDIOS — oversized streetwear"
                 fill
                 priority
@@ -357,30 +357,10 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
           <div className="us-glow absolute -top-24 end-0 h-96 w-96 rounded-full opacity-60" />
 
-          {/* Ghost numerals */}
-          <div
-            aria-hidden
-            className="us-text-stroke pointer-events-none absolute top-16 start-4 select-none text-[22vw] font-bold leading-none tracking-tighter opacity-40 sm:start-8 lg:text-[15rem]"
-          >
-            US
-          </div>
-
           <motion.div
             style={{ opacity: heroFade }}
             className="relative mx-auto w-full max-w-7xl px-5 pb-28 pt-36 sm:px-8 lg:pb-36"
           >
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
-              className="mb-6 flex flex-wrap items-center gap-3"
-            >
-              <span className="us-glass us-float inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px font-bold uppercase tracking-[0.2em] text-white">
-                <Sparkles className="h-3.5 w-3.5 text-amber-300" aria-hidden />
-                {t('home.newArrivals').toUpperCase()}
-              </span>
-            </motion.div>
-
             <motion.h1
               variants={headlineContainer}
               initial="hidden"
@@ -426,57 +406,8 @@ export default function HomePage() {
                   aria-hidden
                 />
               </Link>
-              <Link
-                href="/collections/crewnecks"
-                className="us-cta inline-flex items-center justify-center gap-1.5 rounded-full border border-white/40 px-8 py-4 text-sm font-bold text-white backdrop-blur-sm transition-colors duration-300 hover:border-white hover:bg-white/10"
-              >
-                {t('hero.secondaryCta')}
-                <ChevronRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
-              </Link>
             </motion.div>
-
-            {/* Live stats */}
-            <motion.dl
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.85, ease: 'easeOut' }}
-              className="mt-14 grid max-w-2xl grid-cols-3 gap-6 border-t border-white/20 pt-7 text-white"
-            >
-              <div>
-                <dt className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/60">
-                  {isAr ? 'قطعة' : 'Pieces'}
-                </dt>
-                <dd className="mt-1 text-2xl font-bold sm:text-3xl">
-                  <CountUp to={Math.max(activeProducts.length, 4)} suffix="+" />
-                </dd>
-              </div>
-              <div>
-                <dt className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/60">
-                  {isAr ? 'التقييم' : 'Rating'}
-                </dt>
-                <dd className="mt-1 flex items-center gap-1.5 text-2xl font-bold sm:text-3xl">
-                  4.9
-                  <Star className="h-5 w-5 fill-amber-300 text-amber-300" aria-hidden />
-                </dd>
-              </div>
-              <div>
-                <dt className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/60">
-                  {isAr ? 'الدفع' : 'Payment'}
-                </dt>
-                <dd className="mt-1 text-2xl font-bold sm:text-3xl">COD</dd>
-              </div>
-            </motion.dl>
           </motion.div>
-
-          {/* Scroll cue */}
-          <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-white/70">
-            <div className="flex h-10 w-6 items-start justify-center rounded-full border border-white/40 p-1.5">
-              <div className="us-scroll-dot h-2 w-2 rounded-full bg-white" />
-            </div>
-            <span className="text-[10px] font-bold uppercase tracking-[0.25em]">
-              {isAr ? 'اسحب' : 'Scroll'}
-            </span>
-          </div>
         </section>
 
         {/* ------------------------------------------------ MARQUEE */}
@@ -490,60 +421,6 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-
-        {/* ------------------------------------------------ NEW DROP */}
-        <section className="relative isolate overflow-hidden bg-black text-white">
-          <div className="absolute inset-0">
-            <motion.div
-              initial={{ scale: 1.12 }}
-              whileInView={{ scale: 1 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 1.4, ease: 'easeOut' }}
-              className="relative h-full w-full"
-            >
-              <Image
-                src="/images/optimized/IMG_5544-gallery.webp"
-                alt="UNIQUE STUDIOS — new season preview"
-                fill
-                sizes="100vw"
-                priority={false}
-                className="object-cover opacity-70"
-              />
-            </motion.div>
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/55 to-transparent" />
-          <div className="relative mx-auto flex max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:py-32">
-            <Reveal className="max-w-2xl">
-              <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-amber-300 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-black">
-                <Flame className="h-3.5 w-3.5" aria-hidden />
-                {isAr ? 'دروب جديد' : 'Just dropped'}
-              </p>
-              <h2 className="text-4xl font-bold leading-[1.02] tracking-tight sm:text-6xl">
-                {t('home.newDrop')}
-                <span className="us-gradient-text block">{t('home.newArrivals')}</span>
-              </h2>
-              <p className="mt-5 max-w-lg text-sm leading-relaxed text-white/80 sm:text-base">
-                {t('home.newDropText')}
-              </p>
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Link
-                  href="/shop?newArrivals=true"
-                  className="us-cta us-shine group inline-flex items-center justify-center gap-2 rounded-full bg-white px-9 py-4 text-sm font-bold text-black"
-                >
-                  {t('common.shopNow')}
-                  <ArrowRight
-                    className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
-                    aria-hidden
-                  />
-                </Link>
-                <span className="inline-flex items-center gap-2 text-xs font-semibold text-white/70">
-                  <BadgeCheck className="h-4 w-4 text-amber-300" aria-hidden />
-                  {isAr ? 'الدفع عند الاستلام' : 'Cash on delivery · 14-day exchange'}
-                </span>
-              </div>
-            </Reveal>
-          </div>
-        </section>
 
         {/* ------------------------------------------------ CHAPTERS */}
         <section className="relative overflow-hidden py-20 sm:py-28">
@@ -819,7 +696,7 @@ export default function HomePage() {
               <Image
                 fill
                 src="/images/optimized/IMG_5549-card.webp"
-                alt="UNIQUE STUDIOS — premium knitwear"
+                alt="UNIQUE STUDIOS — premium collection"
                 sizes="(max-width: 1024px) 100vw, 42vw"
                 priority={false}
                 loading="lazy"

@@ -58,16 +58,6 @@ export const CATEGORIES: Category[] = [
     createdAt: now(),
     updatedAt: now(),
   },
-  {
-    id: 'cat-knitwear',
-    name: 'Knitwear',
-    slug: 'knitwear',
-    description: 'Premium knitwear with a soft, comfortable feel',
-    image: '/images/optimized/IMG_5549-card.webp',
-    active: true,
-    createdAt: now(),
-    updatedAt: now(),
-  },
 ]
 
 // ---------------------------------------------------------------------------
@@ -410,37 +400,6 @@ const PRODUCT_SEEDS: ProductSeed[] = [
         cardUrl: '/images/products/Crewnecks/crewnecks-product-slide white/IMG_5554.JPG.jpeg',
         thumbUrl: '/images/products/Crewnecks/crewnecks-product-slide white/IMG_5554.JPG.jpeg',
         alt: 'Heavyweight Crewneck - lifestyle view',
-      },
-    ],
-  },
-  {
-    id: 'prod-knitwear',
-    name: 'Premium Knitwear',
-    slug: 'knitwear',
-    description:
-      'Premium knitwear top with a soft feel and comfortable regular fit.',
-    price: 750,
-    salePrice: 600,
-    categoryId: 'cat-knitwear',
-    material: 'Soft Knit Fabric',
-    fit: 'Regular',
-    careInstructions: 'Machine wash cold, hang dry',
-    featured: true,
-    bestSeller: false,
-    newArrival: true,
-    sizes: ['M', 'L', 'XL'],
-    images: [
-      {
-        url: '/images/optimized/IMG_5549-gallery.webp',
-        cardUrl: '/images/optimized/IMG_5549-card.webp',
-        thumbUrl: '/images/optimized/IMG_5549-thumb.webp',
-        alt: 'Premium Knitwear - front view',
-      },
-      {
-        url: '/images/optimized/IMG_5550-gallery.webp',
-        cardUrl: '/images/optimized/IMG_5550-card.webp',
-        thumbUrl: '/images/optimized/IMG_5550-thumb.webp',
-        alt: 'Premium Knitwear - back view',
       },
     ],
   },

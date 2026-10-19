@@ -1,0 +1,2 @@
+$body = '{"customerName":"Test User","phone":"01012345678","email":"test@example.com","address":"123 Test Street","city":"Cairo","items":[{"productId":"prod-round-neck","productName":"Heavyweight Crewneck","size":"L","color":"Black","quantity":1,"unitPrice":849,"totalPrice":849}]}'
+Invoke-RestMethod -Method POST -Uri "http://localhost:3000/api/orders" -Headers @{"Content-Type"="application/json"} -Body $body

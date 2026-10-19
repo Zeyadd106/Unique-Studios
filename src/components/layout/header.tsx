@@ -45,13 +45,11 @@ function buildNavItems(t: (key: string) => string): NavItem[] {
       label: t('nav.shop'),
       children: [
         { href: '/shop', label: t('common.shopAll') },
-        { href: '/categories', label: t('nav.categories') },
         { href: '/collections/crewnecks', label: t('nav.crewnecks') },
         { href: '/collections/off-shoulder', label: t('nav.offShoulder') },
         { href: '/collections/sweatpants', label: t('nav.sweatpants') },
       ],
     },
-    { href: '/categories', label: t('nav.categories') },
     { href: '/about', label: t('nav.about') },
     { href: '/contact', label: t('nav.contact') },
   ]

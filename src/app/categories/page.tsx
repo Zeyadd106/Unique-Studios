@@ -38,7 +38,6 @@ const FALLBACK_COVERS: Record<string, string> = {
   sweatpants: '/images/products/sweatpants/IMG_5611.JPG.jpeg',
   'round-neck': '/images/optimized/IMG_5546-card.webp',
   crewnecks: '/images/optimized/IMG_5546-card.webp',
-  knitwear: '/images/optimized/IMG_5549-card.webp',
 }
 
 function coverFor(category: Category): string {

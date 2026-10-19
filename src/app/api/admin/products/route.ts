@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
-import { PRODUCTS, createProduct } from '@/data/store'
+import { prisma } from '@/lib/prisma'
 
 export async function GET(request: Request) {
   try {
@@ -13,38 +13,44 @@ export async function GET(request: Request) {
     const categoryId = searchParams.get('categoryId')
     const active = searchParams.get('active')
 
-    let products = [...PRODUCTS]
-    if (categoryId) products = products.filter((p) => p.categoryId === categoryId)
+    const where: Record<string, unknown> = {}
+    if (categoryId) where.categoryId = categoryId
     if (active !== null && active !== undefined && active !== '') {
-      products = products.filter((p) => p.active === (active === 'true'))
+      where.active = active === 'true'
     }
-    products.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+
+    const products = await prisma.product.findMany({
+      where,
+      include: {
+        category: { select: { name: true } },
+        variants: {
+          include: {
+            images: {
+              orderBy: { sortOrder: 'asc' },
+              select: { id: true, imageUrl: true, alt: true, sortOrder: true, isPrimary: true },
+            },
+          },
+          orderBy: { colorName: 'asc' },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    })
 
     return NextResponse.json(
       products.map((p) => ({
         id: p.id,
         name: p.name,
         slug: p.slug,
+        description: p.description,
+        categoryId: p.categoryId,
         price: p.price,
         salePrice: p.salePrice,
-        active: p.active,
         featured: p.featured,
-        bestSeller: p.bestSeller,
-        newArrival: p.newArrival,
+        available: p.available,
+        createdAt: p.createdAt,
+        updatedAt: p.updatedAt,
         category: { name: p.category.name },
-        images: p.images.map((img) => ({
-          id: img.id,
-          url: img.url,
-          cardUrl: img.cardUrl,
-          thumbUrl: img.thumbUrl,
-          alt: img.alt,
-        })),
-        variants: p.variants.map((v) => ({
-          id: v.id,
-          size: v.size,
-          color: v.color,
-          stock: v.stock,
-        })),
+        variants: p.variants,
       }))
     )
   } catch (error) {
@@ -72,28 +78,10 @@ export async function POST(request: Request) {
       fit,
       careInstructions,
       featured,
-      bestSeller,
-      newArrival,
       active,
       images,
       variants,
-    } = body as {
-      name: string
-      slug: string
-      description?: string
-      price: number
-      salePrice?: number | null
-      categoryId: string
-      material?: string
-      fit?: string
-      careInstructions?: string
-      featured?: boolean
-      bestSeller?: boolean
-      newArrival?: boolean
-      active?: boolean
-      images?: { url: string; cardUrl?: string; thumbUrl?: string; alt?: string }[]
-      variants?: { size: string; color: string; stock: number }[]
-    }
+    } = body
 
     if (!name || !slug || !categoryId) {
       return NextResponse.json(
@@ -102,25 +90,37 @@ export async function POST(request: Request) {
       )
     }
 
-    const product = createProduct({
-      name,
-      slug,
-      description: description ?? '',
-      price: Number(price) ?? 0,
-      salePrice: salePrice ?? null,
-      categoryId,
-      material,
-      fit,
-      careInstructions,
-      featured: featured || false,
-      bestSeller: bestSeller || false,
-      newArrival: newArrival || false,
-      active: active !== false,
-      images,
-      variants,
+    const product = await prisma.product.create({
+      data: {
+        name,
+        slug,
+        description: description ?? null,
+        price: Number(price) ?? 0,
+        salePrice: salePrice ?? null,
+        categoryId,
+        featured: featured || false,
+        available: active !== false,
+        variants: variants
+          ? {
+              create: variants.map((v: { size: string; color: string; stock: number }) => ({
+                colorName: v.color,
+                stock: v.stock,
+                available: true,
+              })),
+            }
+          : undefined,
+      },
+      include: {
+        variants: {
+          include: {
+            images: { orderBy: { sortOrder: 'asc' } },
+          },
+        },
+        category: { select: { name: true } },
+      },
     })
 
-    return NextResponse.json(product)
+    return NextResponse.json(product, { status: 201 })
   } catch (error) {
     console.error('Error creating product:', error)
     return NextResponse.json({ error: 'Failed to create product' }, { status: 500 })

@@ -22,8 +22,12 @@ interface Product {
   bestSeller: boolean
   newArrival: boolean
   category: { name: string }
-  images: { url: string }[]
-  variants: { size: string; color: string; stock: number }[]
+  variants: {
+    size: string
+    color: string
+    stock: number
+    images?: { url: string; alt?: string | null }[]
+  }[]
 }
 
 export default function AdminProductsPage() {
@@ -120,19 +124,26 @@ export default function AdminProductsPage() {
                   >
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0">
-                        {product.images[0] ? (
-                          <Image
-                            src={product.images[0].url}
-                            alt={product.name}
-                            width={64}
-                            height={64}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-                            No image
-                          </div>
-                        )}
+                        {(() => {
+                          const firstVariant = product.variants?.[0]
+                          const firstImage = firstVariant?.images?.[0]
+                          if (firstImage?.url) {
+                            return (
+                              <Image
+                                src={firstImage.url}
+                                alt={product.name}
+                                width={64}
+                                height={64}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                            )
+                          }
+                          return (
+                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                              No image
+                            </div>
+                          )
+                        })()}
                       </div>
                       <div className="min-w-0">
                         <h3 className="font-semibold truncate">{product.name}</h3>

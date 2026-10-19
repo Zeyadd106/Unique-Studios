@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
-import { updateVoucher, deleteVoucher } from '@/data/store'
+import { prisma } from '@/lib/prisma'
 
-export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getSession()
     if (!session) {
@@ -11,39 +14,51 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
     const { id } = await params
     const body = await request.json()
-    const { code, type, value, minSubtotal, active } = body
 
     const data: {
       code?: string
-      type?: 'percent' | 'fixed'
-      value?: number
-      minSubtotal?: number | null
+      discountType?: 'PERCENTAGE' | 'FIXED'
+      discountValue?: number
+      minOrderAmount?: number
+      maxUses?: number | null
       active?: boolean
+      startsAt?: Date | null
+      expiresAt?: Date | null
     } = {}
-    if (code !== undefined) data.code = code
-    if (type !== undefined) {
-      if (type !== 'percent' && type !== 'fixed') {
-        return NextResponse.json({ error: 'Type must be percent or fixed' }, { status: 400 })
-      }
-      data.type = type
-    }
-    if (value !== undefined) {
-      const numericValue = Number(value)
-      if (!Number.isFinite(numericValue) || numericValue <= 0) {
-        return NextResponse.json({ error: 'Value must be a positive number' }, { status: 400 })
-      }
-      data.value = numericValue
-    }
-    if (minSubtotal !== undefined) {
-      data.minSubtotal =
-        minSubtotal === null || minSubtotal === '' ? null : Number(minSubtotal)
-    }
-    if (active !== undefined) data.active = Boolean(active)
 
-    const voucher = updateVoucher(id, data)
-    if (!voucher) {
-      return NextResponse.json({ error: 'Voucher not found' }, { status: 404 })
+    if (body.code !== undefined) data.code = body.code.trim().toUpperCase()
+    if (body.discountType !== undefined) {
+      if (!['PERCENTAGE', 'FIXED'].includes(body.discountType)) {
+        return NextResponse.json({ error: 'discountType must be PERCENTAGE or FIXED' }, { status: 400 })
+      }
+      data.discountType = body.discountType
     }
+    if (body.value !== undefined) {
+      const numericValue = Number(body.value)
+      if (!Number.isFinite(numericValue) || numericValue <= 0) {
+        return NextResponse.json({ error: 'discountValue must be a positive number' }, { status: 400 })
+      }
+      data.discountValue = numericValue
+    }
+    if (body.minOrderAmount !== undefined) {
+      data.minOrderAmount = body.minOrderAmount === null || body.minOrderAmount === '' ? 0 : Number(body.minOrderAmount)
+    }
+    if (body.maxUses !== undefined) {
+      data.maxUses = body.maxUses === null || body.maxUses === '' ? null : Number(body.maxUses)
+    }
+    if (body.active !== undefined) data.active = Boolean(body.active)
+    if (body.startsAt !== undefined) {
+      data.startsAt = body.startsAt ? new Date(body.startsAt) : null
+    }
+    if (body.expiresAt !== undefined) {
+      data.expiresAt = body.expiresAt ? new Date(body.expiresAt) : null
+    }
+
+    const voucher = await prisma.voucher.update({
+      where: { id },
+      data,
+    })
+
     return NextResponse.json(voucher)
   } catch (error) {
     console.error('Error updating voucher:', error)
@@ -51,7 +66,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getSession()
     if (!session) {
@@ -59,10 +77,8 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     }
 
     const { id } = await params
-    const ok = deleteVoucher(id)
-    if (!ok) {
-      return NextResponse.json({ error: 'Voucher not found' }, { status: 404 })
-    }
+    await prisma.voucher.delete({ where: { id } })
+
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting voucher:', error)
