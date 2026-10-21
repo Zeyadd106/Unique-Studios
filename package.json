@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "products:scan": "node scripts/scan-products.js",
@@ -15,7 +15,13 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:seed:full": "tsx prisma/seed-full.ts",
+    "deploy": "powershell -ExecutionPolicy Bypass -File scripts/deploy-vercel.ps1",
+    "deploy:dry": "powershell -ExecutionPolicy Bypass -File scripts/deploy-vercel.ps1 -DryRun",
+    "vercel:env": "vercel env pull .env.vercel",
+    "vercel:login": "vercel login",
+    "vercel:link": "vercel link"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
