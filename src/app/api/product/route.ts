@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getProductBySlug } from '@/data/store'
+import { getProductBySlug } from '@/lib/catalog'
 
 export async function GET(request: Request) {
   try {
@@ -10,14 +10,12 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Slug is required' }, { status: 400 })
     }
 
-    const product = getProductBySlug(slug)
+    const product = await getProductBySlug(slug)
 
-    if (!product) {
+    if (!product || !product.active) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    // Group variants by color for the frontend color-based gallery.
-    // Store images are product-level, so every color shares the gallery.
     const colors = [...new Set(product.variants.map((v) => v.color))]
     const variantsByColor = colors.map((colorName) => {
       const colorVariants = product.variants.filter((v) => v.color === colorName)
@@ -26,7 +24,7 @@ export async function GET(request: Request) {
         colorName,
         colorCode: null,
         primaryImage: product.images[0]?.url ?? null,
-        available: colorVariants.some((v) => v.stock > 0),
+        available: colorVariants.some((v) => v.stock > 0 && v.available),
         images: product.images.map((img) => ({
           id: img.id,
           imageUrl: img.url,

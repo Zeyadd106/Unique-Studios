@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { queryProducts } from '@/data/store'
+import { queryProducts } from '@/lib/catalog'
 
 export async function GET(request: Request) {
   try {
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     const inStockOnly = searchParams.get('inStockOnly') === 'true'
     const newArrivals = searchParams.get('newArrivals') === 'true'
 
-    const products = queryProducts({
+    const products = await queryProducts({
       category,
       search,
       size,

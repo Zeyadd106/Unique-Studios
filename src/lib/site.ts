@@ -9,7 +9,7 @@ export const siteConfig = {
   tiktok: 'https://www.tiktok.com/@unique.studios.eg?lang=endios',
 
   // Contact info shown on the contact page
-  phone: '+20 123 456 7890',
+  phone: '+20 1000209047',
   email: 'unique.studios.eg@gmail.com',
   address: {
     en: 'Cairo, Egypt',

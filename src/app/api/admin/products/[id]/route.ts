@@ -1,10 +1,17 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { mapProduct, normalizeImages, normalizeVariants } from '@/lib/catalog'
+
+const productInclude = {
+  category: true,
+  images: { orderBy: { sortOrder: 'asc' as const } },
+  variants: { orderBy: [{ color: 'asc' as const }, { size: 'asc' as const }] },
+}
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await getSession()
@@ -15,22 +22,14 @@ export async function GET(
     const { id } = await params
     const product = await prisma.product.findUnique({
       where: { id },
-      include: {
-        category: { select: { name: true } },
-        variants: {
-          include: {
-            images: { orderBy: { sortOrder: 'asc' } },
-          },
-          orderBy: { colorName: 'asc' },
-        },
-      },
+      include: productInclude,
     })
 
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    return NextResponse.json(product)
+    return NextResponse.json(mapProduct(product))
   } catch (error) {
     console.error('Error fetching product:', error)
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 })
@@ -39,7 +38,7 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await getSession()
@@ -49,55 +48,81 @@ export async function PATCH(
 
     const { id } = await params
     const body = await request.json()
-
     const {
+      name,
+      slug,
+      description,
+      price,
+      salePrice,
+      categoryId,
+      material,
+      fit,
+      careInstructions,
+      featured,
+      bestSeller,
+      newArrival,
+      active,
+      available,
+      images,
       variants,
-      ...rest
-    } = body as {
-      variants?: { size: string; color: string; stock: number }[]
-      [key: string]: unknown
+    } = body as Record<string, unknown>
+
+    const existing = await prisma.product.findUnique({ where: { id } })
+    if (!existing) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    // Update product base fields
-    const { variants: _, ...updateData } = rest
-    const updated = await prisma.product.update({
-      where: { id },
-      data: updateData,
-      include: {
-        variants: {
-          include: { images: { orderBy: { sortOrder: 'asc' } } },
-          orderBy: { colorName: 'asc' },
+    await prisma.$transaction(async (tx) => {
+      await tx.product.update({
+        where: { id },
+        data: {
+          ...(name !== undefined ? { name: String(name) } : {}),
+          ...(slug !== undefined ? { slug: String(slug) } : {}),
+          ...(description !== undefined ? { description: description ? String(description) : null } : {}),
+          ...(price !== undefined ? { price: Number(price) || 0 } : {}),
+          ...(salePrice !== undefined ? { salePrice: salePrice ? Number(salePrice) : null } : {}),
+          ...(categoryId !== undefined ? { categoryId: String(categoryId) } : {}),
+          ...(material !== undefined ? { material: material ? String(material) : null } : {}),
+          ...(fit !== undefined ? { fit: fit ? String(fit) : null } : {}),
+          ...(careInstructions !== undefined
+            ? { careInstructions: careInstructions ? String(careInstructions) : null }
+            : {}),
+          ...(featured !== undefined ? { featured: Boolean(featured) } : {}),
+          ...(bestSeller !== undefined ? { bestSeller: Boolean(bestSeller) } : {}),
+          ...(newArrival !== undefined ? { newArrival: Boolean(newArrival) } : {}),
+          ...(active !== undefined || available !== undefined
+            ? { available: active !== false && available !== false }
+            : {}),
         },
-        category: { select: { name: true } },
-      },
+      })
+
+      if (Array.isArray(images)) {
+        await tx.productImage.deleteMany({ where: { productId: id } })
+        const created = normalizeImages(images as { url?: string }[], String(name ?? existing.name))
+        if (created.length > 0) {
+          await tx.productImage.createMany({
+            data: created.map((image) => ({ ...image, productId: id })),
+          })
+        }
+      }
+
+      if (Array.isArray(variants)) {
+        await tx.productVariant.deleteMany({ where: { productId: id } })
+        const created = normalizeVariants(variants as { size?: string; color?: string }[])
+        if (created.length > 0) {
+          await tx.productVariant.createMany({
+            data: created.map((variant) => ({ ...variant, productId: id })),
+          })
+        }
+      }
     })
 
-    // Replace variants if provided
-    if (Array.isArray(variants)) {
-      await prisma.productVariant.deleteMany({ where: { productId: id } })
-      await prisma.productVariant.createMany({
-        data: variants.map((v: { size: string; color: string; stock: number }) => ({
-          productId: id,
-          colorName: v.color,
-          stock: v.stock,
-          available: true,
-        })),
-      })
-    }
-
-    // Return updated product with relations
     const refreshed = await prisma.product.findUnique({
       where: { id },
-      include: {
-        variants: {
-          include: { images: { orderBy: { sortOrder: 'asc' } } },
-          orderBy: { colorName: 'asc' },
-        },
-        category: { select: { name: true } },
-      },
+      include: productInclude,
     })
 
-    return NextResponse.json(refreshed)
+    return NextResponse.json(refreshed ? mapProduct(refreshed) : null)
   } catch (error) {
     console.error('Error updating product:', error)
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 })
@@ -106,7 +131,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await getSession()

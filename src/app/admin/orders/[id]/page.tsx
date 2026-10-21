@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslation } from '@/hooks/use-translation'
 import { useState, useEffect, useCallback } from 'react'
-import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
 interface Order {
@@ -39,14 +38,23 @@ interface Order {
   }[]
 }
 
-export default function AdminOrderDetailPage() {
-  const searchParams = useSearchParams()
-  const id = searchParams.get('id') || ''
+export default function AdminOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { locale, setLocale } = useLocale()
   const { t } = useTranslation()
+  const [id, setId] = useState('')
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentAdmin, setCurrentAdmin] = useState({ name: '', email: '' })
+
+  useEffect(() => {
+    let cancelled = false
+    params.then(({ id: routeId }) => {
+      if (!cancelled) setId(routeId)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [params])
 
   const fetchOrder = useCallback(async () => {
     if (!id) {

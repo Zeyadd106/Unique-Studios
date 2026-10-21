@@ -90,7 +90,7 @@ export default function AdminCategoriesPage() {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.error || isEdit ? 'Failed to update category' : 'Failed to create category')
+        throw new Error(errorData.error || (isEdit ? 'Failed to update category' : 'Failed to create category'))
       }
 
       if (isEdit) setIsEditOpen(false)

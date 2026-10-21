@@ -101,6 +101,7 @@ function buildVariants(productId: string, seed: number, sizes: string[]): Produc
         stock,
         weightMin,
         weightMax,
+        available: true,
         createdAt: now(),
         updatedAt: now(),
       })

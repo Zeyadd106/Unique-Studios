@@ -149,7 +149,7 @@ export function ProductForm({ mode, productId, initialProduct, onSuccess }: Prod
 
   const fetchCategories = useCallback(async () => {
     try {
-      const res = await fetch('/api/categories')
+      const res = await fetch('/api/admin/categories')
       const data: unknown = await res.json()
       if (Array.isArray(data)) {
         setCategories(

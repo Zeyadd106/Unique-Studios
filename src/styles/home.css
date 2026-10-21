@@ -45,6 +45,13 @@
   will-change: transform;
 }
 
+@media (max-width: 640px) {
+  .us-kenburns {
+    animation: none;
+    transform: scale(1);
+  }
+}
+
 /* Animated gradient headline (last word of the hero title) */
 @keyframes us-gradient-pan {
   0%,

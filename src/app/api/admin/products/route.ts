@@ -1,6 +1,13 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { mapProduct, normalizeImages, normalizeVariants } from '@/lib/catalog'
+
+const productInclude = {
+  category: true,
+  images: { orderBy: { sortOrder: 'asc' as const } },
+  variants: { orderBy: [{ color: 'asc' as const }, { size: 'asc' as const }] },
+}
 
 export async function GET(request: Request) {
   try {
@@ -16,43 +23,16 @@ export async function GET(request: Request) {
     const where: Record<string, unknown> = {}
     if (categoryId) where.categoryId = categoryId
     if (active !== null && active !== undefined && active !== '') {
-      where.active = active === 'true'
+      where.available = active === 'true'
     }
 
     const products = await prisma.product.findMany({
       where,
-      include: {
-        category: { select: { name: true } },
-        variants: {
-          include: {
-            images: {
-              orderBy: { sortOrder: 'asc' },
-              select: { id: true, imageUrl: true, alt: true, sortOrder: true, isPrimary: true },
-            },
-          },
-          orderBy: { colorName: 'asc' },
-        },
-      },
+      include: productInclude,
       orderBy: { createdAt: 'desc' },
     })
 
-    return NextResponse.json(
-      products.map((p) => ({
-        id: p.id,
-        name: p.name,
-        slug: p.slug,
-        description: p.description,
-        categoryId: p.categoryId,
-        price: p.price,
-        salePrice: p.salePrice,
-        featured: p.featured,
-        available: p.available,
-        createdAt: p.createdAt,
-        updatedAt: p.updatedAt,
-        category: { name: p.category.name },
-        variants: p.variants,
-      }))
-    )
+    return NextResponse.json(products.map(mapProduct))
   } catch (error) {
     console.error('Error fetching products:', error)
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 })
@@ -78,7 +58,10 @@ export async function POST(request: Request) {
       fit,
       careInstructions,
       featured,
+      bestSeller,
+      newArrival,
       active,
+      available,
       images,
       variants,
     } = body
@@ -86,7 +69,7 @@ export async function POST(request: Request) {
     if (!name || !slug || !categoryId) {
       return NextResponse.json(
         { error: 'name, slug and categoryId are required' },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -95,32 +78,23 @@ export async function POST(request: Request) {
         name,
         slug,
         description: description ?? null,
-        price: Number(price) ?? 0,
-        salePrice: salePrice ?? null,
+        price: Number(price) || 0,
+        salePrice: salePrice ? Number(salePrice) : null,
         categoryId,
-        featured: featured || false,
-        available: active !== false,
-        variants: variants
-          ? {
-              create: variants.map((v: { size: string; color: string; stock: number }) => ({
-                colorName: v.color,
-                stock: v.stock,
-                available: true,
-              })),
-            }
-          : undefined,
+        material: material || null,
+        fit: fit || null,
+        careInstructions: careInstructions || null,
+        featured: Boolean(featured),
+        bestSeller: Boolean(bestSeller),
+        newArrival: Boolean(newArrival),
+        available: active !== false && available !== false,
+        images: { create: normalizeImages(images, name) },
+        variants: { create: normalizeVariants(variants) },
       },
-      include: {
-        variants: {
-          include: {
-            images: { orderBy: { sortOrder: 'asc' } },
-          },
-        },
-        category: { select: { name: true } },
-      },
+      include: productInclude,
     })
 
-    return NextResponse.json(product, { status: 201 })
+    return NextResponse.json(mapProduct(product), { status: 201 })
   } catch (error) {
     console.error('Error creating product:', error)
     return NextResponse.json({ error: 'Failed to create product' }, { status: 500 })

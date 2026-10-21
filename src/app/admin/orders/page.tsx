@@ -117,7 +117,7 @@ export default function AdminOrdersPage() {
                             {new Date(order.createdAt).toLocaleString()}
                           </p>
                         </div>
-                        <Link href={`/admin/orders/${order.id}?id=${order.id}`}>
+                        <Link href={`/admin/orders/${order.id}`}>
                           <Button variant="outline" size="sm">
                             {t('admin.viewDetails')}
                           </Button>

@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { MOCK_ADMIN } from '@/data/store'
 import { createSession, verifyAdminCredentials } from '@/lib/auth'
 
 export async function POST(request: Request) {
@@ -10,20 +9,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 })
     }
 
-    const ok = await verifyAdminCredentials(email, password)
-    if (!ok) {
+    const admin = await verifyAdminCredentials(email, password)
+    if (!admin) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
     }
 
-    await createSession(MOCK_ADMIN.id)
+    await createSession(admin.id)
 
     return NextResponse.json({
       success: true,
       admin: {
-        id: MOCK_ADMIN.id,
-        name: MOCK_ADMIN.name,
-        email: MOCK_ADMIN.email,
-        role: MOCK_ADMIN.role,
+        id: admin.id,
+        name: admin.name,
+        email: admin.email,
+        role: admin.role,
       },
     })
   } catch (error) {

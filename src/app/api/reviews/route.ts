@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { addReview, getProductById, getProductReviews, getRatingSummary } from '@/data/store'
+import { addReview, getProductReviews, getRatingSummary } from '@/data/store'
+import { getProductById } from '@/lib/catalog'
 import { reviewSchema } from '@/lib/validations'
 import { ZodError } from 'zod'
 
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
     const body = await request.json()
     const data = reviewSchema.parse(body)
 
-    if (!getProductById(data.productId)) {
+    if (!(await getProductById(data.productId))) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 

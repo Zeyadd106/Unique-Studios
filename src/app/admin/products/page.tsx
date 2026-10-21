@@ -22,11 +22,11 @@ interface Product {
   bestSeller: boolean
   newArrival: boolean
   category: { name: string }
+  images?: { url: string; alt?: string | null }[]
   variants: {
     size: string
     color: string
     stock: number
-    images?: { url: string; alt?: string | null }[]
   }[]
 }
 
@@ -125,8 +125,7 @@ export default function AdminProductsPage() {
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0">
                         {(() => {
-                          const firstVariant = product.variants?.[0]
-                          const firstImage = firstVariant?.images?.[0]
+                          const firstImage = product.images?.[0]
                           if (firstImage?.url) {
                             return (
                               <Image

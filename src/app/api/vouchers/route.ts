@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server'
-import { validateVoucher } from '@/data/store'
+import { validateVoucher } from '@/lib/catalog'
 
-// Public voucher check used by checkout: ?code=WELCOME10&subtotal=850
-// Returns the discount the code gives for that subtotal.
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -16,7 +14,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Invalid subtotal' }, { status: 400 })
     }
 
-    const result = validateVoucher(code, subtotal)
+    const result = await validateVoucher(code, subtotal)
 
     if (!result.ok) {
       return NextResponse.json({ ok: false, error: result.error, minSubtotal: result.minSubtotal ?? null })
@@ -24,9 +22,9 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       ok: true,
-      code: result.voucher!.code,
-      type: result.voucher!.type,
-      value: result.voucher!.value,
+      code: result.voucher.code,
+      type: result.voucher.type,
+      value: result.voucher.value,
       discount: result.discount,
     })
   } catch (error) {

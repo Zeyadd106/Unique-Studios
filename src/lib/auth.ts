@@ -1,15 +1,11 @@
 import { cookies } from 'next/headers'
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
-import { MOCK_ADMIN } from '@/data/store'
+import { prisma } from '@/lib/prisma'
 
 const SESSION_COOKIE_NAME = 'admin-session'
 const ADMIN_ID_COOKIE_NAME = 'admin-id'
 const SESSION_DURATION = 24 * 60 * 60 * 1000 // 24 hours
-
-// bcrypt hash for the demo password can be provided via ADMIN_PASSWORD_HASH.
-// Otherwise (demo setup only) credentials fall back to a timing-safe
-// plaintext comparison against the demo admin in the store.
 
 function getAuthSecret(): string {
   const secret = process.env.AUTH_SECRET
@@ -30,17 +26,26 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   return bcrypt.compare(password, hash)
 }
 
-export async function verifyAdminCredentials(email: string, password: string): Promise<boolean> {
-  if (email !== MOCK_ADMIN.email) return false
-  // If a custom hash is configured use it, otherwise fall back to a
-  // timing-safe demo comparison (demo setup only).
-  if (process.env.ADMIN_PASSWORD_HASH) {
-    return verifyPassword(password, process.env.ADMIN_PASSWORD_HASH)
+export async function verifyAdminCredentials(email: string, password: string): Promise<{ id: string; name: string; email: string; role: string } | null> {
+  const user = await prisma.adminUser.findUnique({
+    where: { email: email.toLowerCase() },
+  })
+
+  if (!user || !user.active) {
+    return null
   }
-  const a = Buffer.from(password)
-  const b = Buffer.from(MOCK_ADMIN.password)
-  if (a.length !== b.length) return false
-  return crypto.timingSafeEqual(a, b)
+
+  const valid = await verifyPassword(password, user.password)
+  if (!valid) {
+    return null
+  }
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  }
 }
 
 function sign(value: string): string {
@@ -84,7 +89,7 @@ export async function getSession() {
   const parts = sessionToken.split('.')
   if (parts.length !== 3) return null
   const [tokenAdminId, expiresRaw, signature] = parts
-  if (tokenAdminId !== adminId || tokenAdminId !== MOCK_ADMIN.id) return null
+  if (tokenAdminId !== adminId) return null
 
   const expires = Number(expiresRaw)
   if (!Number.isFinite(expires) || Date.now() > expires) return null
@@ -96,11 +101,21 @@ export async function getSession() {
     return null
   }
 
+  // Verify user still exists and is active
+  const user = await prisma.adminUser.findUnique({
+    where: { id: tokenAdminId },
+    select: { id: true, name: true, email: true, role: true, active: true },
+  })
+
+  if (!user || !user.active) {
+    return null
+  }
+
   return {
-    id: MOCK_ADMIN.id,
-    name: MOCK_ADMIN.name,
-    email: MOCK_ADMIN.email,
-    role: MOCK_ADMIN.role,
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
   }
 }
 
@@ -111,7 +126,7 @@ export async function destroySession() {
 }
 
 export function isAuthenticatedRequest(sessionToken: string | undefined, adminId: string | undefined): boolean {
-  if (!sessionToken || !adminId || adminId !== MOCK_ADMIN.id) return false
+  if (!sessionToken || !adminId) return false
   const parts = sessionToken.split('.')
   if (parts.length !== 3) return false
   const [tokenAdminId, expiresRaw, signature] = parts

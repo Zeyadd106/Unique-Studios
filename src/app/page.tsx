@@ -340,7 +340,7 @@ export default function HomePage() {
 
       <main className="flex-1">
         {/* ------------------------------------------------ HERO */}
-        <section className="relative isolate flex min-h-[100svh] items-end overflow-hidden bg-black">
+        <section className="relative isolate flex min-h-screen flex-col justify-center overflow-hidden bg-black">
           <motion.div style={{ y: heroY }} className="absolute inset-0">
             <div className="us-kenburns absolute inset-0">
               <Image
@@ -349,7 +349,7 @@ export default function HomePage() {
                 fill
                 priority
                 sizes="100vw"
-                className="object-cover"
+                className="object-cover sm:object-cover"
               />
             </div>
           </motion.div>
@@ -359,7 +359,7 @@ export default function HomePage() {
 
           <motion.div
             style={{ opacity: heroFade }}
-            className="relative mx-auto w-full max-w-7xl px-5 pb-28 pt-36 sm:px-8 lg:pb-36"
+            className="relative mx-auto w-full max-w-7xl px-5 pb-10 pt-20 sm:pb-28 sm:pt-36 lg:pb-36"
           >
             <motion.h1
               variants={headlineContainer}
@@ -405,6 +405,13 @@ export default function HomePage() {
                   className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
                   aria-hidden
                 />
+              </Link>
+              <Link
+                href="/track"
+                className="us-cta inline-flex items-center justify-center gap-2 rounded-full border-2 border-white px-9 py-4 text-sm font-bold text-white transition-colors duration-300 hover:bg-white/10"
+              >
+                Track your order
+                <Truck className="h-4 w-4" aria-hidden />
               </Link>
             </motion.div>
           </motion.div>

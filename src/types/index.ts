@@ -55,6 +55,7 @@ export interface ProductVariant {
   stock: number
   weightMin: number | null
   weightMax: number | null
+  available: boolean
   createdAt: Date
   updatedAt: Date
 }

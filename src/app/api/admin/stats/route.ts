@@ -12,13 +12,21 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const limit = parseInt(searchParams.get('limit') || '5')
 
+    // Try to get low stock count, fallback to 0 if Prisma client is stale
+    let lowStockProducts = 0
+    try {
+      lowStockProducts = await prisma.productVariant.count({ where: { stock: { lte: 5 } } })
+    } catch {
+      // Prisma client may not have stock field yet (old client)
+      lowStockProducts = 0
+    }
+
     // Get stats and recent orders in parallel
     const [
       totalOrders,
       newOrders,
       totalRevenue,
       totalProducts,
-      lowStockProducts,
       confirmedOrders,
       processingOrders,
       shippedOrders,
@@ -28,8 +36,6 @@ export async function GET(request: Request) {
       prisma.order.count({ where: { status: 'NEW' } }),
       prisma.order.aggregate({ _sum: { total: true }, where: { status: { not: 'CANCELLED' } } }),
       prisma.product.count({ where: { available: true } }),
-      // Low stock: not tracked in DB yet, return 0
-      Promise.resolve(0),
       prisma.order.count({ where: { status: 'CONFIRMED' } }),
       prisma.order.count({ where: { status: 'PROCESSING' } }),
       prisma.order.count({ where: { status: 'SHIPPED' } }),

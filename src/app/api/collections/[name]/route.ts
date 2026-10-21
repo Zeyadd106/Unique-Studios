@@ -1,34 +1,24 @@
 import { NextResponse } from 'next/server'
-import { CATEGORIES, queryProducts } from '@/data/store'
+import { getCategoryBySlug, queryProducts } from '@/lib/catalog'
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ name: string }> }
+  { params }: { params: Promise<{ name: string }> },
 ) {
   try {
     const { name } = await params
     const rawSlug = name.toLowerCase()
-
-    // Brand alias: the "Crewnecks" collection page lives at /collections/crewnecks
-    // while the catalog category slug is "round-neck".
-    const ALIASES: Record<string, string> = {
-      crewnecks: 'round-neck',
-      crewneck: 'round-neck',
-    }
-    const categorySlug = ALIASES[rawSlug] ?? rawSlug
-
-    const category = CATEGORIES.find((c) => c.slug === categorySlug)
+    const category = await getCategoryBySlug(rawSlug)
 
     if (!category) {
       return NextResponse.json(
         { error: 'Collection not found' },
-        { status: 404 }
+        { status: 404 },
       )
     }
 
-    const products = queryProducts({ category: categorySlug, sort: 'featured' })
+    const products = await queryProducts({ category: category.slug, sort: 'featured' })
 
-    // One card per product (no color variant duplication).
     const collectionProducts = products.map((product) => {
       const images = product.images.map((img) => ({
         id: img.id,
@@ -78,7 +68,7 @@ export async function GET(
     console.error('Error fetching collection:', error)
     return NextResponse.json(
       { error: 'Failed to fetch collection' },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
