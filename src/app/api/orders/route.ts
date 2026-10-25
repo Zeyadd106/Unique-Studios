@@ -60,6 +60,63 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Cart is empty' }, { status: 400 })
     }
 
+    // Validate stock availability for all items
+    const productVariantIds = items.map(item => ({
+      productId: item.productId,
+      size: item.size,
+      color: item.color,
+    }))
+
+    const variants = await prisma.productVariant.findMany({
+      where: {
+        OR: productVariantIds.map(pv => ({
+          productId: pv.productId,
+          size: pv.size,
+          color: pv.color,
+        })),
+      },
+    })
+
+    const outOfStockItems: string[] = []
+    const insufficientStockItems: string[] = []
+
+    for (const item of items) {
+      const variant = variants.find(
+        v => v.productId === item.productId && v.size === item.size && v.color === item.color
+      )
+
+      if (!variant) {
+        outOfStockItems.push(`${item.productName} (${item.size} / ${item.color})`)
+        continue
+      }
+
+      if (!variant.available || variant.stock < item.quantity) {
+        insufficientStockItems.push(
+          `${item.productName} (${item.size} / ${item.color}) - Available: ${variant.stock}, Requested: ${item.quantity}`
+        )
+      }
+    }
+
+    if (outOfStockItems.length > 0) {
+      return NextResponse.json(
+        {
+          error: 'Some items are out of stock',
+          details: outOfStockItems,
+        },
+        { status: 400 }
+      )
+    }
+
+    if (insufficientStockItems.length > 0) {
+      return NextResponse.json(
+        {
+          error: 'Some items have insufficient stock',
+          details: insufficientStockItems,
+        },
+        { status: 400 }
+      )
+    }
+
     // Calculate totals
     const subtotal = items.reduce((sum, item) => sum + item.totalPrice, 0)
 
@@ -137,6 +194,22 @@ export async function POST(request: Request) {
           items: true,
         },
       })
+
+      // Decrement stock for each item
+      for (const item of items) {
+        await tx.productVariant.updateMany({
+          where: {
+            productId: item.productId,
+            size: item.size,
+            color: item.color,
+          },
+          data: {
+            stock: {
+              decrement: item.quantity,
+            },
+          },
+        })
+      }
 
       // Increment voucher usage count
       if (voucherCode) {

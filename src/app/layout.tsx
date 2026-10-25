@@ -3,6 +3,7 @@ import { Cairo } from "next/font/google";
 import "./globals.css";
 import "@/styles/home.css";
 import { LocaleProvider } from "@/hooks/use-locale";
+import { logEnvValidation } from "@/lib/env-validation";
 
 // Single brand font (Cairo, latin + arabic) — same approach as Van-Graph.
 const cairo = Cairo({
@@ -30,6 +31,11 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Validate environment variables on server-side only
+  if (typeof window === 'undefined') {
+    logEnvValidation()
+  }
+
   return (
     <html lang="en" className={`${cairo.variable} antialiased`}>
       <body className="min-h-screen flex flex-col font-sans">
