@@ -237,7 +237,7 @@ Write-Step "Linking to Vercel project..."
 
 $vercelDir = Join-Path $ProjectRoot ".vercel"
 if (Test-Path $vercelDir) {
-    Write-Info "Project already linked"
+    Write-Info "Project already linked - skipping link step"
 } else {
     Write-Info "Creating new Vercel project..."
     vercel link --yes --project uniquestudios
@@ -254,23 +254,29 @@ Write-Step "Setting Vercel environment variables..."
 if ($DryRun) {
     Write-Warn "Dry run - skipping env vars"
 } else {
-    $envVars = @(
-        @{ Name = "DATABASE_URL"; Value = $DatabaseUrl },
-        @{ Name = "AUTH_SECRET"; Value = $AuthSecret },
-        @{ Name = "ADMIN_PASSWORD"; Value = $AdminPassword },
-        @{ Name = "NEXT_PUBLIC_SITE_URL"; Value = $SiteUrl }
-    )
+    Write-Warn "Skipping automatic env var setup (PowerShell compatibility issue)"
+    Write-Host ""
+    Write-Host "  Please set these environment variables manually in Vercel dashboard:" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "  1. Go to: https://vercel.com/[your-account]/[project]/settings/environment-variables" -ForegroundColor Gray
+    Write-Host "  2. Add the following variables for 'Production' environment:" -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "     DATABASE_URL = $DatabaseUrl" -ForegroundColor Cyan
+    Write-Host "     AUTH_SECRET = $AuthSecret" -ForegroundColor Cyan
+    Write-Host "     ADMIN_PASSWORD = $AdminPassword" -ForegroundColor Cyan
+    Write-Host "     NEXT_PUBLIC_SITE_URL = $SiteUrl" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "  3. After adding, click 'Save' and redeploy" -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "  For now, we'll set them locally for the deploy..." -ForegroundColor Yellow
 
-    foreach ($ev in $envVars) {
-        Write-Info "Setting $($ev.Name)..."
-        vercel env rm $ev.Name production 2>$null | Out-Null
-        $ev.Value | vercel env add $ev.Name production
-        if ($LASTEXITCODE -ne 0) {
-            Write-Warn "Failed to set $($ev.Name) - set it manually in Vercel dashboard"
-        }
-    }
+    # Set locally for this session
+    $env:DATABASE_URL = $DatabaseUrl
+    $env:AUTH_SECRET = $AuthSecret
+    $env:ADMIN_PASSWORD = $AdminPassword
+    $env:NEXT_PUBLIC_SITE_URL = $SiteUrl
 
-    Write-Ok "Environment variables set"
+    Write-Ok "Environment variables set locally (please add to Vercel dashboard)"
 }
 
 # --- Step 10: Deploy to Vercel ---
@@ -283,7 +289,7 @@ if ($DryRun) {
     Write-Host "    vercel --prod" -ForegroundColor Gray
 } else {
     Write-Info "This may take 2-5 minutes..."
-    vercel --prod
+    vercel --prod --yes
     if ($LASTEXITCODE -ne 0) {
         Write-Err "Deployment failed"
         exit 1

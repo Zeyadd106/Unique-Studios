@@ -1,6 +1,3 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "name": "unique-studios",
-  "framework": "nextjs",
   "buildCommand": "prisma generate --schema prisma/postgres/schema.prisma && next build"
 }
