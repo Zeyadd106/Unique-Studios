@@ -297,39 +297,91 @@ async function main() {
   for (const prod of products) {
     const { sizes, images, ...productData } = prod
 
-    await prisma.product.upsert({
+    const existingProduct = await prisma.product.findUnique({
       where: { slug: prod.slug },
-      update: productData,
-      create: {
-        ...productData,
-        images: {
-          create: images.map((img, i) => ({
-            imageUrl: img.url,
-            cardUrl: img.url,
-            thumbUrl: img.url,
-            alt: img.alt,
-            sortOrder: i,
-            isPrimary: img.isPrimary || i === 0,
-          })),
-        },
-        variants: {
-          create: sizes.flatMap((size) =>
-            COLORS.map((color) => {
-              const { weightMin, weightMax } = weightRangeForSize(size)
-              const stock = 8 + ((sizes.indexOf(size) * 7 + COLORS.indexOf(color) * 3) % 15)
-              return {
-                size,
-                color,
-                stock,
-                weightMin,
-                weightMax,
-                available: true,
-              }
-            })
-          ),
-        },
-      },
+      include: { variants: true, images: true }
     })
+
+    if (existingProduct) {
+      // Update existing product
+      await prisma.product.update({
+        where: { slug: prod.slug },
+        data: productData,
+      })
+
+      // Delete existing variants and recreate them with new size order
+      await prisma.productVariant.deleteMany({
+        where: { productId: existingProduct.id }
+      })
+
+      await prisma.productVariant.createMany({
+        data: sizes.flatMap((size) =>
+          COLORS.map((color) => {
+            const { weightMin, weightMax } = weightRangeForSize(size)
+            const stock = 8 + ((sizes.indexOf(size) * 7 + COLORS.indexOf(color) * 3) % 15)
+            return {
+              productId: existingProduct.id,
+              size,
+              color,
+              stock,
+              weightMin,
+              weightMax,
+              available: true,
+            }
+          })
+        ),
+      })
+
+      // Update images if needed
+      await prisma.productImage.deleteMany({
+        where: { productId: existingProduct.id }
+      })
+
+      await prisma.productImage.createMany({
+        data: images.map((img, i) => ({
+          productId: existingProduct.id,
+          imageUrl: img.url,
+          cardUrl: img.url,
+          thumbUrl: img.url,
+          alt: img.alt,
+          sortOrder: i,
+          isPrimary: img.isPrimary || i === 0,
+        })),
+      })
+    } else {
+      // Create new product
+      await prisma.product.create({
+        data: {
+          ...productData,
+          images: {
+            create: images.map((img, i) => ({
+              imageUrl: img.url,
+              cardUrl: img.url,
+              thumbUrl: img.url,
+              alt: img.alt,
+              sortOrder: i,
+              isPrimary: img.isPrimary || i === 0,
+            })),
+          },
+          variants: {
+            create: sizes.flatMap((size) =>
+              COLORS.map((color) => {
+                const { weightMin, weightMax } = weightRangeForSize(size)
+                const stock = 8 + ((sizes.indexOf(size) * 7 + COLORS.indexOf(color) * 3) % 15)
+                return {
+                  size,
+                  color,
+                  stock,
+                  weightMin,
+                  weightMax,
+                  available: true,
+                }
+              })
+            ),
+          },
+        },
+      })
+    }
   }
   console.log('Products seeded')
 
