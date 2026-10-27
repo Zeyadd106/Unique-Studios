@@ -55,7 +55,7 @@ async function main() {
   const products = [
     {
       id: 'prod-off-shoulder-01',
-      name: 'Off Shoulder Signature Navy',
+      name: 'Off shoulder sweater Baby blue ',
       slug: 'off-shoulder-signature-navy',
       description: 'Signature navy off-shoulder top with premium quality.',
       price: 699,
@@ -78,7 +78,7 @@ async function main() {
     },
     {
       id: 'prod-off-shoulder-02',
-      name: 'Off Shoulder Essential Gray',
+      name: 'Off shoulder sweater Black',
       slug: 'off-shoulder-essential-gray',
       description: 'Essential gray off-shoulder top with premium quality.',
       price: 699,
@@ -100,7 +100,7 @@ async function main() {
     },
     {
       id: 'prod-off-shoulder-03',
-      name: 'Off Shoulder Street Style',
+      name: 'Off shoulder sweater Burgundy',
       slug: 'off-shoulder-street-style',
       description: 'Street style off-shoulder top with urban design.',
       price: 699,
@@ -122,7 +122,7 @@ async function main() {
     },
     {
       id: 'prod-sweatpants-01',
-      name: 'Signature Sweatpants',
+      name: 'Sweatpants Gray',
       slug: 'sweatpants',
       description: 'Comfortable sweatpants with drawstring waist and cuffed ankles. Size chart (hip × length): M 53 × 107 cm, L 56 × 110 cm, XL 60 × 113 cm.',
       price: 799,
@@ -146,7 +146,7 @@ async function main() {
     },
     {
       id: 'prod-sweatpants-02',
-      name: 'Sweatpants Premium Edition',
+      name: 'Sweatpants Black',
       slug: 'sweatpants-premium-edition',
       description: 'Premium edition sweatpants with exclusive design.',
       price: 799,
@@ -170,7 +170,7 @@ async function main() {
     },
     {
       id: 'prod-round-neck',
-      name: 'Heavyweight Crewneck',
+      name: 'Streetwear CrewNeck White',
       slug: 'round-neck',
       description: 'Classic crewneck sweatshirt with ribbed cuffs and hem. Size chart (length × width): M 67 × 63 cm, L 70 × 66 cm, XL 73 × 69 cm.',
       price: 849,
@@ -194,7 +194,7 @@ async function main() {
     },
     {
       id: 'prod-crewneck-01',
-      name: 'Crewneck Premium Gray',
+      name: 'Streetwear CrewNeck Pink',
       slug: 'crewneck-premium-gray',
       description: 'Premium gray crewneck with heavyweight fabric.',
       price: 849,
@@ -216,7 +216,7 @@ async function main() {
     },
     {
       id: 'prod-crewneck-02',
-      name: 'Crewneck Street Style',
+      name: 'Streetwear CrewNeck Black',
       slug: 'crewneck-street-style',
       description: 'Street style crewneck with urban design.',
       price: 849,
@@ -240,7 +240,7 @@ async function main() {
     },
     {
       id: 'prod-crewneck-03',
-      name: 'Crewneck Essential Gray',
+      name: 'Streetwear CrewNeck Burgundy',
       slug: 'crewneck-essential-gray',
       description: 'Essential gray crewneck with premium fabric.',
       price: 849,
@@ -263,7 +263,7 @@ async function main() {
     },
     {
       id: 'prod-crewneck-04',
-      name: 'Crewneck Urban White',
+      name: 'Streetwear CrewNeck Baby blue',
       slug: 'crewneck-urban-white',
       description: 'Urban white crewneck with street style.',
       price: 849,
