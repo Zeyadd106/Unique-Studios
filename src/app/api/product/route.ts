@@ -16,9 +16,25 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
+    // Define size order based on category
+    const sizeOrderMap: Record<string, string[]> = {
+      'off-shoulder': ['S', 'M', 'L'],
+      'sweatpants': ['M', 'L', 'XL'],
+      'round-neck': ['M', 'L', 'XL'],
+    }
+
+    // Get size order from category slug, default to standard order
+    const sizeOrder = sizeOrderMap[product.category.slug] || ['S', 'M', 'L', 'XL', 'XXL']
+
     const colors = [...new Set(product.variants.map((v) => v.color))]
     const variantsByColor = colors.map((colorName) => {
-      const colorVariants = product.variants.filter((v) => v.color === colorName)
+      const colorVariants = product.variants
+        .filter((v) => v.color === colorName)
+        .sort((a, b) => {
+          const aIndex = sizeOrder.indexOf(a.size)
+          const bIndex = sizeOrder.indexOf(b.size)
+          return aIndex - bIndex
+        })
       return {
         id: `${product.id}-${colorName}`,
         colorName,
@@ -35,8 +51,16 @@ export async function GET(request: Request) {
       }
     })
 
+    // Also sort the main variants array by size
+    const sortedVariants = product.variants.sort((a, b) => {
+      const aIndex = sizeOrder.indexOf(a.size)
+      const bIndex = sizeOrder.indexOf(b.size)
+      return aIndex - bIndex
+    })
+
     return NextResponse.json({
       ...product,
+      variants: sortedVariants,
       variantsByColor,
     })
   } catch (error) {
