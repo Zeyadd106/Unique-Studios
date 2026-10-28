@@ -18,6 +18,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:full": "tsx prisma/seed-full.ts",
     "db:seed:prod": "prisma generate --schema prisma/postgres/schema.prisma && tsx prisma/seed-prod.ts",
+    "db:seed:remote": "powershell -ExecutionPolicy Bypass -File scripts/seed-remote.ps1",
     "db:sync-schema": "powershell -ExecutionPolicy Bypass -File scripts/sync-schemas.ps1",
     "deploy": "powershell -ExecutionPolicy Bypass -File scripts/deploy-vercel.ps1",
     "deploy:dry": "powershell -ExecutionPolicy Bypass -File scripts/deploy-vercel.ps1 -DryRun",
