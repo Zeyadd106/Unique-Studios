@@ -4,23 +4,25 @@
  * Handles VAPID key generation and push notification sending.
  */
 
-import webpush from 'web-push'
+let webpush: any = null
 
-// Get VAPID keys from environment variables
+// Only import web-push if VAPID keys are configured
 const publicVapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
 const privateVapidKey = process.env.VAPID_PRIVATE_KEY
 
-if (!publicVapidKey || !privateVapidKey) {
-  console.warn('[WebPush] VAPID keys not configured. Push notifications will not work.')
-}
-
-// Configure web-push with VAPID keys
 if (publicVapidKey && privateVapidKey) {
-  webpush.setVapidDetails(
-    'mailto:info@uniquestudios.com',
-    publicVapidKey,
-    privateVapidKey
-  )
+  try {
+    webpush = require('web-push')
+    webpush.setVapidDetails(
+      'mailto:info@uniquestudios.com',
+      publicVapidKey,
+      privateVapidKey
+    )
+  } catch (error) {
+    console.warn('[WebPush] Failed to load web-push:', error)
+  }
+} else {
+  console.warn('[WebPush] VAPID keys not configured. Push notifications will not work.')
 }
 
 export interface PushSubscription {
