@@ -102,7 +102,7 @@ export function usePushNotification() {
 
       const newSubscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: convertedVapidKey,
+        applicationServerKey: convertedVapidKey.buffer as ArrayBuffer,
       })
 
       const subscriptionJson = newSubscription.toJSON() as PushSubscription
