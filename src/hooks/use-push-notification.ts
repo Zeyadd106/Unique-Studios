@@ -44,7 +44,10 @@ export function usePushNotification() {
       // Check if already subscribed
       const existingSubscription = await registration.pushManager.getSubscription()
       if (existingSubscription) {
+        console.log('[Push] Already subscribed:', existingSubscription.endpoint)
         setSubscription(existingSubscription.toJSON() as PushSubscription)
+      } else {
+        console.log('[Push] No existing subscription')
       }
     } catch (error) {
       console.error('[Push] Service worker registration failed:', error)
