@@ -168,5 +168,24 @@ model AdminUser {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  pushSubscriptions PushSubscription[]
+
   @@index([email])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  adminId   String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  admin     AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@index([endpoint])
+  @@index([active])
 }

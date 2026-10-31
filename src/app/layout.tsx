@@ -22,6 +22,7 @@ export const metadata: Metadata = {
     shortcut: "/logo-light.png",
     apple: "/logo-light.png",
   },
+  manifest: "/manifest.json",
   openGraph: {
     title: "UNIQUE STUDIOS - Premium Streetwear",
     description:

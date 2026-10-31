@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { PushNotificationToggle } from '@/components/admin/push-notification-toggle'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslation } from '@/hooks/use-translation'
 import { useLiveStats } from '@/hooks/use-live-orders'
@@ -75,15 +76,18 @@ export default function AdminDashboardPage() {
       />
 
       <main className="flex-1 lg:ms-64 p-4 md:p-8">
-        <div className="mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold">{t('admin.dashboard')}</h1>
-          <p className="text-gray-600">
-            {t('admin.welcomeBack')}, {currentAdmin.name}!
-          </p>
-          <p className="text-xs text-gray-400 mt-1">
-            {t('admin.autoRefresh')}
-            {lastUpdated && ` · ${t('admin.lastUpdated')}: ${lastUpdated.toLocaleTimeString()}`}
-          </p>
+        <div className="mb-6 md:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold">{t('admin.dashboard')}</h1>
+            <p className="text-gray-600">
+              {t('admin.welcomeBack')}, {currentAdmin.name}!
+            </p>
+            <p className="text-xs text-gray-400 mt-1">
+              {t('admin.autoRefresh')}
+              {lastUpdated && ` · ${t('admin.lastUpdated')}: ${lastUpdated.toLocaleTimeString()}`}
+            </p>
+          </div>
+          <PushNotificationToggle />
         </div>
 
         {/* New-order alert */}

@@ -1,0 +1,35 @@
+{
+  "name": "UNIQUE STUDIOS - Admin",
+  "short_name": "Unique Admin",
+  "description": "Admin panel for UNIQUE STUDIOS e-commerce platform",
+  "start_url": "/admin/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#111111",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo-light.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "shopping"],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View admin dashboard",
+      "url": "/admin/dashboard",
+      "icons": [{ "src": "/logo-light.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "Orders",
+      "short_name": "Orders",
+      "description": "View orders",
+      "url": "/admin/orders",
+      "icons": [{ "src": "/logo-light.png", "sizes": "512x512" }]
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import { ZodError } from 'zod'
 import { rateLimitMiddleware } from '@/lib/rate-limit'
 import { prisma } from '@/lib/prisma'
 import { generateOrderNumber, formatPrice } from '@/lib/utils'
+import { sendPushNotificationToAll, isValidSubscription } from '@/lib/web-push'
 
 // Initialize Resend client lazily to avoid build-time errors
 function getResendClient() {
@@ -228,6 +229,12 @@ export async function POST(request: Request) {
       console.error('[Email] Failed to send order confirmation:', emailError)
     })
 
+    // --- Step D: Send Push Notification to Admin ---
+    // Fire-and-forget: don't block the response on push notification
+    sendNewOrderPushNotification(order).catch((pushError) => {
+      console.error('[Push] Failed to send push notification:', pushError)
+    })
+
     // --- Step E: Response ---
     const responseHeaders: Record<string, string> = rateLimitResult?.headers ? Object.fromEntries(
       Object.entries(rateLimitResult.headers).map(([k, v]) => [k, String(v)])
@@ -438,4 +445,66 @@ function generateOrderEmailHtml({ orderNumber, customerName, items, subtotal, di
 </body>
 </html>
   `
+}
+
+/**
+ * Send push notification to all subscribed admins for new order
+ */
+async function sendNewOrderPushNotification(order: {
+  orderNumber: string
+  customerName: string
+  total: number
+  city: string
+  items: { productName: string; quantity: number }[]
+}) {
+  try {
+    // Get all active push subscriptions for admins
+    const subscriptions = await prisma.pushSubscription.findMany({
+      where: { active: true },
+      include: { admin: true },
+    })
+
+    if (subscriptions.length === 0) {
+      console.log('[Push] No active subscriptions found')
+      return
+    }
+
+    // Format notification payload
+    const payload = {
+      title: '🛍️ New Order Received!',
+      body: `Order #${order.orderNumber} from ${order.customerName} in ${order.city} - ${formatPrice(order.total)}`,
+      icon: '/logo-light.png',
+      badge: '/logo-light.png',
+      tag: `order-${order.orderNumber}`,
+      url: `/admin/orders/${order.orderNumber}`,
+      data: {
+        orderNumber: order.orderNumber,
+        customerName: order.customerName,
+        total: order.total,
+        items: order.items,
+      },
+    }
+
+    // Convert to subscription format expected by web-push
+    const webPushSubscriptions = subscriptions
+      .map((sub) => ({
+        endpoint: sub.endpoint,
+        keys: {
+          p256dh: sub.p256dh,
+          auth: sub.auth,
+        },
+      }))
+      .filter(isValidSubscription)
+
+    if (webPushSubscriptions.length === 0) {
+      console.log('[Push] No valid subscriptions found')
+      return
+    }
+
+    // Send to all subscriptions
+    const result = await sendPushNotificationToAll(webPushSubscriptions, payload)
+    console.log(`[Push] Sent notifications: ${result.success} success, ${result.failed} failed`)
+  } catch (error) {
+    console.error('[Push] Failed to send new order notification:', error)
+  }
 }
